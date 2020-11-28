@@ -4,35 +4,7 @@
 #include "IDNode.h"
 #include "TempNode.h"
 
-enum class op_e{
-    Assignop = 1,       // =
-    Relop = 2,          // < > <= >=
-    Plus = 3,           // +
-    Minus = 4,          // -
-    Times = 5,          // *
-    Div = 6,            // /
-    Mod = 7,            // %
-    Power = 8,          // ^
-    And = 9,            // &&
-    Or = 10,            // ||
-    Negative = 11,      // -
-    Not = 12,           // !
-    SingalAnd = 13,     // &
-    GetValue = 14,      // *
-    GetArrayValue = 15, //a[3]
-    GetMember = 16,     // a.b
-    AssignArray = 17,   // a[1] = ?
-    AssignMember = 18   // a.b = ?
-};
 
-enum class expr_e {
-    Op1, // 1目运算符
-    Op2, // 2目运算符
-    Op3, // 3目运算符
-    FuncCall, //函数调用
-    Var, // 变量
-    Const // 常量
-};
     
 struct ExprNode: public ASTNode{
     // 抽象表达式节点
@@ -91,6 +63,7 @@ struct FuncCallExprNode: public ExprNode {
         // this->ret = 
         // this->type = 
         addArgs(_Args);
+        
         
     }
     

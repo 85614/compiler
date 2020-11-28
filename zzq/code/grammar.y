@@ -395,7 +395,7 @@ Exp:
         $$ = new FuncCallExprNode($1, $3);
     }
     | ID LP RP {
-        $$ = new CallFunASTNode($1, NULL);
+        $$ = new FuncCallExprNode($1, nullptr);
     }
     | Exp LB Exp RB {
         $$ = NULL;
