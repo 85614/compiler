@@ -102,7 +102,7 @@ struct ConstExprNode: public ExprNode {
     const char *value;
     ~ConstExprNode()=default;
     ConstExprNode(const char *_Value):value(_Value){
-        
+        //this->type = 
     }
     expr_e get_expr_e() override { return expr_e::Const; };
 };

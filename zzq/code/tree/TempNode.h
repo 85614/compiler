@@ -2,10 +2,10 @@
 #include <vector>
 #include "ASTNode.h"
 
-struct TempNode{
+struct TempNode : ASTNode{
     std::vector<ASTNode *> childList;
     virtual AST_e get_AST_e() {return AST_e::Temp;}
-    void addChild(ASTNode *child) { childList.push_back(child); }
+    void addChild(ASTNode *child)override { childList.push_back(child); }
     ~TempNode()=default;
 };
 

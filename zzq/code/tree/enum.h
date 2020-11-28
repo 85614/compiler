@@ -39,22 +39,14 @@ enum class expr_e {
     Const // 常量
 };
 
-enum id_type_e {
+enum IDType_e {
+    unknow, //暂时未知，之后得到
     Typename, //类型名
     Var, // 变量名
     Func // 函数名
 };
 
 
-enum class stmt_t{
-    IF, // if 语句
-    FuncDef, // 函数定义
-    FunDec, // 函数声明
-    VarDef, // 变量声明
-    FOR, // for 语句
-    Block, // 语句块
-    Expr // 表达式语句
-};
 
 
 enum class type_e {
@@ -63,4 +55,15 @@ enum class type_e {
   PointerType, // 指针类型
   ReferenceType, // 引用类型
   FuncType // 函数类型
+};
+
+
+enum class stmt_e{
+    IF, // if 语句
+    FunDef, // 函数定义
+    FunDec, // 函数声明
+    VarDef, // 变量声明
+    FOR, // for 语句
+    Block, // 语句块
+    Expr // 表达式语句
 };
