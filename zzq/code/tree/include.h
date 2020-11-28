@@ -6,10 +6,3 @@
 #include "tree/StmtNode.h"
 #include "tree/TypeNode.h"
 #include "tree/TempNode.h"
-
-
-
-int main(){
-    
-    return 0;
-}

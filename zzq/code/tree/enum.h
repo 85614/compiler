@@ -47,10 +47,7 @@ enum IDType_e {
 };
 
 
-
-
 enum class type_e {
-  VOIDType, //void 类型
   BasicType, // 基本类型
   PointerType, // 指针类型
   ReferenceType, // 引用类型

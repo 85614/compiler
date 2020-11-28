@@ -65,7 +65,7 @@ struct BlockStmt: public StmtNode {
             stmts.push_back((StmtNode*)n);
         }   
     }
-    ~BlockStmt()=default;
+    
 };
  
 struct FuncDecStmt: public StmtNode {
