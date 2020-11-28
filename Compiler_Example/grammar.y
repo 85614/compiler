@@ -53,9 +53,11 @@ void yyerror(const char *str);
 %type <ast> StructSpecifier StructDecList StructDec
 %%
 
+/* 开始符号 */
 Program: ExtDefList 
     ;
 
+/*
 ExtDefList:
     ExtDef 
     | ExtDefList ExtDef 
@@ -63,7 +65,10 @@ ExtDefList:
 
 ExtDef: Specifier ExtDecList SEMI 
     | Specifier SEMI 
-    | Specifier FunDec CompSt 
+    | Specifier FunDec CompSt {
+        //函数定义
+
+    }
     | Specifier FunDec SEMI 
     | StructSpecifier SEMI 
     | error SEMI 
@@ -73,75 +78,147 @@ ExtDecList: VarDec
     | ExtDecList COMMA VarDec
     ;
 
-/* Specifiers */
-Specifier: TYPE 
-    | TYPE STAR 
+/* 数据类型 */
+Specifier: TYPE {
+        //类型本身：int
+    }
+    | TYPE STAR {
+        //指针：int *
+    }
     ;
 
-StructSpecifier: STRUCT ID LC StructDecList RC 
+StructSpecifier: STRUCT ID LC StructDecList RC {
+        //结构体类型定义：struct structname （ 结构体声明列表 ）
+    }
     ;
 
-StructDecList: StructDec 
-    | StructDecList StructDec 
+StructDecList: StructDec {
+        //结构声明
+    }
+    | StructDecList StructDec {
+        //递归声明结构
+    }
     ;
 
-StructDec: Specifier ID SEMI 
+StructDec: Specifier ID SEMI {
+        //：int id ；
+    }
     ;
 
 /* Declarators */
-VarDec: ID 
-    | ID LB INT RB 
+/* 变量声明 */
+VarDec: ID {
+        //变量：varname
+    }
+    | ID LB INT RB {
+        //变量数组：varname [ 数字 ]
+    }
     ;
 
-FunDec: ID LP VarList RP 
-    | ID LP RP 
+/* 函数声明 */
+FunDec: ID LP VarList RP {
+        //：函数名 （ 参数列表 ）
+    }
+    | ID LP RP {
+        //：函数名 （ ）
+    }
     ;
 
-VarList: VarList COMMA ParamDec 
-    | ParamDec 
+VarList: VarList COMMA ParamDec {
+        //递归参数列表：参数列表 ， 参数声明
+    }
+    | ParamDec {
+        //参数声明比如：int 变量名
+    }
     ;
 
 ParamDec: Specifier ID 
     | Specifier 
     ;
 
-/* Statements */
+/* 语句块 */
 CompSt:
-    LC StmtList RC 
+    LC StmtList RC {
+        //：{ 语句列表 }
+    }
     | error RC 
     ;
 
 StmtList: 
-	StmtList Stmt 
+	StmtList Stmt {
+        //递归语句列表
+    }
     | 
     ;
 
 DecFor:
-    Def 
-    | Exp 
+    Def {
+        //
+    }
+    | Exp {
+        //
+    }
     ;
 
-Stmt: Exp SEMI 
-    | Def SEMI 
-    | STRUCT ID ID SEMI 
-    | CompSt 
-    | RETURN Exp SEMI 
-    | RETURN SEMI 
-    | IF LP Exp RP Stmt 
-    | IF LP Exp RP Stmt ELSE Stmt %prec LOWER_THAN_ELSE
-    | WHILE LP Exp RP Stmt 
-    | FOR LP SEMI SEMI RP Stmt 
-    | FOR LP DecFor SEMI SEMI RP Stmt 
-    | FOR LP SEMI Exp SEMI RP Stmt 
-    | FOR LP SEMI SEMI Exp RP Stmt 
-    | FOR LP DecFor SEMI Exp SEMI Exp RP Stmt 
-    | FOR LP DecFor SEMI Exp SEMI RP Stmt 
-    | FOR LP DecFor SEMI SEMI Exp RP Stmt 
-    | FOR LP SEMI Exp SEMI Exp RP Stmt 
-    | error SEMI 
+/*语句*/
+Stmt: Exp SEMI {
+        //表达式 ；
+    }
+    | Def SEMI {
+        //定义 ；
+    }
+    | STRUCT ID ID SEMI {
+        //声明结构体变量：struct structname a ；
+    }
+    | CompSt {
+        //
+    }
+    | RETURN Exp SEMI {
+        //return语句：return 表达式 ；
+    }
+    | RETURN SEMI {
+        //return语句：return ；
+    }
+    | IF LP Exp RP Stmt {
+        //条件语句：if （ 表达式 ）语句
+    }
+    | IF LP Exp RP Stmt ELSE Stmt %prec LOWER_THAN_ELSE {
+        //条件语句：if （ 表达式 ） 语句 else 语句
+    }
+    | WHILE LP Exp RP Stmt {
+        //while语句：while （ 表达式 ）语句
+    }
+    | FOR LP SEMI SEMI RP Stmt {
+        //无限循环的for语句：for （ ； ；）语句
+    }
+    | FOR LP DecFor SEMI SEMI RP Stmt {
+        //：for（ 声明 ； ；） 语句
+    }
+    | FOR LP SEMI Exp SEMI RP Stmt {
+        //：for （ ； 表达式 ；） 语句 
+    }
+    | FOR LP SEMI SEMI Exp RP Stmt {
+        //：for （ ； ； 表达式 ） 语句
+    }
+    | FOR LP DecFor SEMI Exp SEMI Exp RP Stmt {
+        //：for （ 声明 ； 表达式 ； 表达式 ） 语句
+    }
+    | FOR LP DecFor SEMI Exp SEMI RP Stmt {
+        //：for （ 声明 ； 表达式 ； ） 语句
+    }
+    | FOR LP DecFor SEMI SEMI Exp RP Stmt {
+        //：for （ 声明 ； ； 表达式 ） 语句
+    }
+    | FOR LP SEMI Exp SEMI Exp RP Stmt {
+        //：for （ ； 表达式 ； 表达式 ） 语句
+    }
+    | error SEMI {
+        //错误
+    }
     ;
 
 /* Local Definitions */
+/*  *//
 Def: Specifier DecList 
     | error SEMI 
     ;
@@ -156,7 +233,9 @@ Dec: VarDec
 
 /* Expressions */
 Exp:
-    Exp ASSIGNOP Exp 
+    Exp ASSIGNOP Exp {
+        $$ = new OP2ExprNode("=", $1, $3);
+    }
     | Exp AND Exp 
     | Exp OR Exp 
     | Exp RELOP Exp 
