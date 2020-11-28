@@ -12,6 +12,7 @@ struct IDNode: public ASTNode {
     TypeNode *type;
     const char *ID;
     SymbolTable *symboltable;
+    ~IDNode()=default;
     IDNode(const char *_ID): ID(_ID) {}  
     IDType_e get_IDType_e() { return id_type; }
 };

@@ -16,6 +16,7 @@ struct ExprStmtNode: public StmtNode{
     ExprNode *expr;
     stmt_e get_stmt_e() override {return stmt_e::Expr; };
     ExprStmtNode(ExprNode *_Expr):expr(_Expr){}
+    ~ExprStmtNode()=default;
 };
 
 struct IFStmt: public StmtNode {
@@ -25,6 +26,7 @@ struct IFStmt: public StmtNode {
     StmtNode *falseRun; //为假时运行
     stmt_e get_stmt_e() override {return stmt_e::IF; };
     IFStmt(ExprNode *_Test,ExprNode *_TrueRun,ExprNode *_FalseRun);
+    ~IFStmt()=default;
 };
 
 struct VarDefStmt: public StmtNode {
@@ -32,6 +34,7 @@ struct VarDefStmt: public StmtNode {
     TypeNode *type = nullptr;
     std::vector<std::pair<IDNode*,ExprNode*>> ids;
     stmt_e get_stmt_e() override {return stmt_e::VarDef; };
+    ~VarDefStmt()=default;
     VarDefStmt(TypeNode *_Type, TempNode*_Ids) {
 
     }
@@ -44,6 +47,7 @@ struct ForStmt: public StmtNode {
     ExprNode *other; // 第三个表达式
     StmtNode *run; //执行的语句块
     stmt_e get_stmt_e() override {return stmt_e::FOR; };
+    ~ForStmt()=default;
     ForStmt(StmtNode *_Init, ExprNode *_Test, ExprNode *_Other, StmtNode *_Run){
 
     }
@@ -52,6 +56,7 @@ struct ForStmt: public StmtNode {
 struct BlockStmt: public StmtNode {
     // 语句块
     std::vector<StmtNode*> stmts;
+    ~BlockStmt()=default;
     BlockStmt(TempNode *_Stmts) {
         for(ASTNode*n: _Stmts->childList){
             if (n->get_AST_e()!=AST_e::Expr){
