@@ -17,6 +17,7 @@ struct OP1ExprNode: public ExprNode {
     // 1目运算表达式节点
     ExprNode *first;
     op_e op;
+    ~OP1ExprNode()=default;
     expr_e get_expr_e() override { return expr_e::Op1; };
     OP1ExprNode(const char *op, ExprNode *_First) {
 
@@ -32,6 +33,7 @@ struct OP2ExprNode: public ExprNode {
     // 2目运算表达式节点
     ExprNode *first, *second;
     op_e op;
+    ~OP2ExprNode()=default;
     expr_e get_expr_e() override { return expr_e::Op2; };
     OP2ExprNode(op_e _Op, ExprNode *_First,  ExprNode *_Second): 
         op(_Op), first(_First), second(_Second) 
@@ -45,6 +47,7 @@ struct OP3ExprNode: public ExprNode {
     // 3目运算表达式节点
     ExprNode *first, *second, *third;
     op_e op;
+    ~OP3ExprNode()=default;
     expr_e get_expr_e() override { return expr_e::Op3; };
     OP3ExprNode(op_e _Op, ExprNode *_First,  ExprNode *_Second,  ExprNode *_Third): 
         op(_Op), first(_First), second(_Second), third(_Third) 
@@ -57,20 +60,18 @@ struct FuncCallExprNode: public ExprNode {
     // 函数调用表达式节点
     TypeNode *ret; //返回值类型
     IDNode *name;
+    ~FuncCallExprNode()=default;
     std::vector<ExprNode*> args; //参数
     expr_e get_expr_e() override { return expr_e::FuncCall; };
-    FuncCallExprNode( IDNode *_Name, TempNode *_Args): name(_Name) {
+    FuncCallExprNode(IDNode *_Name, TempNode *_Args): name(_Name) {
         // this->ret = 
         // this->type = 
         addArgs(_Args);
-        
-        
     }
-    
     void addArgs(TempNode *n) {
         if(!n)
             return;
-        for (ASTNode *child: n->child_list) {
+        for (ASTNode *child: n->childList) {
             if(child->get_AST_e()==AST_e::Temp) {
                 return addArgs((TempNode *)child);
             }
@@ -88,11 +89,20 @@ struct FuncCallExprNode: public ExprNode {
 struct VarExprNode: public ExprNode {
     // 变量运算表达式节点
     IDNode *id;
+    ~VarExprNode()=default;
     expr_e get_expr_e() override { return expr_e::Var; };
+    VarExprNode(IDNode *_Id) :id(_Id)
+    {
+        // this->type = 
+    }
 };
 
 struct ConstExprNode: public ExprNode {
     // 1目运算表达式节点
     const char *value;
+    ~ConstExprNode()=default;
+    ConstExprNode(const char *_Value):value(_Value){
+        
+    }
     expr_e get_expr_e() override { return expr_e::Const; };
 };

@@ -4,7 +4,9 @@ enum class AST_e {
     ID, // 标识符
     Type, // 类型
     Expr, //表达式
-    Temp // 临时节点
+    Temp, // 临时节点
+    Program, //程序
+    File // 文件
 };
 
 enum class op_e{
