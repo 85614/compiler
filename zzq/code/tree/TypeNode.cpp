@@ -15,7 +15,6 @@ StructTypeNode * StructTypeNode::createNode(IDNode *_ID, ASTNode *_Members) {
         result = new StructTypeNode;
         result->ID = _ID;
         result->name = _ID->ID;
-        _ID->id_type = IDType_e::Typename;
         result->defined = false;
         result->addMembers(_Members);
         structList.push_back(result);

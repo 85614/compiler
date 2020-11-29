@@ -25,7 +25,11 @@ struct IFStmt: public StmtNode {
     StmtNode *trueRun; //为真时运行
     StmtNode *falseRun; //为假时运行
     stmt_e get_stmt_e() override {return stmt_e::IF; };
-    IFStmt(ExprNode *_Test,ExprNode *_TrueRun,ExprNode *_FalseRun);
+    IFStmt(ExprNode *_Test, StmtNode *_TrueRun, StmtNode *_FalseRun)
+        :test(_Test), trueRun(_TrueRun), falseRun(_FalseRun)
+    {
+
+    }
     ~IFStmt()=default;
 };
 
@@ -66,6 +70,7 @@ struct VarDefStmt: public StmtNode {
         var.type = type;
         var.init = init;
         var.ID = ID;
+
         vars.push_back(var);
     }
     void addVars(ASTNode*_Vars);
@@ -217,4 +222,9 @@ struct StructDefStmt: StmtNode {
 };
 
 
-
+struct ReturnStmt: StmtNode {
+    // return 语句
+    ExprNode *expr;
+    ReturnStmt(ExprNode *_Expr):expr(_Expr){ };
+    stmt_e get_stmt_e()override{ return stmt_e::Return; }
+};
