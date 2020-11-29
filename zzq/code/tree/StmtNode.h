@@ -66,6 +66,7 @@ struct VarDefStmt: public StmtNode {
         var.type = type;
         var.init = init;
         var.ID = ID;
+
         vars.push_back(var);
     }
     void addVars(ASTNode*_Vars);
@@ -217,4 +218,9 @@ struct StructDefStmt: StmtNode {
 };
 
 
-
+struct ReturnStmt: StmtNode {
+    // return 语句
+    ExprNode *expr;
+    ReturnStmt(ExprNode *_Expr):expr(_Expr){ };
+    stmt_e get_stmt_e()override{ return stmt_e::Return; }
+};

@@ -20,6 +20,7 @@ void yyerror(const char *str);
 %union {
 	AbstractASTNode* ast;
     char* str;
+    const char *str;
 }
 %locations
 %define parse.error verbose
@@ -37,9 +38,12 @@ void yyerror(const char *str);
 %left LP RP LB RB
 %nonassoc LOWER_THAN_ELSE
 %token ERRID
-%token <str> INT
-%token <str> TYPE
-%token <str> ID
+%token <str> INT1
+%token <str> TYPE1
+%token <str> ID1
+%type <str> INT
+%type <str> TYPE
+%type <str> ID
 %token FOR
 %nonassoc SEMI COMMA
 %nonassoc RETURN IF ELSE WHILE STRUCT GETMEMBER
@@ -155,6 +159,10 @@ FunDec: ID LP VarList RP {
         $$ = new DefFunASTNode($1, NULL, NULL);
     }
     ;
+
+ID : ID1
+    ;
+   
 
 VarList: VarList COMMA ParamDec {
         $1->getLastPeerNode()->addPeerNode($3);

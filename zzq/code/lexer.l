@@ -28,9 +28,9 @@ ws    {delim}+
 <COMMENT><<EOF>>    {printf("Unterminated comment\n"); return 0;}
  /* C++ comment, a common extension */
 "//".*\n
-"int"                             { yylval.str=strdup(yytext); return(TYPE); }
-"void"                            { yylval.str=strdup(yytext); return(TYPE);}
-"main"                            { yylval.str=strdup(yytext); return(ID);}
+"int"                             { yylval.str=strdup(yytext); return(TYPE1); }
+"void"                            { yylval.str=strdup(yytext); return(TYPE1);}
+"main"                            { yylval.str=strdup(yytext); return(ID1);}
 "return"                          { return(RETURN); }
 "for"                             { return(FOR);}
 "while"                           { return(WHILE);}
@@ -40,7 +40,7 @@ ws    {delim}+
 ";"                               { return(SEMI); }
 ","                               { return(COMMA); }
 "="                               { return(ASSIGNOP); }
-(>=)|(<=)|(==)|(!=)|<|>           { yylval.str=strdup(yytext); return(RELOP); }
+(>=)|(<=)|(==)|(!=)|<|>           { yylval.str=strdup(yytext); return(RELOP1); }
 "+"                               { return(PLUS); }
 "-"                               { return(MINUS); }
 "*"                               { return(STAR); }
@@ -58,10 +58,10 @@ ws    {delim}+
 "{"                               { return(LC); }
 "}"                               { return(RC); }
 "."                               { return(GETMEMBER); }
-{L}({D}|{L})*                     { yylval.str=strdup(yytext); return(ID); }
-{D}{L}({D}|{L})*                  { return (ERRID); }
+{L}({D}|{L})*                     { yylval.str = strdup(yytext); return(ID1); }
+{D}{L}({D}|{L})*                  { return (ERRID1); }
 [ \t\v\f\r\n]                     { }
-(([1-9]|-){D}*)|0                     { yylval.str=strdup(yytext); return(INT);}
+(([1-9]|-){D}*)|0                     { yylval.str=strdup(yytext); return(INT1);}
 %%
 int yywrap()
 {return 1;}

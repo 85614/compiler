@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
 #include <string.h>
+#include "IDNode.h"
 #include "ASTNode.h"
 #include "TempNode.h"
 
-struct IDNode;
+
 
 struct TypeNode: public ASTNode{
 
@@ -57,6 +58,9 @@ struct StructTypeNode: public BasicTypeNode {
     static std::vector<StructTypeNode*> structList;
     std::vector<std::pair<TypeNode*,IDNode*>> members; //成员变量
     virtual basic_type_e get_basic_type_e()override { return basic_type_e::STRUCT; };
+    static StructTypeNode *getStructType(IDNode *_ID) {
+        return getStructType(_ID->ID);
+    }
     static StructTypeNode *getStructType(const char *name) {
         // find from structList
         for(StructTypeNode *node: structList) {

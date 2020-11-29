@@ -97,7 +97,7 @@ struct VarExprNode: public ExprNode {
 };
 
 struct ConstExprNode: public ExprNode {
-    // 1目运算表达式节点
+    // 常量表达式
     const char *value;
     ~ConstExprNode()=default;
     ConstExprNode(const char *_Value):value(_Value){
