@@ -71,6 +71,7 @@ enum class stmt_e{
     StructDec, // 结构体声明
     StructDef, // 结构体声明
     FOR, // for 语句
+    While, // while 语句
     Block, // 语句块
     Expr // 表达式语句
 };

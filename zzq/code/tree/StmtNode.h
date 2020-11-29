@@ -86,6 +86,19 @@ struct ForStmt: public StmtNode {
     }
 };
 
+struct WhileStmt: public StmtNode {
+    // for 语句
+    ExprNode *test; // 判断循环调控
+    StmtNode *run; //执行的语句块
+    stmt_e get_stmt_e() override {return stmt_e::While; };
+    ~WhileStmt()=default;
+    WhileStmt(ExprNode *_Test, StmtNode *_Run)
+        : test(_Test), run(_Run)
+    {
+
+    }
+};
+
 struct BlockStmt: public StmtNode {
     // 语句块
     std::vector<StmtNode*> stmts;
