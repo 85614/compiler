@@ -8,7 +8,7 @@ struct ProgramNode :public ASTNode{
     AST_e get_AST_e()override{return AST_e::Program;}
 private:
     ProgramNode() = default;
-    ~ProgramNode() = default;
+    ProgramNode(const ProgramNode&) = delete;
 };
 
 

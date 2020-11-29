@@ -9,7 +9,7 @@ struct TempNode : ASTNode{
     ~TempNode()=default;
 };
 
-void freeTemp(TempNode*n){
+static void freeTemp(TempNode*n){
     if(n) {
         for (ASTNode*child: n->childList){
             if(child->get_AST_e()==AST_e::Temp) 

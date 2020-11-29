@@ -8,12 +8,12 @@
 
 struct IDNode: public ASTNode {
     // 标识符
-    IDType_e id_type = IDType_e::unknow;
-    TypeNode *type;
-    const char *ID;
-    SymbolTable *symboltable;
+    IDType_e id_type = IDType_e::unknow; //ID类型 类型名、变量名、函数名等
+    TypeNode *type; // 变量或函数的类型
+    const char *ID; // 标识符
+    SymbolTable *symboltable; // 所属的符号表（作用域）
     ~IDNode()=default;
     IDNode(const char *_ID): ID(_ID) {}  
-    IDType_e get_IDType_e() { return id_type; }
+    IDType_e get_IDType_e() { return id_type;  }
 };
 

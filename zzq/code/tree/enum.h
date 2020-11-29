@@ -54,6 +54,13 @@ enum class type_e {
   FuncType // 函数类型
 };
 
+enum class basic_type_e {
+    VOID, // void 类型
+    INTEGER, // 整数类型
+    FLOAT, // 浮点数类型
+    STRUCT // 结构体类型
+};
+
 
 enum class stmt_e{
     IF, // if 语句
