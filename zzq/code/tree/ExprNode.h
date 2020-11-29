@@ -9,7 +9,9 @@
 struct ExprNode: public ASTNode{
     // 抽象表达式节点
     TypeNode *type = nullptr;
+    
     AST_e get_AST_e()override{ return AST_e::Expr; }
+
     virtual expr_e get_expr_e() = 0;
     
 };
@@ -18,8 +20,11 @@ struct OP1ExprNode: public ExprNode {
     // 1目运算表达式节点
     ExprNode *first;
     op_e op;
+    
     ~OP1ExprNode()=default;
     expr_e get_expr_e() override { return expr_e::Op1; };
+    
+    
     OP1ExprNode(op_e _Op, ExprNode *_First): 
         op(_Op), first(_First)
     {
@@ -31,10 +36,15 @@ struct OP2ExprNode: public ExprNode {
     // 2目运算表达式节点
     ExprNode *first, *second;
     op_e op;
+    const char *opStr = nullptr; // 如果是比较运算符，区分 < > <= >=, 其他情况是null
     ~OP2ExprNode()=default;
     expr_e get_expr_e() override { return expr_e::Op2; };
-    OP2ExprNode(op_e _Op, ExprNode *_First,  ExprNode *_Second): 
-        op(_Op), first(_First), second(_Second) 
+    OP2ExprNode(op_e _Op, const char *_OpStr, ExprNode *_First, ExprNode *_Second )
+        :op(_Op), first(_First), second(_Second), opStr(_OpStr)
+    { 
+    }
+    OP2ExprNode(op_e _Op, ExprNode *_First,  ExprNode *_Second)
+        :op(_Op), first(_First), second(_Second)
     { 
         // this->type = 
     }

@@ -25,7 +25,11 @@ struct IFStmt: public StmtNode {
     StmtNode *trueRun; //为真时运行
     StmtNode *falseRun; //为假时运行
     stmt_e get_stmt_e() override {return stmt_e::IF; };
-    IFStmt(ExprNode *_Test,ExprNode *_TrueRun,ExprNode *_FalseRun);
+    IFStmt(ExprNode *_Test, StmtNode *_TrueRun, StmtNode *_FalseRun)
+        :test(_Test), trueRun(_TrueRun), falseRun(_FalseRun)
+    {
+
+    }
     ~IFStmt()=default;
 };
 
