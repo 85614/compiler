@@ -11,7 +11,7 @@ private:
     ~ProgramNode() = default;
 };
 
-ProgramNode ProgramNode::root;
+
 
 
 

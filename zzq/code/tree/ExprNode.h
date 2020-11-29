@@ -11,6 +11,7 @@ struct ExprNode: public ASTNode{
     TypeNode *type;
     AST_e get_AST_e()override{ return AST_e::Expr; }
     virtual expr_e get_expr_e() = 0;
+    
 };
 
 struct OP1ExprNode: public ExprNode {
@@ -19,9 +20,6 @@ struct OP1ExprNode: public ExprNode {
     op_e op;
     ~OP1ExprNode()=default;
     expr_e get_expr_e() override { return expr_e::Op1; };
-    OP1ExprNode(const char *op, ExprNode *_First) {
-
-    }
     OP1ExprNode(op_e _Op, ExprNode *_First): 
         op(_Op), first(_First)
     {

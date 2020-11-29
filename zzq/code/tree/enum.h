@@ -60,6 +60,8 @@ enum class stmt_e{
     FunDef, // 函数定义
     FunDec, // 函数声明
     VarDef, // 变量声明
+    StructDec, // 结构体声明
+    StructDef, // 结构体声明
     FOR, // for 语句
     Block, // 语句块
     Expr // 表达式语句

@@ -6,3 +6,6 @@
 #include "tree/StmtNode.h"
 #include "tree/TypeNode.h"
 #include "tree/TempNode.h"
+
+
+void init();
