@@ -21,6 +21,7 @@ void yyerror(const char *str);
   ExprNode *expr;
   StmtNode *stmt;
   ASTNode *temp;
+  const char *str;
 }
 %locations
 %define parse.error verbose
@@ -30,7 +31,7 @@ void yyerror(const char *str);
 %left OR
 %left AND
 %left SINGALAND
-%left  RELOP
+%left <str>  RELOP
 %left  MINUS PLUS
 %left  STAR DIV MOD
 %right  POWER
@@ -41,21 +42,26 @@ void yyerror(const char *str);
 %nonassoc RETURN IF ELSE WHILE STRUCT GETMEMBER
 
 %token ERRID
-%token <expr> INT
-%token <type> TYPE
-%token <id> ID
+%type <expr> INT
+%type <type> TYPE
+%type <id> ID
+%token <str> INT1
+%token <str> TYPE1
+%token <str> ID1
 %token FOR
 %token LC RC
-%type <temp> VarDec 
+
 %type <type> Specifier
-%type <temp> ExtDefList ExtDef ExtDecList
 %type <expr> Exp 
-%type <temp> CompSt
+%type <stmt> Stmt Def
+%type <stmt> StructSpecifier
+%type <stmt> StructDec
 %type <temp> StmtList
-%type <stmt> Stmt
-%type <temp> Dec DecList Def Args ParamDec VarList FunDec DecFor
-%type <type> StructSpecifier
-%type <temp> StructDecList StructDec
+%type <temp> ExtDefList ExtDef ExtDecList
+%type <temp> VarDec
+%type <temp> CompSt
+%type <temp> StructDecList
+%type <temp> Dec DecList Args ParamDec VarList FunDec DecFor
 %%
 
 /* 开始符号 */
@@ -73,7 +79,7 @@ ExtDefList:
             $$ = $2;
         } else {
             if ($2 != NULL) {
-                $1.addChild($2);
+                $1->addChild($2);
             }
             $$ = $1;
         }
@@ -83,8 +89,8 @@ ExtDefList:
 ExtDef: Specifier ExtDecList SEMI {
         //int a, b, c;
         $$ = new TempNode();
-        $$.addChild($1);
-        $$.addChild($2);
+        $$->addChild($1);
+        $$->addChild($2);
     }
     | Specifier SEMI {
     }
@@ -97,7 +103,8 @@ ExtDef: Specifier ExtDecList SEMI {
         $$ = new FuncDecStmt($1,$2);
     }
     | StructSpecifier SEMI {
-        //结构体定义,w
+        //结构体定义
+        $$ = $1;
     }
     | error SEMI {
         yyerrok;
@@ -109,11 +116,20 @@ ExtDecList: VarDec {
         $$ = $1;
     }
     | ExtDecList COMMA VarDec {
-        $1.addChild($3);
+        $1->addChild($3);
         $$ = $1;
     }
     ;
 
+ID: ID1 {
+        $$ = new IDNode($1);
+    }
+    ;
+
+INT: INT1 {
+        $$ = new ConstExprNode($1);
+    }
+    ;
 
 /* 数据类型 */
 Specifier: TYPE {
@@ -127,9 +143,8 @@ Specifier: TYPE {
     ;
 
 StructSpecifier: STRUCT ID LC StructDecList RC {
-        //结构体类型定义：struct structname （ 结构体声明列表 ）
-        $$ = new StructTypeNode();
-        $$.createNode($2,$4);
+        //结构体类型定义：struct structname （ 结构体定义列表 ）
+        $$ = new StructDefStmt($2, $4);
     }
     ;
 
@@ -139,15 +154,14 @@ StructDecList: StructDec {
     }
     | StructDecList StructDec {
         //递归声明结构
-        $1.addChild($2);
+        $1->addChild($2);
         $$ = $1;
     }
     ;
 
 StructDec: Specifier ID SEMI {
         //：结构体类型 id ；
-        $$ = new TempNode();
-        $$.addChild()
+        $$ = new VarDefStmt($1, $2);
     }
     ;
 
@@ -155,31 +169,49 @@ StructDec: Specifier ID SEMI {
 /* 变量声明 */
 VarDec: ID {
         //变量：varname
+        $$ = $1;
     }
     | ID LB INT RB {
         //变量数组：varname [ 数字 ]
+        $$ = new TempNode();
+        $$->addChild($1);
+        $$->addChild($3);
+        $$->addMsg("[]");
     }
     ;
 
 /* 函数声明 */
 FunDec: ID LP VarList RP {
         //：函数名 （ 参数列表 ）
+        $$ = new TempNode();
+        $$->addChild($1);
+        $$->addChild($2);
     }
     | ID LP RP {
         //：函数名 （ ）
+        $$ = new TempNode();
+        $$->addChild($1);
     }
     ;
 
 VarList: VarList COMMA ParamDec {
         //递归参数列表：参数列表 ， 参数声明
+        $1 -> addChild($3);
+        $$ = $1;
     }
     | ParamDec {
         //参数声明比如：int 变量名
+        $$ = $1;
     }
     ;
 
-ParamDec: Specifier ID 
-    | Specifier 
+ParamDec: Specifier ID {
+        $$ = new TempNode();
+        $$ -> addChild($1, $2);
+    }
+    | Specifier {
+        //无具体意义void fun(int)
+    }
     ;
 
 /* 语句块 */
@@ -188,128 +220,227 @@ CompSt:
         //：{ 语句块 }
         $ = new BlockStmt($2);
     }
-    | error RC 
+    | error RC {
+        yyerrok;
+    }
     ;
 
 StmtList: 
 	StmtList Stmt {
         //递归语句列表
+        //只有一个语句
+        if ($1 == NULL) {
+            $$ = $2;
+        } else {
+            $1 -> addChild($2);
+            $$ = $1;
+        }
     }
-    | 
+    | {
+        $$ = NULL;
+    }
     ;
 
 DecFor:
     Def {
         //
+        $$ = $1;
     }
     | Exp {
         //
+        $$ = $1;
     }
     ;
 
 /*语句*/
 Stmt: Exp SEMI {
-        //表达式 ；
+        //表达式 ；{
+            $$ = new ExprStmtNode($1);
+        }
     }
     | Def SEMI {
-        //定义 ；
+        //定义语句 ；{
+            $$ = $1;
+        }
     }
     | STRUCT ID ID SEMI {
         //声明结构体变量：struct structname a ；
+        StructTypeNode *t = StructTypeNode::getStructType($2);
+        $$ = new VarDefStmt(t, $3);
     }
     | CompSt {
-        //
+        //语句块
+        $$ = $1;
     }
     | RETURN Exp SEMI {
         //return语句：return 表达式 ；
+        $$ = new RetrunStmt($2);
     }
     | RETURN SEMI {
         //return语句：return ；
+        $$ = new RetrunStmt(NULL);
     }
     | IF LP Exp RP Stmt {
         //条件语句：if （ 表达式 ）语句
+        $$ = new IFStmt($3, $5);
     }
     | IF LP Exp RP Stmt ELSE Stmt %prec LOWER_THAN_ELSE {
         //条件语句：if （ 表达式 ） 语句 else 语句
+        $$ = new IFStmt($3, $5, $7);
     }
     | WHILE LP Exp RP Stmt {
         //while语句：while （ 表达式 ）语句
+        $$ = new WhileStmt($3, $5);
     }
     | FOR LP SEMI SEMI RP Stmt {
         //无限循环的for语句：for （ ； ；）语句
+        $$ = new ForStmt(NULL, NULL, NULL, $6);
     }
     | FOR LP DecFor SEMI SEMI RP Stmt {
         //：for（ 声明 ； ；） 语句
+        $$ = new ForStmt($3, NULL, NULL, $7);
     }
     | FOR LP SEMI Exp SEMI RP Stmt {
         //：for （ ； 表达式 ；） 语句 
+        $$ = new ForStmt(NULL, $4, NULL, $7);
     }
     | FOR LP SEMI SEMI Exp RP Stmt {
         //：for （ ； ； 表达式 ） 语句
+        $$ = new ForStmt(NULL, NULL, $5, $7);
     }
     | FOR LP DecFor SEMI Exp SEMI Exp RP Stmt {
         //：for （ 声明 ； 表达式 ； 表达式 ） 语句
+        $$ = new ForStmt($3, $5, $7, $9);
     }
     | FOR LP DecFor SEMI Exp SEMI RP Stmt {
         //：for （ 声明 ； 表达式 ； ） 语句
+        $$ = new ForStmt($3, $5, NULL, $8);
     }
     | FOR LP DecFor SEMI SEMI Exp RP Stmt {
         //：for （ 声明 ； ； 表达式 ） 语句
+        $$ = new ForStmt($3, NULL, $6, $8);
     }
     | FOR LP SEMI Exp SEMI Exp RP Stmt {
         //：for （ ； 表达式 ； 表达式 ） 语句
+        $$ = new ForStmt(NULL, $4, $6, $8);
     }
     | error SEMI {
         //错误
+        yyerrok;
     }
     ;
 
 /* Local Definitions */ 
-Def: Specifier DecList 
-    | error SEMI 
-    ;
-
-DecList: Dec 
-    | Dec COMMA DecList {
-        //a , 声明列表
+Def: Specifier DecList {
+        VarDefStmt* t = new VarDefStmt($1, $2);
+        $$ = t;
+    }
+    | error SEMI {
+        yyerrok;
     }
     ;
 
-Dec: VarDec 
-    | VarDec ASSIGNOP Exp 
+DecList: Dec {
+        $$ = $1;
+    }
+    | Dec COMMA DecList {
+        //a , 声明列表
+        $$ = new TempNode();
+        $$ -> addChild($1, $3);
+    }
+    ;
+
+Dec: VarDec {
+        $$ = $1;
+    }
+    | VarDec ASSIGNOP Exp {
+        $$ = new TempNode();
+        $$ -> addChild($1, $3);
+    }
     ;
 
 /* Expressions */
 Exp:
     Exp ASSIGNOP Exp {
-        $$ = new OP2ExprNode("=", $1, $3);
+        $$ = new OP2ExprNode(op_e::Assignop, $1, $3);
     }
-    | Exp AND Exp 
-    | Exp OR Exp 
-    | Exp RELOP Exp 
-    | Exp PLUS Exp 
-    | Exp MINUS Exp 
-    | Exp STAR Exp 
-    | Exp DIV Exp 
-    | Exp MOD Exp 
-    | Exp POWER Exp 
-    | LP Exp RP 
-    | MINUS Exp 
-    | NOT Exp 
-    | SINGALAND ID 
-    | ID LP Args RP 
-    | ID LP RP 
-    | Exp LB Exp RB 
-    | ID 
-    | ID LB Exp RB 
-    | ID GETMEMBER ID 
-    | INT 
-    | STAR ID 
-    | error RP 
+    | Exp AND Exp {
+        $$ = new OP2ExprNode(op_e::And, $1, $3);
+    }
+    | Exp OR Exp {
+        $$ = new OP2ExprNode(op_e::Or, $1, $3);
+    }
+    | Exp RELOP Exp {
+        $$ = new OP2ExprNode(op_e::Relop, $2, $1, $3);
+    }
+    | Exp PLUS Exp {
+        $$ = new OP2ExprNode(op_e::Plus, $1, $3);
+    }
+    | Exp MINUS Exp {
+        $$ = new OP2ExprNode(op_e::Minus, $1, $3);
+    }
+    | Exp STAR Exp {
+        $$ = new OP2ExprNode(op_e::Times, $1, $3);
+    }
+    | Exp DIV Exp {
+        $$ = new OP2ExprNode(op_e::Div, $1, $3);
+    }
+    | Exp MOD Exp {
+        $$ = new OP2ExprNode(op_e::Mod, $1, $3);
+    }
+    | Exp POWER Exp {
+        $$ = new OP2ExprNode(op_e::Power, $1, $3);
+    }
+    | LP Exp RP {
+        $$ = $1;
+    }
+    | MINUS Exp {
+        $$ = new OP1ExprNode(op_e::Minus, $2);
+    }
+    | NOT Exp {
+        $$ = new OP1ExprNode(op_e::Not, $2);
+    }
+    | SINGALAND ID {
+        $$ = new OP1ExprNode(op_e::SignalAnd, $2);
+    }
+    | ID LP Args RP {
+        $$ = new FunCallExprNode($1, $2);
+    }
+    | ID LP RP {
+        $$ = new FunCallExprNode($1, NUll);
+    }
+    | Exp LB Exp RB {
+        $$ = new OP2ExprNode(op_e::GetArrayValue, $1, $3);
+    }
+    | ID {
+        $$ = new VarExprNode($1);
+    }
+    | ID LB Exp RB {
+        VarExprNode *t = new VarExprNode($1);
+        $$ = new OP2ExprNode(op_e::GetArrayValue, t, $3);
+    }
+    | ID GETMEMBER ID {
+        $$ = new OP2ExprNode(op_e::GetMember, new VarExprNode($1), new VarExprNode($3));
+    }
+    | INT {
+        $$ = $1;
+    }
+    | STAR ID {
+        $$ = new OP1ExprNode(op_e::GetValue, $2);
+    }
+    | error RP {
+        yyerrok;
+    }
     ;
     
-Args: Args COMMA Exp 
-    | Exp 
+Args: Args COMMA Exp {
+        $1 -> addChild($3);
+        $$ = $1;
+    }
+    | Exp {
+        $$ = new TempNode();
+        $$ -> addChild($1);
+    }
     ;
 
 %%
