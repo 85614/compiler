@@ -10,5 +10,8 @@ struct FileNode :public ASTNode{
    ~FileNode()=default;
    // void addChild(ASTNode* child)override { stmts.push_back(child); }
    AST_e get_AST_e()override{return AST_e::File;}
+   void print(int depth) override{
+        
+    }
 };
 

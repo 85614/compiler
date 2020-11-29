@@ -30,6 +30,13 @@ enum class op_e {
     AssignMember = 18   // a.b = ?
 };
 
+char* getInfoOp(op_e temp){
+    switch (opE) {
+        case op_e::Assignop:
+        case 
+    }
+}
+
 enum class expr_e {
     Op1, // 1目运算符
     Op2, // 2目运算符

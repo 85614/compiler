@@ -18,5 +18,8 @@ struct IDNode: public ASTNode {
         // this->type = 
         // this->symboltable = 
     }  
+    void print(int depth) override{
+        
+    }
 };
 

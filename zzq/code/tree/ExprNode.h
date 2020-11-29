@@ -1,9 +1,12 @@
 #pragma once
+#include <iostream>
 #include <vector>
 #include "TypeNode.h"
 #include "IDNode.h"
 #include "TempNode.h"
 
+using std::cout;
+using std::endl;
 
     
 struct ExprNode: public ASTNode{
@@ -11,7 +14,6 @@ struct ExprNode: public ASTNode{
     TypeNode *type = nullptr;
     AST_e get_AST_e()override{ return AST_e::Expr; }
     virtual expr_e get_expr_e() = 0;
-    
 };
 
 struct OP1ExprNode: public ExprNode {
@@ -24,6 +26,11 @@ struct OP1ExprNode: public ExprNode {
         op(_Op), first(_First)
     {
         // this->type = 
+    }
+    void print(int depth) override {
+        for(int k = 0; k < depth; k++) std::cout << " ";
+        std::cout << "|--" << "Expr  op:" << getInfo(this->op) << std::endl;
+        this->first->print(depth + 1);
     }
 };
 
@@ -38,7 +45,12 @@ struct OP2ExprNode: public ExprNode {
     { 
         // this->type = 
     }
-
+    void print(int depth) override {
+        for(int k = 0; k < depth; k++) std::cout << " ";
+        std::cout << "|--" << "Expr  op:" << getInfo(this->op) << std::endl;
+        this->first->print(depth + 1);
+        this->second->print(depth + 1);
+    }
 };
 
 struct OP3ExprNode: public ExprNode {
@@ -52,6 +64,9 @@ struct OP3ExprNode: public ExprNode {
     {
         // this->type = 
     }
+    // void print(int depth) override {
+        
+    // }
 };
 
 struct FuncCallExprNode: public ExprNode {
@@ -83,6 +98,16 @@ struct FuncCallExprNode: public ExprNode {
 
         
     }
+    void print(int depth) override{
+        for(int k = 0; k < depth; k++) std::cout << " ";
+        std::cout << "|--" << "Function Call." << std::endl;
+        this->name->print(depth + 1);
+        for(int k = 0; k < depth + 1; k++) std::cout << " ";
+        std::cout << "|--" << "VarList" << std::endl;
+        for(int k = 0; k < this->args.size(); k++) {
+            this->args[k]->print(depth + 2);
+        }
+    }
 };
 
 struct VarExprNode: public ExprNode {
@@ -94,6 +119,9 @@ struct VarExprNode: public ExprNode {
     {
         // this->type = 
     }
+    void print(int depth) override{
+        
+    }
 };
 
 struct ConstExprNode: public ExprNode {
@@ -104,4 +132,7 @@ struct ConstExprNode: public ExprNode {
         //this->type = 
     }
     expr_e get_expr_e() override { return expr_e::Const; };
+    void print(int depth) override{
+        
+    }
 };
