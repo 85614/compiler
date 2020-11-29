@@ -14,5 +14,8 @@ struct ASTNode{
     virtual void addChild(ASTNode *child) {
         printf("请实现addchild，get_AST_e()is%d",(int)this->get_AST_e());
     }
+    virtual void addMsg(const char *msg) {
+        printf("请实现addMsg，get_AST_e()is%d",(int)this->get_AST_e());
+    }
 };
 

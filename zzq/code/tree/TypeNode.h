@@ -57,7 +57,7 @@ struct StructTypeNode: public BasicTypeNode {
     static std::vector<StructTypeNode*> structList;
     std::vector<std::pair<TypeNode*,IDNode*>> members; //成员变量
     virtual basic_type_e get_basic_type_e()override { return basic_type_e::STRUCT; };
-    StructTypeNode *getStructType(const char *name) {
+    static StructTypeNode *getStructType(const char *name) {
         // find from structList
         for(StructTypeNode *node: structList) {
             if(strcmp(node->name,name)==0)
@@ -65,17 +65,20 @@ struct StructTypeNode: public BasicTypeNode {
         }
         return nullptr;
     }
-    void addMembers(TempNode *members) {
-        if (members){
-            // this->members
-            // this->size
-            this->defined = true;
+    void addMembers(ASTNode *members) {
+        if (!members) 
+            return;
+        if (members->get_AST_e()==AST_e::Temp){
+            for (ASTNode*child: ((TempNode*)members)->childList)
+                addMembers(child);   
         }
+        this->defined = true;
     }
-    StructTypeNode *createNode(IDNode *_ID, TempNode *members);
+    static StructTypeNode *createNode(IDNode *_ID, ASTNode *members);
 private:
     StructTypeNode()=default;
 };
+
 
 
 struct FuncTypeNode : public TypeNode {
@@ -86,3 +89,19 @@ struct FuncTypeNode : public TypeNode {
     std::vector<TypeNode *> args; // 参数类型
 };
 
+struct ArrayTypeNode : public TypeNode {
+    // 数组类型
+    TypeNode *basicType;
+    size_t len;
+    virtual type_e get_type_e() override {return type_e::ArrayType;};
+};
+
+
+struct PointerTypeNode: public TypeNode {
+    // 指针类型
+    TypeNode *basicType;
+    virtual type_e get_type_e() override {return type_e::PointerType;};
+    PointerTypeNode(TypeNode *_Basic):basicType(_Basic) {
+
+    }
+};

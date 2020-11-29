@@ -4,8 +4,12 @@
 
 struct TempNode : ASTNode{
     std::vector<ASTNode *> childList;
-    virtual AST_e get_AST_e() {return AST_e::Temp;}
+    const char *msg = nullptr;
+    virtual AST_e get_AST_e() override {return AST_e::Temp;}
     void addChild(ASTNode *child)override { childList.push_back(child); }
+    virtual void addMsg(const char *_Msg) {
+        msg = _Msg;
+    }
     ~TempNode()=default;
 };
 

@@ -2,10 +2,13 @@
 #include <vector>
 #include "ASTNode.h"
 
+// struct StmtNode;
+
 struct FileNode :public ASTNode{
-   static std::vector<FileNode*> FileList;
    ASTNode *root;
+   // std::vector<ASTNode*> stmts;
    ~FileNode()=default;
+   // void addChild(ASTNode* child)override { stmts.push_back(child); }
    AST_e get_AST_e()override{return AST_e::File;}
 };
 

@@ -8,7 +8,7 @@
     
 struct ExprNode: public ASTNode{
     // 抽象表达式节点
-    TypeNode *type;
+    TypeNode *type = nullptr;
     AST_e get_AST_e()override{ return AST_e::Expr; }
     virtual expr_e get_expr_e() = 0;
     
@@ -56,31 +56,32 @@ struct OP3ExprNode: public ExprNode {
 
 struct FuncCallExprNode: public ExprNode {
     // 函数调用表达式节点
-    TypeNode *ret; //返回值类型
+    TypeNode *ret = nullptr; //返回值类型
     IDNode *name;
     ~FuncCallExprNode()=default;
     std::vector<ExprNode*> args; //参数
     expr_e get_expr_e() override { return expr_e::FuncCall; };
-    FuncCallExprNode(IDNode *_Name, TempNode *_Args): name(_Name) {
+    FuncCallExprNode(IDNode *_Name, ASTNode *_Args): name(_Name) {
         // this->ret = 
         // this->type = 
         addArgs(_Args);
     }
-    void addArgs(TempNode *n) {
+    void addArgs(ASTNode *n) {
         if(!n)
             return;
-        for (ASTNode *child: n->childList) {
-            if(child->get_AST_e()==AST_e::Temp) {
-                return addArgs((TempNode *)child);
-            }
-            else if(child->get_AST_e()==AST_e::Expr){
-               args.push_back((ExprNode*)child);
-            }
-            else {
-              // 报错
-            }
-
+        if (n->get_AST_e()==AST_e::Temp) {
+            for (ASTNode *child: ((TempNode*)n)->childList)
+                addArgs(child);
+        }    
+        else if(n->get_AST_e()==AST_e::Expr){
+            args.push_back((ExprNode*)n);
         }
+        else {
+            printf("函数调用中的参数不是表达式\n");
+            // 报错
+        }
+
+        
     }
 };
 

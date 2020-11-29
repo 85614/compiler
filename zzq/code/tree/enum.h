@@ -9,7 +9,7 @@ enum class AST_e {
     File // 文件
 };
 
-enum class op_e{
+enum class op_e {
     Assignop = 1,       // =
     Relop = 2,          // < > <= >=
     Plus = 3,           // +
@@ -51,6 +51,7 @@ enum class type_e {
   BasicType, // 基本类型
   PointerType, // 指针类型
   ReferenceType, // 引用类型
+  ArrayType, // 数组类型
   FuncType // 函数类型
 };
 
