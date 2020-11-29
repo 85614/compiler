@@ -94,6 +94,9 @@ struct ArrayTypeNode : public TypeNode {
     TypeNode *basicType;
     size_t len;
     virtual type_e get_type_e() override {return type_e::ArrayType;};
+    ArrayTypeNode(TypeNode *_Basic):basicType(_Basic) {
+
+    }
 };
 
 

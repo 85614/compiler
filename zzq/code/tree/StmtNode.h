@@ -1,5 +1,4 @@
 #pragma once
-#include <tuple>
 #include "ASTNode.h"
 #include "TypeNode.h"
 #include "IDNode.h"
@@ -30,16 +29,46 @@ struct IFStmt: public StmtNode {
     ~IFStmt()=default;
 };
 
+struct VarDef {
+    TypeNode* type;
+    IDNode* ID;
+    ExprNode* init;
+};
+
 struct VarDefStmt: public StmtNode {
     // 变量定义语句
     TypeNode *basicType = nullptr;
-    std::vector<std::tuple<TypeNode*, IDNode*, ExprNode*>> ids;
+
+    std::vector<VarDef> vars;
     stmt_e get_stmt_e() override {return stmt_e::VarDef; };
     ~VarDefStmt()=default;
-    VarDefStmt(TypeNode *_Type, ASTNode*_Ids) {
+    VarDefStmt(TypeNode *_Type, ASTNode*_Vars) {
         this->basicType = _Type;
-        // this->ids = 
+        addVars(_Vars);
     }
+    void addVar(ASTNode*type, ASTNode *ID, ASTNode *init){
+        if (type && type->get_AST_e()!=AST_e::Type){
+            printf("变量定义语句，变量名类型不是一个类型节点\n");
+            return;
+        }
+        if (ID && ID->get_AST_e() != AST_e::ID) {
+            printf("变量定义语句，变量名不是一个id节点\n");
+            return;
+        }
+        if (init && init->get_AST_e() != AST_e::Expr){
+            printf("变量定义语句，变量名初始化值不是一个表达式节点\n");
+            return;
+        }
+        addVar((TypeNode*)type, (IDNode*)ID, (ExprNode*)init);
+    }
+    void addVar(TypeNode* type, IDNode* ID, ExprNode* init){
+        VarDef var ;
+        var.type = type;
+        var.init = init;
+        var.ID = ID;
+        vars.push_back(var);
+    }
+    void addVars(ASTNode*_Vars);
 };
 
 struct ForStmt: public StmtNode {
@@ -52,6 +81,19 @@ struct ForStmt: public StmtNode {
     ~ForStmt()=default;
     ForStmt(StmtNode *_Init, ExprNode *_Test, ExprNode *_Other, StmtNode *_Run)
         :init(_Init), test(_Test), other(_Other), run(_Run)
+    {
+
+    }
+};
+
+struct WhileStmt: public StmtNode {
+    // for 语句
+    ExprNode *test; // 判断循环调控
+    StmtNode *run; //执行的语句块
+    stmt_e get_stmt_e() override {return stmt_e::While; };
+    ~WhileStmt()=default;
+    WhileStmt(ExprNode *_Test, StmtNode *_Run)
+        : test(_Test), run(_Run)
     {
 
     }
@@ -173,4 +215,6 @@ struct StructDefStmt: StmtNode {
         type->addMembers(_Members);
     }
 };
+
+
 

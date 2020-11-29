@@ -11,6 +11,14 @@ struct TempNode : ASTNode{
         msg = _Msg;
     }
     ~TempNode()=default;
+    void getAllLeaf(std::vector<ASTNode *> &leafs){
+        for(ASTNode*n: childList) {
+            if (n->get_AST_e()==AST_e::Temp)
+                getAllLeaf(leafs);
+            else 
+                leafs.push_back(n);
+        }   
+    }
 };
 
 static void freeTemp(TempNode*n){

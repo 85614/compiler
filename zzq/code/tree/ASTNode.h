@@ -8,6 +8,7 @@
 
 struct ASTNode{
     virtual AST_e get_AST_e() = 0;
+    virtual void print(int depth) { printf("请实现print\n"); }
     virtual ~ASTNode(){
         printf("请实现析构函数");
     }
