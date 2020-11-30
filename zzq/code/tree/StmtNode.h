@@ -4,9 +4,10 @@
 #include "IDNode.h"
 #include "TempNode.h"
 
-struct StmtNode : public ASTNode
-{
-    AST_e get_AST_e() override { return AST_e::Stmt; }
+
+
+struct StmtNode: public ScopeNode {
+    AST_e get_AST_e()override {return AST_e::Stmt; }
     virtual stmt_e get_stmt_e() = 0;
     void print(int depth)
     {
@@ -75,6 +76,8 @@ struct IFStmt : public StmtNode
     IFStmt(ExprNode *_Test, StmtNode *_TrueRun, StmtNode *_FalseRun)
         : test(_Test), trueRun(_TrueRun), falseRun(_FalseRun)
     {
+        
+        
     }
     ~IFStmt() = default;
     void print(int depth)
@@ -186,8 +189,8 @@ struct ForStmt : public StmtNode
     ForStmt(StmtNode *_Init, ExprNode *_Test, ExprNode *_Other, StmtNode *_Run)
         : init(_Init), test(_Test), other(_Other), run(_Run)
     {
+        this->belong = new SymbolTable(this->belong, this);
     }
-
     void print(int depth)
     {
         printDepth(depth);
@@ -214,6 +217,7 @@ struct ForStmt : public StmtNode
         cout << "Action." << endl;
         this->run->print(depth + 2);
     }
+    // 经测试，for语句的初始化语句和执行语句不是同一个作用域
 };
 
 struct WhileStmt : public StmtNode
@@ -391,6 +395,9 @@ struct FuncDefStmt : public StmtNode
             printf("函数体不是一个块语句");
         }
     }
+    // 经测试，函数定义的参数列表和函数体同一个作用域，不允许重复定义
+};
+
 
     void print(int depth)
     {

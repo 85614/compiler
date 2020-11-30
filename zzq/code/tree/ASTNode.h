@@ -22,6 +22,16 @@ struct ASTNode
     }
 };
 
+struct ScopeNode: ASTNode {
+    SymbolTable *belong = nullptr;
+    void setSymbolTable(SymbolTable *_Parent) {
+        if (belong)
+            belong->parent = belong;
+        else 
+            belong = _Parent;
+    }
+};
+
 void printDepth(int depth)
 {
     for (int k = 0; k < depth; k++)

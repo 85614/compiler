@@ -2,7 +2,7 @@
 
 ProgramNode ProgramNode::root;
 
-SymbolTable SymbolTable::global;
+SymbolTable SymbolTable::global{nullptr, &ProgramNode::root};
 
 FileNode thisFile;
 
@@ -17,10 +17,17 @@ BasicTypeNode *BasicTypeNode::INT = &IntegerTypeNode::INT;
 
 std::vector<StructTypeNode*> StructTypeNode::structList;
 
+
+SymbolTable fileGlobal{&SymbolTable::global, &thisFile};
+
+
 void init() {
+
+     ProgramNode::root.belong = &SymbolTable::global;
+
+
      ProgramNode::root.files.push_back(&thisFile);
 
-     
      SymbolTable::global.belong = &ProgramNode::root;
      SymbolTable::global.parent = nullptr;
 }

@@ -3,8 +3,12 @@
 #include "ASTNode.h"
 
 
+<<<<<<< HEAD
 
 // 存储变量类型否？
+=======
+struct StmtNode;
+>>>>>>> add belong
 
 struct IDNode: public ASTNode {
     // 标识符
@@ -13,7 +17,9 @@ struct IDNode: public ASTNode {
     // SymbolTable *symboltable = nullptr; // 所属的符号表（作用域）
 
     const char *ID; // 标识符
+    StmtNode* belong = nullptr;
     ~IDNode()=default;
+
     AST_e get_AST_e()override{ return AST_e::ID; }
     IDNode(const char *_ID): ID(_ID) {
         // this->id_type

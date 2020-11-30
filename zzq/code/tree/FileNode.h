@@ -3,8 +3,8 @@
 #include "ASTNode.h"
 
 // struct StmtNode;
-
-struct FileNode :public ASTNode{
+extern SymbolTable fileGlobal;
+struct FileNode :public ScopeNode{
    ASTNode *root;
    // std::vector<ASTNode*> stmts;
    ~FileNode()=default;
@@ -12,6 +12,9 @@ struct FileNode :public ASTNode{
    AST_e get_AST_e()override{return AST_e::File;}
    void print(int depth) override{
         
-    }
+   }
+   FileNode(){
+      this->belong = &fileGlobal;
+   }
 };
 
