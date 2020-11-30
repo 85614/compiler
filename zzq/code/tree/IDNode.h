@@ -4,6 +4,7 @@
 
 
 
+// 存储变量类型否？
 
 struct IDNode: public ASTNode {
     // 标识符
@@ -11,15 +12,14 @@ struct IDNode: public ASTNode {
     // TypeNode *type = nullptr; // 变量或函数的类型
     // SymbolTable *symboltable = nullptr; // 所属的符号表（作用域）
 
-    const char *ID; // 标识符
+    const char *name; // 标识符
+    Identifier *id = nullptr;
     ~IDNode()=default;
     IDNode(const char *_ID): ID(_ID) {
         // this->id_type
         // this->type = 
         // this->symboltable = 
     }  
-    void print(int depth) override{
-        
-    }
+
 };
 
