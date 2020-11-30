@@ -3,65 +3,75 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
-#include "../common/trees.h"
-#include "../common/util/InterMediate.h"
-#include "../common/util/AsmGenerator.h"
+#include "include.h"
 class AbstractASTNode;
 extern char *yytext;
 extern int yylex();
 extern int column;
 extern FILE * yyin;
 extern int yylineno;
-AbstractASTNode* root;
-StructTable *structTable;
+extern FileNode thisFile;
+//StructTable *structTable;
 void yyerror(const char *str);
 %}
 
-%union {
-	AbstractASTNode* ast;
-    char* str;
-    const char *str;
+%union{
+  struct TypeNode *type;
+  struct IDNode *id;
+  struct ExprNode *expr;
+  struct StmtNode *stmt;
+  struct ASTNode *temp;
+  const char *str;
 }
 %locations
 %define parse.error verbose
 
 %right ASSIGNOP
 
-%left <ast> OR
-%left <ast> AND
-%left <ast> SINGALAND
-%left <str> RELOP
-%left <ast> MINUS PLUS
-%left <ast> STAR DIV MOD
-%left <ast> POWER
-%right <ast> NOT
+%left OR
+%left AND
+%left SINGALAND
+%left <str>  RELOP
+%left  MINUS PLUS
+%left  STAR DIV MOD
+%right  POWER
+%right NOT
 %left LP RP LB RB
 %nonassoc LOWER_THAN_ELSE
+%nonassoc SEMI COMMA
+%nonassoc RETURN IF ELSE WHILE STRUCT GETMEMBER
+
 %token ERRID
+%type <expr> INT
+%type <type> TYPE
+%type <id> ID
 %token <str> INT1
 %token <str> TYPE1
 %token <str> ID1
-%type <str> INT
-%type <str> TYPE
-%type <str> ID
 %token FOR
-%nonassoc SEMI COMMA
-%nonassoc RETURN IF ELSE WHILE STRUCT GETMEMBER
 %token LC RC
-%type <ast> VarDec 
-%type <str> Specifier
-%type <ast> ExtDefList ExtDef ExtDecList
-%type <ast> Exp CompSt
-%type <ast> StmtList Stmt Dec DecList Def
-%type <ast> Args ParamDec VarList FunDec DecFor
-%type <ast> StructSpecifier StructDecList StructDec
+
+%type <type> Specifier
+%type <expr> Exp 
+%type <stmt> Stmt Def
+%type <stmt> StructSpecifier
+%type <stmt> StructDec
+%type <temp> StmtList
+%type <temp> ExtDefList ExtDecList
+%type <stmt> ExtDef 
+%type <temp> VarDec
+%type <stmt> CompSt
+%type <temp> StructDecList
+%type <temp> Dec DecList Args ParamDec VarList FunDec 
+%type <stmt> DecFor
 %%
 
+/* 开始符号 */
 Program: ExtDefList {
-        root = new RootASTNode();
-        root->addChildNode($1);
+        thisFile.root = $1;
     }
     ;
+
 ExtDefList:
     ExtDef {
         $$ = $1;
@@ -71,131 +81,168 @@ ExtDefList:
             $$ = $2;
         } else {
             if ($2 != NULL) {
-                $1->getLastPeerNode()->addPeerNode($2);
+                $1->addChild($2);
             }
             $$ = $1;
         }
     }
     ;
+
 ExtDef: Specifier ExtDecList SEMI {
-        DefVarASTNode* defVar = (DefVarASTNode*)$2;
-        defVar->setAllType($1);
-        $$ = defVar;
+        //int a, b, c;
+        new VarDefStmt($1, $2);
+        //$$ = new TempNode();
+        //$$->addChild($1);
+        //$$->addChild($2);
     }
     | Specifier SEMI {
     }
     | Specifier FunDec CompSt {
-        DefFunASTNode* temp = (DefFunASTNode*)$2;
-        temp->setFunBody($3);
-        temp->setRevType($1);
-        $$ = temp;
+        //函数定义
+        $$ = new FuncDefStmt($1,$2,$3);
     }
     | Specifier FunDec SEMI {
+        //函数声明
+        $$ = new FuncDecStmt($1,$2);
     }
     | StructSpecifier SEMI {
+        //结构体定义
         $$ = $1;
     }
-    | error SEMI { yyerrok; $$ = NULL;}
-    ;
-ExtDecList: VarDec {
-        $$ = $1;
-    }
-    | ExtDecList COMMA VarDec {
-        $1->getLastPeerNode()->addPeerNode($3);
-        $$ = $1;
-    }
-    ;
-
-/* Specifiers */
-Specifier: TYPE {
-        $$ = strdup($1);
-    }
-    | TYPE STAR {
-        $$ = (char*)("integer pointer");
-    }
-    ;
-
-StructSpecifier: STRUCT ID LC StructDecList RC {
-        if (structTable == NULL) {
-            structTable = new StructTable();
-        }
-        structSymbol* sSymble = new structSymbol($2, $4);
-        structTable->addStruct(sSymble);
+    | error SEMI {
+        yyerrok;
         $$ = NULL;
     }
     ;
 
+ExtDecList: VarDec {
+        $$ = $1;
+    }
+    | ExtDecList COMMA VarDec {
+        $1->addChild($3);
+        $$ = $1;
+    }
+    ;
+
+ID: ID1 {
+        $$ = new IDNode($1);
+    }
+    ;
+
+INT: INT1 {
+        $$ = new ConstExprNode($1);
+    }
+    ;
+
+TYPE: TYPE1 {
+        $$ = TypeNode::getType($1);
+    }
+    ;
+
+/* 数据类型 */
+Specifier: TYPE {
+        //类型本身：int
+        $$ = $1;
+    }
+    | TYPE STAR {
+        //指针：int *
+        $$ = new PointerTypeNode($1);
+    }
+    ;
+
+StructSpecifier: STRUCT ID LC StructDecList RC {
+        //结构体类型定义：struct structname （ 结构体定义列表 ）
+        $$ = new StructDefStmt($2, $4);
+    }
+    ;
+
 StructDecList: StructDec {
+        //结构体声明列表中只有一个声明
         $$ = $1;
     }
     | StructDecList StructDec {
-        $1->getLastPeerNode()->addPeerNode($2);
+        //递归声明结构
+        $1->addChild($2);
         $$ = $1;
     }
     ;
 
 StructDec: Specifier ID SEMI {
-        DefVarASTNode* var = new DefVarASTNode($2);
-        var->setAllType($1);
-        $$ = var;
+        //：结构体类型 id ；
+        $$ = new VarDefStmt($1, $2);
     }
     ;
 
 /* Declarators */
+/* 变量声明 */
 VarDec: ID {
-        $$ = new DefVarASTNode($1);
+        //变量：varname
+        $$ = $1;
     }
     | ID LB INT RB {
-        DefVarASTNode* var = new DefVarASTNode($1);
-        var->setAllType((char*)("array"));
-        var->setArrayLength($3);
-        $$ = var;
+        //变量数组：varname [ 数字 ]
+        $$ = new TempNode();
+        $$->addChild($1);
+        $$->addChild($3);
+        $$->addMsg("[]");
     }
     ;
+
+/* 函数声明 */
 FunDec: ID LP VarList RP {
-        $$ = new DefFunASTNode($1, $3, NULL);
+        //：函数名 （ 参数列表 ）
+        $$ = new TempNode();
+        $$->addChild($1);
+        $$->addChild($3);
     }
     | ID LP RP {
-        $$ = new DefFunASTNode($1, NULL, NULL);
+        //：函数名 （ ）
+        $$ = new TempNode();
+        $$->addChild($1);
     }
     ;
 
-ID : ID1
-    ;
-   
-
 VarList: VarList COMMA ParamDec {
-        $1->getLastPeerNode()->addPeerNode($3);
+        //递归参数列表：参数列表 ， 参数声明
+        $1 -> addChild($3);
         $$ = $1;
     }
     | ParamDec {
+        //参数声明比如：int 变量名
         $$ = $1;
     }
     ;
+
 ParamDec: Specifier ID {
-        DefVarASTNode* var = new DefVarASTNode($2);
-        var->setAllType($1);
-        $$ = var;
+        $$ = new TempNode();
+        $$ -> addChild($1);
+        $$ -> addChild($2);
     }
     | Specifier {
+        //无具体意义void fun(int)
     }
     ;
 
-/* Statements */
+/* 语句块 */
 CompSt:
     LC StmtList RC {
-        AbstractASTNode* compStmt = new StmtASTNode(StmtType::compStmt);
-        compStmt->addChildNode($2);
-        $$ = compStmt;
+        //：{ 语句块 }
+        $$ = new BlockStmt($2);
     }
-    | error RC { yyerrok; }
+    | error RC {
+        yyerrok;
+    }
     ;
 
 StmtList: 
 	StmtList Stmt {
-        if ($1 == NULL) $$ = $2;
-        else {
-            $1->getLastPeerNode()->addPeerNode($2);
+        //递归语句列表
+        //只有一个语句
+        if ($1 == NULL) {
+            $$ = $2;
+        } else {
+            $1 -> addChild($2);
+            $$ = $1;
         }
     }
     | {
@@ -205,93 +252,111 @@ StmtList:
 
 DecFor:
     Def {
+        //
         $$ = $1;
     }
     | Exp {
-        $$ = $1;
+        //
+        $$ = new ExprStmtNode($1);
     }
     ;
 
+/*语句*/
 Stmt: Exp SEMI {
-        AbstractASTNode* temp = new StmtASTNode(StmtType::expStmt);
-        temp->addChildNode($1);
-        $$ = temp;
+        //表达式 ；
+            $$ = new ExprStmtNode($1);
+        
     }
     | Def SEMI {
-        AbstractASTNode* temp = new StmtASTNode(StmtType::defStmt);
-        temp->addChildNode($1);
-        $$ = temp;
+        //定义语句 ；
+            $$ = $1;
+        
     }
     | STRUCT ID ID SEMI {
-        AbstractASTNode* temp = new StmtASTNode(StmtType::defStmt);
-        AbstractASTNode* structDec = new DefVarASTNode($2, $3);
-        temp->addChildNode(structDec);
-        $$ = temp;
+        //声明结构体变量：struct structname a ；
+        StructTypeNode *t = StructTypeNode::getStructType($2);
+        $$ = new VarDefStmt(t, $3);
     }
     | CompSt {
+        //语句块
         $$ = $1;
     }
     | RETURN Exp SEMI {
-        AbstractASTNode* temp = new StmtASTNode(StmtType::returnStmt);
-        temp->addChildNode($2);
-        $$ = temp;
+        //return语句：return 表达式 ；
+        $$ = new ReturnStmt($2);
     }
     | RETURN SEMI {
-        $$ = new StmtASTNode(StmtType::returnStmt);
+        //return语句：return ；
+        $$ = new ReturnStmt(NULL);
     }
-    | IF LP Exp RP Stmt{
-        $$ = new SelectASTNode((char*)"", SelectType::_if, $5, $3);
+    | IF LP Exp RP Stmt {
+        //条件语句：if （ 表达式 ）语句
+        $$ = new IFStmt($3, $5, nullptr);
     }
-    | IF LP Exp RP Stmt ELSE Stmt %prec LOWER_THAN_ELSE{
-        $$ = new SelectASTNode((char*)"", SelectType::_if, $5, $3, $7);
+    | IF LP Exp RP Stmt ELSE Stmt %prec LOWER_THAN_ELSE {
+        //条件语句：if （ 表达式 ） 语句 else 语句
+        $$ = new IFStmt($3, $5, $7);
     }
     | WHILE LP Exp RP Stmt {
-        $$ = new LoopASTNode((char*)"", LoopType::_while, $5, $3);
+        //while语句：while （ 表达式 ）语句
+        $$ = new WhileStmt($3, $5);
     }
     | FOR LP SEMI SEMI RP Stmt {
-        $$ = new LoopASTNode((char*)"", LoopType::_for, $6, NULL, NULL, NULL);
+        //无限循环的for语句：for （ ； ；）语句
+        $$ = new ForStmt(NULL, NULL, NULL, $6);
     }
     | FOR LP DecFor SEMI SEMI RP Stmt {
-        $$ = new LoopASTNode((char*)"", LoopType::_for, $7, $3, NULL, NULL);
+        //：for（ 声明 ； ；） 语句
+        $$ = new ForStmt($3, NULL, NULL, $7);
     }
     | FOR LP SEMI Exp SEMI RP Stmt {
-        $$ = new LoopASTNode((char*)"", LoopType::_for, $7, NULL, $4, NULL);
+        //：for （ ； 表达式 ；） 语句 
+        $$ = new ForStmt(NULL, $4, NULL, $7);
     }
     | FOR LP SEMI SEMI Exp RP Stmt {
-        $$ = new LoopASTNode((char*)"", LoopType::_for, $7, NULL, NULL, $5);
+        //：for （ ； ； 表达式 ） 语句
+        $$ = new ForStmt(NULL, NULL, $5, $7);
     }
     | FOR LP DecFor SEMI Exp SEMI Exp RP Stmt {
-        $$ = new LoopASTNode((char*)"", LoopType::_for, $9, $3, $5, $7);
+        //：for （ 声明 ； 表达式 ； 表达式 ） 语句
+        $$ = new ForStmt($3, $5, $7, $9);
     }
     | FOR LP DecFor SEMI Exp SEMI RP Stmt {
-        $$ = new LoopASTNode((char*)"", LoopType::_for, $8, $3, $5, NULL);
+        //：for （ 声明 ； 表达式 ； ） 语句
+        $$ = new ForStmt($3, $5, NULL, $8);
     }
     | FOR LP DecFor SEMI SEMI Exp RP Stmt {
-        $$ = new LoopASTNode((char*)"", LoopType::_for, $8, $3, NULL, $6);
+        //：for （ 声明 ； ； 表达式 ） 语句
+        $$ = new ForStmt($3, NULL, $6, $8);
     }
     | FOR LP SEMI Exp SEMI Exp RP Stmt {
-        $$ = new LoopASTNode((char*)"", LoopType::_for, $8, NULL, $4, $6);
+        //：for （ ； 表达式 ； 表达式 ） 语句
+        $$ = new ForStmt(NULL, $4, $6, $8);
     }
-    | error SEMI { yyerrok; }
+    | error SEMI {
+        //错误
+        yyerrok;
+    }
     ;
 
-
-
-/* Local Definitions */
+/* Local Definitions */ 
 Def: Specifier DecList {
-        DefVarASTNode* temp = (DefVarASTNode*)$2;
-        temp->setAllType($1);
-        $$ = temp;
+        VarDefStmt* t = new VarDefStmt($1, $2);
+        $$ = t;
     }
-    | error SEMI { yyerrok; }
+    | error SEMI {
+        yyerrok;
+    }
     ;
 
 DecList: Dec {
         $$ = $1;
     }
     | Dec COMMA DecList {
-        $1->getLastPeerNode()->addPeerNode($3);
-        $$ = $1;
+        //a , 声明列表
+        $$ = new TempNode();
+        $$ -> addChild($1);
+        $$ -> addChild($3);
     }
     ;
 
@@ -299,151 +364,93 @@ Dec: VarDec {
         $$ = $1;
     }
     | VarDec ASSIGNOP Exp {
-        $1->addChildNode($3);
-        $$ = $1;
+        $$ = new TempNode();
+        $$ -> addChild($1);
+        $$ -> addChild($3);
     }
     ;
 
 /* Expressions */
 Exp:
     Exp ASSIGNOP Exp {
-        AbstractASTNode* temp = NULL;
-        if ($1->getNodeType() == ASTNodeType::op) {
-            OperatorASTNode* left = (OperatorASTNode*)$1;
-            if (left->getType() == opType::GetArrayValue) {
-                temp = new OperatorASTNode((char*)"=", opType::AssignArray);
-            } else if (left->getType() == opType::GetMember) {
-                temp = new OperatorASTNode((char*)"=", opType::AssignMember);
-            } else {
-                temp = new OperatorASTNode((char*)"=", opType::Assignop);
-            }
-        }
-        else {
-            temp = new OperatorASTNode((char*)"=", opType::Assignop);
-        }
-        temp->addChildNode($1);
-        $1->addPeerNode($3);
-        $3->setParent(temp);
-        $$ = temp;
+        $$ = new OP2ExprNode(op_e::Assignop, $1, $3);
     }
     | Exp AND Exp {
-        AbstractASTNode* temp = new OperatorASTNode((char*)"&&", opType::And);
-        temp->addChildNode($1);
-        $1->addPeerNode($3);
-        $$ = temp;
+        $$ = new OP2ExprNode(op_e::And, $1, $3);
     }
     | Exp OR Exp {
-        AbstractASTNode* temp = new OperatorASTNode((char*)"||", opType::Or);
-        temp->addChildNode($1);
-        $1->addPeerNode($3);
-        $$ = temp;
+        $$ = new OP2ExprNode(op_e::Or, $1, $3);
     }
     | Exp RELOP Exp {
-        AbstractASTNode* temp = new OperatorASTNode($2, opType::Relop);
-        temp->addChildNode($1);
-        $1->addPeerNode($3);
-        $$ = temp;
+        $$ = new OP2ExprNode(op_e::Relop, $2, $1, $3);
     }
     | Exp PLUS Exp {
-        AbstractASTNode* temp = new OperatorASTNode((char*)"+", opType::Plus);
-        temp->addChildNode($1);
-        $1->addPeerNode($3);
-        $$ = temp;
+        $$ = new OP2ExprNode(op_e::Plus, $1, $3);
     }
     | Exp MINUS Exp {
-        AbstractASTNode* temp = new OperatorASTNode((char*)"-", opType::Minus);
-        temp->addChildNode($1);
-        $1->addPeerNode($3);
-        $$ = temp;
+        $$ = new OP2ExprNode(op_e::Minus, $1, $3);
     }
     | Exp STAR Exp {
-        AbstractASTNode* temp = new OperatorASTNode((char*)"*", opType::Times);
-        temp->addChildNode($1);
-        $1->addPeerNode($3);
-        $$ = temp;
+        $$ = new OP2ExprNode(op_e::Times, $1, $3);
     }
     | Exp DIV Exp {
-        AbstractASTNode* temp = new OperatorASTNode((char*)"/", opType::Div);
-        temp->addChildNode($1);
-        $1->addPeerNode($3);
-        $$ = temp;
+        $$ = new OP2ExprNode(op_e::Div, $1, $3);
     }
     | Exp MOD Exp {
-        AbstractASTNode* temp = new OperatorASTNode((char*)"%", opType::Mod);
-        temp->addChildNode($1);
-        $1->addPeerNode($3);
-        $$ = temp;
+        $$ = new OP2ExprNode(op_e::Mod, $1, $3);
     }
     | Exp POWER Exp {
-        AbstractASTNode* temp = new OperatorASTNode((char*)"^", opType::Power);
-        temp->addChildNode($1);
-        $1->addPeerNode($3);
-        $$ = temp;
+        $$ = new OP2ExprNode(op_e::Power, $1, $3);
     }
     | LP Exp RP {
         $$ = $2;
     }
     | MINUS Exp {
-        AbstractASTNode* temp = new OperatorASTNode((char*)"-", opType::Negative);
-        temp->addChildNode($2);
-        $$ = temp;
+        $$ = new OP1ExprNode(op_e::Minus, $2);
     }
     | NOT Exp {
-        AbstractASTNode* temp = new OperatorASTNode((char*)"!", opType::Not);
-        temp->addChildNode($2);
-        $$ = temp;
+        $$ = new OP1ExprNode(op_e::Not, $2);
     }
     | SINGALAND ID {
-        AbstractASTNode* op = new OperatorASTNode((char*)"&", opType::SingalAnd);
-        AbstractASTNode* var = new VarASTNode((char*)$2);
-        op->addChildNode(var);
-        $$ = op;
+        $$ = new OP1ExprNode(op_e::SignalAnd, new VarExprNode($2));
     }
     | ID LP Args RP {
-        $$ = new FuncCallExprNode($1, $3);
+        $$ = new FunCallExprNode($1, $3);
     }
     | ID LP RP {
-        $$ = new FuncCallExprNode($1, nullptr);
+        $$ = new FunCallExprNode($1, nullptr);
     }
     | Exp LB Exp RB {
-        $$ = NULL;
+        $$ = new OP2ExprNode(op_e::GetArrayValue, $1, $3);
     }
     | ID {
-        $$ = new VarASTNode($1);
+        $$ = new VarExprNode($1);
     }
     | ID LB Exp RB {
-        AbstractASTNode* op = new OperatorASTNode((char*)"[]", opType::GetArrayValue);
-        AbstractASTNode* var = new VarASTNode((char*)$1);
-        op->addChildNode(var);
-        var->addPeerNode($3);
-        $$ = op;
+        VarExprNode *t = new VarExprNode($1);
+        $$ = new OP2ExprNode(op_e::GetArrayValue, t, $3);
     }
     | ID GETMEMBER ID {
-        AbstractASTNode* op = new OperatorASTNode((char*)".", opType::GetMember);
-        VarASTNode* var1 = new VarASTNode($1);
-        VarASTNode* var2 = new VarASTNode($3);
-        op->addChildNode(var1);
-        var1->addPeerNode(var2);
-        $$ = op;
+        $$ = new OP2ExprNode(op_e::GetMember, new VarExprNode($1), new VarExprNode($3));
     }
     | INT {
-        $$ = new LiteralASTNode($1);
+        $$ = $1;
     }
     | STAR ID {
-        AbstractASTNode* op = new OperatorASTNode((char*)"*", opType::GetValue);
-        AbstractASTNode* var = new VarASTNode((char*)$2);
-        op->addChildNode(var);
-        $$ = op;
+        $$ = new OP1ExprNode(op_e::GetValue, new VarExprNode($2));
     }
-    | error RP { yyerrok; }
+    | error RP {
+        yyerrok;
+    }
     ;
+    
 Args: Args COMMA Exp {
-        $$ = new TempNode();
-        $$.chlld_list.push_back($1);
-        $$.chlld_list.push_back($3);
+        $1 -> addChild($3);
+        $$ = $1;
     }
     | Exp {
-        $$ = $1;
+        $$ = new TempNode();
+        $$ -> addChild($1);
     }
     ;
 
@@ -469,7 +476,7 @@ std::string replaceExtName(char* fileName) {
     rev += ".asm";
     return rev;
 }
-
+/*
 int main(int argc,char* argv[])
 {
     InterMediate* im;
@@ -525,3 +532,4 @@ int main(int argc,char* argv[])
     outasm << asmgenerator->getAsmCode();
     return 0;
 }
+*/

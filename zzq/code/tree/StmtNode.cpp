@@ -12,7 +12,7 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
             // 没有消息，此temp节点是一个变量列表
             for(ASTNode *n: temp->childList)
                 addVars(n);
-        } else if (strcmp(temp->msg, "=")) {
+        } else if (strcmp(temp->msg, "=") == 0) {
             // 带初始化
             std::vector<ASTNode*> leafs;
             temp->getAllLeaf(leafs);
@@ -21,7 +21,7 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
                 return;
             }
             addVar(this->basicType, leafs[0],leafs[1]);
-        } else if (strcmp(temp->msg, "[]")) {
+        } else if (strcmp(temp->msg, "[]") == 0) {
             // 声明数组
             std::vector<ASTNode*> leafs;
             temp->getAllLeaf(leafs);
@@ -38,7 +38,7 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
             int len =  atoi(_const->value);
             addVar(new ArrayTypeNode(basicType),leafs[0], nullptr);
 
-        } else if (strcmp(temp->msg, "*")) {            
+        } else if (strcmp(temp->msg, "*") == 0) {            
             // 声明指针
             printf("变量定义: unexcepted *");
             return;

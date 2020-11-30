@@ -13,6 +13,7 @@ struct ExprNode : public ASTNode
     // 抽象表达式节点
     TypeNode *type = nullptr;
     AST_e get_AST_e() override { return AST_e::Expr; }
+    
     virtual expr_e get_expr_e() = 0;
     void print(int depth)
     {
@@ -28,7 +29,7 @@ struct ExprNode : public ASTNode
             ((OP3ExprNode*)this)->print(depth);
             break;
         case expr_e::FuncCall:
-            ((FuncCallExprNode*)this)->print(depth);
+            ((FunCallExprNode*)this)->print(depth);
             break;
         case expr_e::Var:
             ((VarExprNode*)this)->print(depth);
@@ -46,9 +47,13 @@ struct OP1ExprNode : public ExprNode
     // 1目运算表达式节点
     ExprNode *first;
     op_e op;
-    ~OP1ExprNode() = default;
+    
+    ~OP1ExprNode()=default;
     expr_e get_expr_e() override { return expr_e::Op1; };
-    OP1ExprNode(op_e _Op, ExprNode *_First) : op(_Op), first(_First)
+    
+    
+    OP1ExprNode(op_e _Op, ExprNode *_First): 
+        op(_Op), first(_First)
     {
         // this->type =
     }
@@ -65,12 +70,14 @@ struct OP2ExprNode : public ExprNode
     // 2目运算表达式节点
     ExprNode *first, *second;
     op_e op;
-    ~OP2ExprNode() = default;
+    const char *opStr = nullptr; // 如果是比较运算符，区分 < > <= >=, 其他情况是null
+    ~OP2ExprNode()=default;
     expr_e get_expr_e() override { return expr_e::Op2; };
-    OP2ExprNode(op_e _Op, ExprNode *_First, ExprNode *_Second) : op(_Op), first(_First), second(_Second)
-    {
-        // this->type =
+    OP2ExprNode(op_e _Op, const char *_OpStr, ExprNode *_First, ExprNode *_Second )
+        :op(_Op), first(_First), second(_Second), opStr(_OpStr)
+    { 
     }
+
     void print(int depth) override
     {
         printDepth(depth);
@@ -96,18 +103,16 @@ struct OP3ExprNode : public ExprNode
     // }
 };
 
-struct FuncCallExprNode : public ExprNode
-{
+struct FunCallExprNode: public ExprNode {
     // 函数调用表达式节点
     TypeNode *ret = nullptr; //返回值类型
     IDNode *name;
-    ~FuncCallExprNode() = default;
-    std::vector<ExprNode *> args; //参数
+    ~FunCallExprNode()=default;
+    std::vector<ExprNode*> args; //参数
     expr_e get_expr_e() override { return expr_e::FuncCall; };
-    FuncCallExprNode(IDNode *_Name, ASTNode *_Args) : name(_Name)
-    {
-        // this->ret =
-        // this->type =
+    FunCallExprNode(IDNode *_Name, ASTNode *_Args): name(_Name) {
+        // this->ret = 
+        // this->type = 
         addArgs(_Args);
     }
     void addArgs(ASTNode *n)

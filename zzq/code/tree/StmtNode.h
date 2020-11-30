@@ -8,6 +8,44 @@ struct StmtNode : public ASTNode
 {
     AST_e get_AST_e() override { return AST_e::Stmt; }
     virtual stmt_e get_stmt_e() = 0;
+    void print(int depth)
+    {
+        switch (this->get_stmt_e())
+        {
+        case stmt_e::IF:
+            ((IFStmt*)this)->print(depth);
+            break;
+        case stmt_e::FunDef:
+            ((FuncDefStmt*)this)->print(depth);
+            break;
+        case stmt_e::FunDec:
+            ((FuncDecStmt*)this)->print(depth);
+            break;
+        case stmt_e::VarDef:
+            ((VarDef*)this)->print(depth);
+            break;
+        case stmt_e::StructDec:
+            ((StructDecStmt*)this)->print(depth);
+            break;
+        case stmt_e::StructDef:
+            ((StructDefStmt*)this)->print(depth);
+            break;
+        case stmt_e::FOR:
+            ((ForStmt*)this)->print(depth);
+            break;
+        case stmt_e::While:
+            ((WhileStmt*)this)->print(depth);
+            break;
+        case stmt_e::Block:
+            ((BlockStmt*)this)->print(depth);
+            break;
+        case stmt_e::Expr:
+            ((ExprStmtNode*)this)->print(depth);
+            break;
+        default:
+            break;
+        }
+    }
 };
 
 struct ExprNode;
@@ -34,7 +72,10 @@ struct IFStmt : public StmtNode
     StmtNode *trueRun;  //为真时运行
     StmtNode *falseRun; //为假时运行
     stmt_e get_stmt_e() override { return stmt_e::IF; };
-    IFStmt(ExprNode *_Test, ExprNode *_TrueRun, ExprNode *_FalseRun);
+    IFStmt(ExprNode *_Test, StmtNode *_TrueRun, StmtNode *_FalseRun)
+        : test(_Test), trueRun(_TrueRun), falseRun(_FalseRun)
+    {
+    }
     ~IFStmt() = default;
     void print(int depth)
     {
@@ -46,7 +87,8 @@ struct IFStmt : public StmtNode
         printDepth(depth + 1);
         cout << "Run if true." << endl;
         this->trueRun->print(depth + 2);
-        if(!falseRun) {
+        if (!falseRun)
+        {
             printDepth(depth);
             cout << "ELSE Stmt." << endl;
             printDepth(depth + 1);
@@ -55,7 +97,7 @@ struct IFStmt : public StmtNode
         }
     }
 };
- 
+
 struct VarDef
 {
     TypeNode *type;
@@ -66,7 +108,8 @@ struct VarDef
         printDepth(depth);
         cout << "Var def." << endl;
         this->ID->print(depth + 1);
-        if(!this->init) {
+        if (!this->init)
+        {
             printDepth(depth + 1);
             cout << "Var Init." << endl;
             this->init->print(depth + 2);
@@ -124,7 +167,8 @@ struct VarDefStmt : public StmtNode
         this->basicType->print(depth + 1);
         print(depth + 1);
         cout << "Var Def List." << endl;
-        for(int k = 0; k < (this->vars).size(); k++) {
+        for (int k = 0; k < (this->vars).size(); k++)
+        {
             (this->vars[k]).print(depth + 2);
         }
     }
@@ -148,17 +192,20 @@ struct ForStmt : public StmtNode
     {
         printDepth(depth);
         cout << "For Stmt." << endl;
-        if(!this->init) {
+        if (!this->init)
+        {
             printDepth(depth + 1);
             cout << "Init Stmt." << endl;
             this->init->print(depth + 2);
         }
-        if(!this->test) {
+        if (!this->test)
+        {
             printDepth(depth + 1);
             cout << "Judge Conditions." << endl;
             this->test->print(depth + 2);
         }
-        if(!this->other) {
+        if (!this->other)
+        {
             printDepth(depth + 1);
             cout << "Increment" << endl;
             this->other->print(depth + 2);
@@ -190,7 +237,7 @@ struct WhileStmt : public StmtNode
         this->test->print(depth + 2);
         printDepth(depth + 1);
         cout << "Action." << endl;
-        this->run->print(depth + 2); 
+        this->run->print(depth + 2);
     }
 };
 
@@ -203,7 +250,7 @@ struct BlockStmt : public StmtNode
     {
         addStmts(_Stmts);
     }
-
+    stmt_e get_stmt_e() override { return stmt_e::Block; }
     void addStmts(ASTNode *_Stmts)
     {
         if (!_Stmts)
@@ -227,7 +274,8 @@ struct BlockStmt : public StmtNode
     {
         printDepth(depth);
         cout << "Comp Stmt. " << endl;
-        for(int k = 0; k < (this->stmts).size(); k++) {
+        for (int k = 0; k < (this->stmts).size(); k++)
+        {
             (this->stmts)[k]->print(depth + 2);
         }
     }
@@ -310,12 +358,16 @@ struct FuncDecStmt : public StmtNode
         // this->re->print(depth + 2);
         // this->name->print(depth + 2);
         printDepth(depth + 1);
-        cout << "Func ID." << endl;
+        cout << "Func Name." << endl;
         this->name->print(depth + 2);
         printDepth(depth + 1);
         cout << "Para Dec Stmt." << endl;
-        for(int k = 0; k < (this->args).size(); k++) {
-            (this->args)[k].second->print(depth + 2);
+        for (int k = 0; k < (this->args).size(); k++)
+        {
+            printDepth(depth + 2);
+            cout << "Var Dec." << endl;
+            (this->args)[k].first->print(depth + 3);
+            (this->args)[k].second->print(depth + 3);
         }
     }
 };
@@ -363,19 +415,7 @@ struct StructDecStmt : StmtNode
     {
         printDepth(depth);
         cout << "Struct Dec Stmt." << endl;
-        this->re->print(depth + 2);
-        // printDepth(depth + 1);
-        // cout << "Var Dec Stmt." << endl;
-        // this->re->print(depth + 2);
-        // this->name->print(depth + 2);
-        printDepth(depth + 1);
-        cout << "Func ID." << endl;
-        this->name->print(depth + 2);
-        printDepth(depth + 1);
-        cout << "Para Dec Stmt." << endl;
-        for(int k = 0; k < (this->args).size(); k++) {
-            (this->args)[k].second->print(depth + 2);
-        }
+        this->type->print(depth + 1);
     }
 };
 
@@ -393,8 +433,8 @@ struct StructDefStmt : StmtNode
     void print(int depth)
     {
         printDepth(depth);
-        cout << "Expr Stmt. " << endl;
-        this->expr->print(depth + 1);
+        cout << "Struct Def Stmt. " << endl;
+        this->type->print(depth + 1);
     }
 };
 
@@ -408,7 +448,7 @@ struct ReturnStmt : StmtNode
     void print(int depth)
     {
         printDepth(depth);
-        cout << "Expr Stmt. " << endl;
+        cout << "Return Stmt. " << endl;
         this->expr->print(depth + 1);
     }
 };

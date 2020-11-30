@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "../common/trees.h"
+#include "include.h"
+//#include "../common/trees.h"
 
 extern char *yytext;
 extern int column;
@@ -40,7 +40,7 @@ ws    {delim}+
 ";"                               { return(SEMI); }
 ","                               { return(COMMA); }
 "="                               { return(ASSIGNOP); }
-(>=)|(<=)|(==)|(!=)|<|>           { yylval.str=strdup(yytext); return(RELOP1); }
+(>=)|(<=)|(==)|(!=)|<|>           { yylval.str=strdup(yytext); return(RELOP); }
 "+"                               { return(PLUS); }
 "-"                               { return(MINUS); }
 "*"                               { return(STAR); }
@@ -58,8 +58,8 @@ ws    {delim}+
 "{"                               { return(LC); }
 "}"                               { return(RC); }
 "."                               { return(GETMEMBER); }
-{L}({D}|{L})*                     { yylval.str = strdup(yytext); return(ID1); }
-{D}{L}({D}|{L})*                  { return (ERRID1); }
+{L}({D}|{L})*                     { yylval.str=strdup(yytext); return(ID1); }
+{D}{L}({D}|{L})*                  { return (ERRID); }
 [ \t\v\f\r\n]                     { }
 (([1-9]|-){D}*)|0                     { yylval.str=strdup(yytext); return(INT1);}
 %%
