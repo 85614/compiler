@@ -396,7 +396,7 @@ struct FuncDefStmt : public StmtNode
         }
     }
     // 经测试，函数定义的参数列表和函数体同一个作用域，不允许重复定义
-};
+
 
 
     void print(int depth)
