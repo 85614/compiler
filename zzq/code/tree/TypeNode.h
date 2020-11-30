@@ -12,6 +12,7 @@ struct TypeNode: public ASTNode{
     size_t size = -1;
     AST_e get_AST_e()override {return AST_e::Type;}
     virtual type_e get_type_e() = 0;
+    static TypeNode *getType(const char *_Name);
 };
 
 struct BasicTypeNode: public TypeNode {
@@ -28,6 +29,7 @@ struct VoidTypeNode: public BasicTypeNode {
     virtual basic_type_e get_basic_type_e()override { return basic_type_e::VOID; };
     VoidTypeNode(const char *_Name) {
         this->name = _Name;
+        
     }
 };
 

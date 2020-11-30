@@ -64,14 +64,14 @@ struct OP3ExprNode: public ExprNode {
     }
 };
 
-struct FuncCallExprNode: public ExprNode {
+struct FunCallExprNode: public ExprNode {
     // 函数调用表达式节点
     TypeNode *ret = nullptr; //返回值类型
     IDNode *name;
-    ~FuncCallExprNode()=default;
+    ~FunCallExprNode()=default;
     std::vector<ExprNode*> args; //参数
     expr_e get_expr_e() override { return expr_e::FuncCall; };
-    FuncCallExprNode(IDNode *_Name, ASTNode *_Args): name(_Name) {
+    FunCallExprNode(IDNode *_Name, ASTNode *_Args): name(_Name) {
         // this->ret = 
         // this->type = 
         addArgs(_Args);
