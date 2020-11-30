@@ -11,16 +11,16 @@ extern int column;
 extern FILE * yyin;
 extern int yylineno;
 extern FileNode thisFile;
-StructTable *structTable;
+//StructTable *structTable;
 void yyerror(const char *str);
 %}
 
 %union{
-  TypeNode *type;
-  IDNode *id;
-  ExprNode *expr;
-  StmtNode *stmt;
-  ASTNode *temp;
+  struct TypeNode *type;
+  struct IDNode *id;
+  struct ExprNode *expr;
+  struct StmtNode *stmt;
+  struct ASTNode *temp;
   const char *str;
 }
 %locations
@@ -57,11 +57,13 @@ void yyerror(const char *str);
 %type <stmt> StructSpecifier
 %type <stmt> StructDec
 %type <temp> StmtList
-%type <temp> ExtDefList ExtDef ExtDecList
+%type <temp> ExtDefList ExtDecList
+%type <stmt> ExtDef 
 %type <temp> VarDec
-%type <temp> CompSt
+%type <stmt> CompSt
 %type <temp> StructDecList
-%type <temp> Dec DecList Args ParamDec VarList FunDec DecFor
+%type <temp> Dec DecList Args ParamDec VarList FunDec 
+%type <stmt> DecFor
 %%
 
 /* 开始符号 */
@@ -88,9 +90,10 @@ ExtDefList:
 
 ExtDef: Specifier ExtDecList SEMI {
         //int a, b, c;
-        $$ = new TempNode();
-        $$->addChild($1);
-        $$->addChild($2);
+        new VarDefStmt($1, $2);
+        //$$ = new TempNode();
+        //$$->addChild($1);
+        //$$->addChild($2);
     }
     | Specifier SEMI {
     }
@@ -128,6 +131,11 @@ ID: ID1 {
 
 INT: INT1 {
         $$ = new ConstExprNode($1);
+    }
+    ;
+
+TYPE: TYPE1 {
+        $$ = TypeNode::getType($1);
     }
     ;
 
@@ -185,7 +193,7 @@ FunDec: ID LP VarList RP {
         //：函数名 （ 参数列表 ）
         $$ = new TempNode();
         $$->addChild($1);
-        $$->addChild($2);
+        $$->addChild($3);
     }
     | ID LP RP {
         //：函数名 （ ）
@@ -207,7 +215,8 @@ VarList: VarList COMMA ParamDec {
 
 ParamDec: Specifier ID {
         $$ = new TempNode();
-        $$ -> addChild($1, $2);
+        $$ -> addChild($1);
+        $$ -> addChild($2);
     }
     | Specifier {
         //无具体意义void fun(int)
@@ -218,7 +227,7 @@ ParamDec: Specifier ID {
 CompSt:
     LC StmtList RC {
         //：{ 语句块 }
-        $ = new BlockStmt($2);
+        $$ = new BlockStmt($2);
     }
     | error RC {
         yyerrok;
@@ -248,20 +257,20 @@ DecFor:
     }
     | Exp {
         //
-        $$ = $1;
+        $$ = new ExprStmtNode($1);
     }
     ;
 
 /*语句*/
 Stmt: Exp SEMI {
-        //表达式 ；{
+        //表达式 ；
             $$ = new ExprStmtNode($1);
-        }
+        
     }
     | Def SEMI {
-        //定义语句 ；{
+        //定义语句 ；
             $$ = $1;
-        }
+        
     }
     | STRUCT ID ID SEMI {
         //声明结构体变量：struct structname a ；
@@ -274,15 +283,15 @@ Stmt: Exp SEMI {
     }
     | RETURN Exp SEMI {
         //return语句：return 表达式 ；
-        $$ = new RetrunStmt($2);
+        $$ = new ReturnStmt($2);
     }
     | RETURN SEMI {
         //return语句：return ；
-        $$ = new RetrunStmt(NULL);
+        $$ = new ReturnStmt(NULL);
     }
     | IF LP Exp RP Stmt {
         //条件语句：if （ 表达式 ）语句
-        $$ = new IFStmt($3, $5);
+        $$ = new IFStmt($3, $5, nullptr);
     }
     | IF LP Exp RP Stmt ELSE Stmt %prec LOWER_THAN_ELSE {
         //条件语句：if （ 表达式 ） 语句 else 语句
@@ -346,7 +355,8 @@ DecList: Dec {
     | Dec COMMA DecList {
         //a , 声明列表
         $$ = new TempNode();
-        $$ -> addChild($1, $3);
+        $$ -> addChild($1);
+        $$ -> addChild($3);
     }
     ;
 
@@ -355,7 +365,8 @@ Dec: VarDec {
     }
     | VarDec ASSIGNOP Exp {
         $$ = new TempNode();
-        $$ -> addChild($1, $3);
+        $$ -> addChild($1);
+        $$ -> addChild($3);
     }
     ;
 
@@ -392,7 +403,7 @@ Exp:
         $$ = new OP2ExprNode(op_e::Power, $1, $3);
     }
     | LP Exp RP {
-        $$ = $1;
+        $$ = $2;
     }
     | MINUS Exp {
         $$ = new OP1ExprNode(op_e::Minus, $2);
@@ -401,13 +412,13 @@ Exp:
         $$ = new OP1ExprNode(op_e::Not, $2);
     }
     | SINGALAND ID {
-        $$ = new OP1ExprNode(op_e::SignalAnd, $2);
+        $$ = new OP1ExprNode(op_e::SignalAnd, new VarExprNode($2));
     }
     | ID LP Args RP {
-        $$ = new FunCallExprNode($1, $2);
+        $$ = new FunCallExprNode($1, $3);
     }
     | ID LP RP {
-        $$ = new FunCallExprNode($1, NUll);
+        $$ = new FunCallExprNode($1, nullptr);
     }
     | Exp LB Exp RB {
         $$ = new OP2ExprNode(op_e::GetArrayValue, $1, $3);
@@ -426,7 +437,7 @@ Exp:
         $$ = $1;
     }
     | STAR ID {
-        $$ = new OP1ExprNode(op_e::GetValue, $2);
+        $$ = new OP1ExprNode(op_e::GetValue, new VarExprNode($2));
     }
     | error RP {
         yyerrok;
@@ -465,7 +476,7 @@ std::string replaceExtName(char* fileName) {
     rev += ".asm";
     return rev;
 }
-
+/*
 int main(int argc,char* argv[])
 {
     InterMediate* im;
@@ -521,3 +532,4 @@ int main(int argc,char* argv[])
     outasm << asmgenerator->getAsmCode();
     return 0;
 }
+*/

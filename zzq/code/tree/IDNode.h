@@ -13,6 +13,7 @@ struct IDNode: public ASTNode {
 
     const char *ID; // 标识符
     ~IDNode()=default;
+    AST_e get_AST_e()override{ return AST_e::ID; }
     IDNode(const char *_ID): ID(_ID) {
         // this->id_type
         // this->type = 

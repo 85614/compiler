@@ -21,3 +21,8 @@ StructTypeNode * StructTypeNode::createNode(IDNode *_ID, ASTNode *_Members) {
     }
     return result;
 }
+
+
+TypeNode *TypeNode::getType(const char *_Name) {
+        return BasicTypeNode::INT;
+    }

@@ -111,7 +111,7 @@ struct BlockStmt: public StmtNode {
     BlockStmt(ASTNode *_Stmts) {
         addStmts(_Stmts);
     }
-
+    stmt_e get_stmt_e()override{ return stmt_e::Block;}
     void addStmts(ASTNode* _Stmts) {
         if (!_Stmts)
             return;

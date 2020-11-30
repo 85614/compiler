@@ -22,7 +22,7 @@ enum class op_e {
     Or = 10,            // ||
     Negative = 11,      // -
     Not = 12,           // !
-    SingalAnd = 13,     // &
+    SignalAnd = 13,     // &
     GetValue = 14,      // *
     GetArrayValue = 15, //a[3]
     GetMember = 16,     // a.b
