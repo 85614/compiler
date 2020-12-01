@@ -57,16 +57,16 @@ const char* getInfo(op_e opE) {
         return "Negative";
     case op_e::Not:
         return "Not";
-    case op_e::SingalAnd:
-        return "SingalAnd";
+    case op_e::SignalAnd:
+        return "SignalAnd";
     case op_e::GetValue:
         return "GetValue";
     case op_e::GetArrayValue:
-        return "GetArrayValue";
+        return "[]";
     case op_e::GetMember:
         return "GetMember";
     case op_e::AssignArray:
-        return "AssignArray";
+        return "[]";
     case op_e::AssignMember:
         return "AssignMember";
     default:

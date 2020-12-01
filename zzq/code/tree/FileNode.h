@@ -16,5 +16,8 @@ struct FileNode :public ScopeNode{
    FileNode(){
       this->belong = &fileGlobal;
    }
+   void print_tree() {
+       
+   }
 };
 

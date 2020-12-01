@@ -3,12 +3,7 @@
 #include "ASTNode.h"
 
 
-<<<<<<< HEAD
-
-// 存储变量类型否？
-=======
 struct StmtNode;
->>>>>>> add belong
 
 struct IDNode: public ASTNode {
     // 标识符
@@ -26,6 +21,9 @@ struct IDNode: public ASTNode {
         // this->type = 
         // this->symboltable = 
     }  
-
+    void print(int depth) {
+        printDepth(depth);
+        cout << "ID Declaration: " << this->ID << endl;
+    }
 };
 
