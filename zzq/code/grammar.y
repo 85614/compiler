@@ -94,7 +94,7 @@ ExtDefList:
 ExtDef: Specifier ExtDecList SEMI {
         // printf("get ExtDef\n");
         //int a, b, c;
-        new VarDefStmt($1, $2);
+        $$ = new VarDefStmt($1, $2);
 		$$->setTokenCount($1);
         $2->print(1);
         //$$ = new TempNode();
@@ -249,7 +249,6 @@ StmtList:
         //只有一个语句
         if ($1 == NULL) 
             $1 = new TempNode();
-		$$->setTokenCount($1);
         $1 -> addChild($2);
         $$ = $1;
     }
@@ -273,7 +272,7 @@ DecFor:
 /*语句*/
 Stmt: Exp SEMI {
         //表达式 ；
-            $$ = new ExprStmtNode($1);
+        $$ = new ExprStmtNode($1);
 		$$->setTokenCount($1);
         
     }
@@ -490,7 +489,7 @@ Exp:
     }
     | ID LB Exp RB {
         VarExprNode *t = new VarExprNode($1);
-		$$->setTokenCount($1);
+		//$$->setTokenCount($1);
         $$ = new OP2ExprNode(op_e::GetArrayValue, t, $3);
 		$$->setTokenCount($1);
     }

@@ -38,13 +38,30 @@ struct ASTNode
     
     }
     bool setTokenCount(ASTNode *n) {
-      
-        if(!n)
-            {cout << "$1为空。"  << endl;  exit(1);return false; print(0); exit(1); }
-        else if (n->tokenCount == 0) 
-            {cout << "tokenCount 为0！！" << endl; /*printt(1);*/  exit(1);return false;}
-        else 
-            {this->tokenCount = n->tokenCount;return true;}
+        
+        if(!n){
+            USE_DEBUG;
+            cout << "$1为空。"  <<(int)this->get_AST_e()<< endl; 
+            exit(1);
+            return false; 
+        }
+        else if (n->tokenCount == 0) {
+            USE_DEBUG;
+            cout << this;
+            cout << "tokenCount 为0！！" ;
+            USE_DEBUG;
+            cout << this;
+            this->get_AST_e();
+            USE_DEBUG;
+            cout << (int)this->get_AST_e() << endl;  
+            USE_DEBUG;
+            exit(1);
+            return false;
+        }
+        else {
+            this->tokenCount = n->tokenCount;
+            return true;
+        }
   
        
     }   
