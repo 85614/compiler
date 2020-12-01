@@ -1,3 +1,4 @@
+// #pragma once
 #pragma once
 #include <iostream>
 #include <vector>
@@ -15,31 +16,6 @@ struct ExprNode : public ASTNode
     AST_e get_AST_e() override { return AST_e::Expr; }
     
     virtual expr_e get_expr_e() = 0;
-    void print(int depth)
-    {
-        switch (this->get_expr_e())
-        {
-        case expr_e::Op1:
-            ((OP1ExprNode*)this)->print(depth);
-            break;
-        case expr_e::Op2:
-            ((OP2ExprNode*)this)->print(depth);
-            break;
-        case expr_e::Op3:
-            ((OP3ExprNode*)this)->print(depth);
-            break;
-        case expr_e::FuncCall:
-            ((FunCallExprNode*)this)->print(depth);
-            break;
-        case expr_e::Var:
-            ((VarExprNode*)this)->print(depth);
-            break;
-        case expr_e::Const:
-            ((ConstExprNode*)this)->print(depth);
-            break;
-        default:
-        }
-    }
 };
 
 struct OP1ExprNode : public ExprNode
@@ -78,6 +54,10 @@ struct OP2ExprNode : public ExprNode
     { 
     }
 
+    OP2ExprNode(op_e _Op, ExprNode *_First, ExprNode *_Second )
+        :op(_Op), first(_First), second(_Second), opStr(nullptr)
+    { 
+    }
     void print(int depth) override
     {
         printDepth(depth);

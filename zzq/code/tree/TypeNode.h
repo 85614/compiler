@@ -12,28 +12,7 @@ struct TypeNode : public ASTNode
     AST_e get_AST_e() override { return AST_e::Type; }
     virtual type_e get_type_e() = 0;
     static TypeNode *getType(const char *_Name);
-    void print(int depth)
-    {
-        switch (this->get_type_e())
-        {
-        case type_e::BasicType:
-            ((BasicTypeNode *)this)->print(depth);
-            break;
-        case type_e::PointerType:
-            ((PointerTypeNode *)this)->print(depth);
-            break;
-        case type_e::ReferenceType:
-            //((IFStmt*)this)->print(depth);
-            break;
-        case type_e::ArrayType:
-            ((ArrayTypeNode *)this)->print(depth);
-            break;
-        case type_e::FuncType:
-            break;
-        default:
-            break;
-        }
-    }
+    
 };
 
 struct BasicTypeNode : public TypeNode
@@ -43,26 +22,7 @@ struct BasicTypeNode : public TypeNode
     const char *name = nullptr;
     virtual type_e get_type_e() override { return type_e::BasicType; };
     virtual basic_type_e get_basic_type_e() = 0;
-    void print(int depth)
-    {
-        switch (this->get_basic_type_e())
-        {
-        case basic_type_e::VOID:
-            ((VoidTypeNode*)this)->print(depth);
-            break;
-        case basic_type_e::INTEGER:
-            ((IntegerTypeNode*)this)->print(depth);
-            break;
-        case basic_type_e::FLOAT:
-            ((FloatTypeNode*)this)->print(depth);
-            break;
-        case basic_type_e::STRUCT:
-            ((StructTypeNode*)this)->print(depth);
-            break;
-        default:
-            break;
-        }
-    }
+    
 };
 
 struct VoidTypeNode : public BasicTypeNode

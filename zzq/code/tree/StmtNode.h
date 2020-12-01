@@ -3,53 +3,14 @@
 #include "TypeNode.h"
 #include "IDNode.h"
 #include "TempNode.h"
-
+#include "ExprNode.h"
 
 
 struct StmtNode: public ScopeNode {
     AST_e get_AST_e()override {return AST_e::Stmt; }
     virtual stmt_e get_stmt_e() = 0;
-    void print(int depth)
-    {
-        switch (this->get_stmt_e())
-        {
-        case stmt_e::IF:
-            ((IFStmt*)this)->print(depth);
-            break;
-        case stmt_e::FunDef:
-            ((FuncDefStmt*)this)->print(depth);
-            break;
-        case stmt_e::FunDec:
-            ((FuncDecStmt*)this)->print(depth);
-            break;
-        case stmt_e::VarDef:
-            ((VarDef*)this)->print(depth);
-            break;
-        case stmt_e::StructDec:
-            ((StructDecStmt*)this)->print(depth);
-            break;
-        case stmt_e::StructDef:
-            ((StructDefStmt*)this)->print(depth);
-            break;
-        case stmt_e::FOR:
-            ((ForStmt*)this)->print(depth);
-            break;
-        case stmt_e::While:
-            ((WhileStmt*)this)->print(depth);
-            break;
-        case stmt_e::Block:
-            ((BlockStmt*)this)->print(depth);
-            break;
-        case stmt_e::Expr:
-            ((ExprStmtNode*)this)->print(depth);
-            break;
-        default:
-            break;
-        }
-    }
 };
 
-struct ExprNode;
 
 struct ExprStmtNode : public StmtNode
 {
@@ -58,12 +19,7 @@ struct ExprStmtNode : public StmtNode
     stmt_e get_stmt_e() override { return stmt_e::Expr; };
     ExprStmtNode(ExprNode *_Expr) : expr(_Expr) {}
     ~ExprStmtNode() = default;
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "Expr Stmt. " << endl;
-        this->expr->print(depth + 1);
-    }
+    void print(int depth)override;
 };
 
 struct IFStmt : public StmtNode
@@ -80,25 +36,7 @@ struct IFStmt : public StmtNode
         
     }
     ~IFStmt() = default;
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "IF Stmt." << endl;
-        printDepth(depth + 1);
-        cout << "Judge conditions." << endl;
-        this->test->print(depth + 2);
-        printDepth(depth + 1);
-        cout << "Run if true." << endl;
-        this->trueRun->print(depth + 2);
-        if (!falseRun)
-        {
-            printDepth(depth);
-            cout << "ELSE Stmt." << endl;
-            printDepth(depth + 1);
-            cout << "Run if false." << endl;
-            this->falseRun->print(depth + 2);
-        }
-    }
+    void print(int depth)override;
 };
 
 struct VarDef
@@ -106,18 +44,7 @@ struct VarDef
     TypeNode *type;
     IDNode *ID;
     ExprNode *init;
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "Var def." << endl;
-        this->ID->print(depth + 1);
-        if (!this->init)
-        {
-            printDepth(depth + 1);
-            cout << "Var Init." << endl;
-            this->init->print(depth + 2);
-        }
-    }
+    void print(int depth);
 };
 
 struct VarDefStmt : public StmtNode
@@ -163,18 +90,7 @@ struct VarDefStmt : public StmtNode
     }
     void addVars(ASTNode *_Vars);
 
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "Var Def Stmt." << endl;
-        this->basicType->print(depth + 1);
-        print(depth + 1);
-        cout << "Var Def List." << endl;
-        for (int k = 0; k < (this->vars).size(); k++)
-        {
-            (this->vars[k]).print(depth + 2);
-        }
-    }
+    void print(int depth)override;
 };
 
 struct ForStmt : public StmtNode
@@ -191,32 +107,7 @@ struct ForStmt : public StmtNode
     {
         this->belong = new SymbolTable(this->belong, this);
     }
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "For Stmt." << endl;
-        if (!this->init)
-        {
-            printDepth(depth + 1);
-            cout << "Init Stmt." << endl;
-            this->init->print(depth + 2);
-        }
-        if (!this->test)
-        {
-            printDepth(depth + 1);
-            cout << "Judge Conditions." << endl;
-            this->test->print(depth + 2);
-        }
-        if (!this->other)
-        {
-            printDepth(depth + 1);
-            cout << "Increment" << endl;
-            this->other->print(depth + 2);
-        }
-        printDepth(depth + 1);
-        cout << "Action." << endl;
-        this->run->print(depth + 2);
-    }
+    void print(int depth)override;
     // 经测试，for语句的初始化语句和执行语句不是同一个作用域
 };
 
@@ -232,17 +123,7 @@ struct WhileStmt : public StmtNode
     {
     }
 
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "While Stmt. " << endl;
-        print(depth + 1);
-        cout << "Judge Condition." << endl;
-        this->test->print(depth + 2);
-        printDepth(depth + 1);
-        cout << "Action." << endl;
-        this->run->print(depth + 2);
-    }
+    void print(int depth)override;
 };
 
 struct BlockStmt : public StmtNode
@@ -274,15 +155,7 @@ struct BlockStmt : public StmtNode
         }
     }
 
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "Comp Stmt. " << endl;
-        for (int k = 0; k < (this->stmts).size(); k++)
-        {
-            (this->stmts)[k]->print(depth + 2);
-        }
-    }
+    void print(int depth)override;
 };
 
 struct FuncDecStmt : public StmtNode
@@ -350,30 +223,7 @@ struct FuncDecStmt : public StmtNode
         }
     }
 
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "Func Dec Stmt. " << endl;
-        printDepth(depth + 1);
-        cout << "Return Type." << endl;
-        this->re->print(depth + 2);
-        // printDepth(depth + 1);
-        // cout << "Var Dec Stmt." << endl;
-        // this->re->print(depth + 2);
-        // this->name->print(depth + 2);
-        printDepth(depth + 1);
-        cout << "Func Name." << endl;
-        this->name->print(depth + 2);
-        printDepth(depth + 1);
-        cout << "Para Dec Stmt." << endl;
-        for (int k = 0; k < (this->args).size(); k++)
-        {
-            printDepth(depth + 2);
-            cout << "Var Dec." << endl;
-            (this->args)[k].first->print(depth + 3);
-            (this->args)[k].second->print(depth + 3);
-        }
-    }
+    void print(int depth)override;
 };
 
 struct FuncDefStmt : public StmtNode
@@ -399,13 +249,7 @@ struct FuncDefStmt : public StmtNode
 
 
 
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "Func Def Stmt." << endl;
-        this->funcdec.print(depth + 1);
-        this->block->print(depth + 1);
-    }
+    void print(int depth)override;
 };
 
 struct StructDecStmt : StmtNode
@@ -418,12 +262,7 @@ struct StructDecStmt : StmtNode
         type = StructTypeNode::getStructType(_ID->ID);
     }
 
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "Struct Dec Stmt." << endl;
-        this->type->print(depth + 1);
-    }
+    void print(int depth)override;
 };
 
 struct StructDefStmt : StmtNode
@@ -437,12 +276,7 @@ struct StructDefStmt : StmtNode
         type->addMembers(_Members);
     }
 
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "Struct Def Stmt. " << endl;
-        this->type->print(depth + 1);
-    }
+    void print(int depth)override;
 };
 
 struct ReturnStmt : StmtNode
@@ -452,10 +286,5 @@ struct ReturnStmt : StmtNode
     ReturnStmt(ExprNode *_Expr) : expr(_Expr){};
     stmt_e get_stmt_e() override { return stmt_e::Return; }
 
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "Return Stmt. " << endl;
-        this->expr->print(depth + 1);
-    }
+    void print(int depth)override;
 };

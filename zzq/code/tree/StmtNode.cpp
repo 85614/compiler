@@ -49,3 +49,163 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
         }
     }
 }
+
+
+void ExprStmtNode::print(int depth)
+{
+    printDepth(depth);
+    cout << "Expr Stmt. " << endl;
+    this->expr->print(depth + 1);
+}
+
+
+void IFStmt::print(int depth)
+{
+    printDepth(depth);
+    cout << "IF Stmt." << endl;
+    printDepth(depth + 1);
+    cout << "Judge conditions." << endl;
+    this->test->print(depth + 2);
+    printDepth(depth + 1);
+    cout << "Run if true." << endl;
+    this->trueRun->print(depth + 2);
+    if (!falseRun)
+    {
+        printDepth(depth);
+        cout << "ELSE Stmt." << endl;
+        printDepth(depth + 1);
+        cout << "Run if false." << endl;
+        this->falseRun->print(depth + 2);
+    }
+}
+
+
+void VarDef::print(int depth)
+{
+    printDepth(depth);
+    cout << "Var def." << endl;
+    this->ID->print(depth + 1);
+    if (!this->init)
+    {
+        printDepth(depth + 1);
+        cout << "Var Init." << endl;
+        this->init->print(depth + 2);
+    }
+}
+
+void VarDefStmt::print(int depth)
+{
+    printDepth(depth);
+    cout << "Var Def Stmt." << endl;
+    this->basicType->print(depth + 1);
+    print(depth + 1);
+    cout << "Var Def List." << endl;
+    for (int k = 0; k < (this->vars).size(); k++)
+    {
+        (this->vars[k]).print(depth + 2);
+    }
+}
+
+void ForStmt::print(int depth)
+{
+    printDepth(depth);
+    cout << "For Stmt." << endl;
+    if (!this->init)
+    {
+        printDepth(depth + 1);
+        cout << "Init Stmt." << endl;
+        this->init->print(depth + 2);
+    }
+    if (!this->test)
+    {
+        printDepth(depth + 1);
+        cout << "Judge Conditions." << endl;
+        this->test->print(depth + 2);
+    }
+    if (!this->other)
+    {
+        printDepth(depth + 1);
+        cout << "Increment" << endl;
+        this->other->print(depth + 2);
+    }
+    printDepth(depth + 1);
+    cout << "Action." << endl;
+    this->run->print(depth + 2);
+}
+
+void WhileStmt::print(int depth)
+{
+    printDepth(depth);
+    cout << "While Stmt. " << endl;
+    print(depth + 1);
+    cout << "Judge Condition." << endl;
+    this->test->print(depth + 2);
+    printDepth(depth + 1);
+    cout << "Action." << endl;
+    this->run->print(depth + 2);
+}
+
+ void BlockStmt::print(int depth)
+{
+    printDepth(depth);
+    cout << "Comp Stmt. " << endl;
+    for (int k = 0; k < (this->stmts).size(); k++)
+    {
+        (this->stmts)[k]->print(depth + 2);
+    }
+}
+
+void FuncDecStmt::print(int depth)
+    {
+        printDepth(depth);
+        cout << "Func Dec Stmt. " << endl;
+        printDepth(depth + 1);
+        cout << "Return Type." << endl;
+        this->re->print(depth + 2);
+        // printDepth(depth + 1);
+        // cout << "Var Dec Stmt." << endl;
+        // this->re->print(depth + 2);
+        // this->name->print(depth + 2);
+        printDepth(depth + 1);
+        cout << "Func Name." << endl;
+        this->name->print(depth + 2);
+        printDepth(depth + 1);
+        cout << "Para Dec Stmt." << endl;
+        for (int k = 0; k < (this->args).size(); k++)
+        {
+            printDepth(depth + 2);
+            cout << "Var Dec." << endl;
+            (this->args)[k].first->print(depth + 3);
+            (this->args)[k].second->print(depth + 3);
+        }
+    }
+
+void FuncDefStmt::print(int depth)
+{
+    printDepth(depth);
+    cout << "Func Def Stmt." << endl;
+    this->funcdec.print(depth + 1);
+    this->block->print(depth + 1);
+}
+
+void StructDecStmt::print(int depth)
+    {
+        printDepth(depth);
+        cout << "Struct Dec Stmt." << endl;
+        this->type->print(depth + 1);
+    }
+
+
+void StructDefStmt::print(int depth)
+{
+    printDepth(depth);
+    cout << "Struct Def Stmt. " << endl;
+    this->type->print(depth + 1);
+}
+
+void ReturnStmt::print(int depth)
+{
+    printDepth(depth);
+    cout << "Return Stmt. " << endl;
+    this->expr->print(depth + 1);
+}

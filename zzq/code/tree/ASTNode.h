@@ -1,6 +1,11 @@
 #pragma once
+#include <iostream>
 #include <stdio.h>
+#include "../symbol/SymbolTable.h"
 #include "enum.h"
+
+using std::cout;
+using std::endl;
 
 // template<AST_e e> struct __AST_getter{ static_assert(false, "未实现的类型"); };
 
@@ -32,7 +37,7 @@ struct ScopeNode: ASTNode {
     }
 };
 
-void printDepth(int depth)
+static void printDepth(int depth)
 {
     for (int k = 0; k < depth; k++)
         cout << " ";

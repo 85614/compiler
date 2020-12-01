@@ -13,6 +13,7 @@ extern int column;
 extern FILE * yyin;
 extern YYSTYPE yylval;
 void yyerror(const char *str);
+int count = 0;
 %}
 %option yylineno
 D   [0-9]

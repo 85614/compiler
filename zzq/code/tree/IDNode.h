@@ -3,12 +3,7 @@
 #include "ASTNode.h"
 
 
-<<<<<<< HEAD
-
-// 存储变量类型否？
-=======
 struct StmtNode;
->>>>>>> add belong
 
 struct IDNode: public ASTNode {
     // 标识符

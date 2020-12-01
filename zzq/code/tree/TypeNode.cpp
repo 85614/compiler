@@ -25,4 +25,4 @@ StructTypeNode * StructTypeNode::createNode(IDNode *_ID, ASTNode *_Members) {
 
 TypeNode *TypeNode::getType(const char *_Name) {
         return BasicTypeNode::INT;
-    }
+}

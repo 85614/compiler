@@ -5,11 +5,14 @@ void fun(int a){
     a = 0;
     
 }
+int a;
+
+int b;
+
+// a b a
 
 int main(){
-    // for(int i = 0;;){
-    //     int i = 1;
-    //     ++i;
-    // }
-    return 0;
+
+    int a;
+
 }
