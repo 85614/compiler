@@ -76,6 +76,7 @@ Program: ExtDefList {
 ExtDefList:
     ExtDef {
         $$ = new TempNode();
+		$$->setTokenCount($1);
         $$->addChild($1);
     }
     | ExtDefList ExtDef {
@@ -94,6 +95,7 @@ ExtDef: Specifier ExtDecList SEMI {
         // printf("get ExtDef\n");
         //int a, b, c;
         new VarDefStmt($1, $2);
+		$$->setTokenCount($1);
         $2->print(1);
         //$$ = new TempNode();
         //$$->addChild($1);
@@ -104,10 +106,12 @@ ExtDef: Specifier ExtDecList SEMI {
     | Specifier FunDec CompSt {
         //函数定义
         $$ = new FuncDefStmt($1,$2,$3);
+		$$->setTokenCount($1);
     }
     | Specifier FunDec SEMI {
         //函数声明
         $$ = new FuncDecStmt($1,$2);
+		$$->setTokenCount($1);
     }
     | StructSpecifier SEMI {
         //结构体定义
@@ -121,6 +125,7 @@ ExtDef: Specifier ExtDecList SEMI {
 
 ExtDecList: VarDec {
         $$ = new TempNode();
+		$$->setTokenCount($1);
         $$->addChild($1);
     }
     | ExtDecList COMMA VarDec {
@@ -131,16 +136,19 @@ ExtDecList: VarDec {
 
 ID: ID1 {
         $$ = new IDNode($1.str);
+		$$->setTokenCount($1);
     }
     ;
 
 INT: INT1 {
         $$ = new ConstExprNode($1.str);
+		$$->setTokenCount($1);
     }
     ;
 
 TYPE: TYPE1 {
         $$ = TypeNode::getType($1.str);
+        $$->setTokenCount($1);
     }
     ;
 
@@ -152,18 +160,21 @@ Specifier: TYPE {
     | TYPE STAR {
         //指针：int *
         $$ = new PointerTypeNode($1);
+		$$->setTokenCount($1);
     }
     ;
 
 StructSpecifier: STRUCT ID LC StructDecList RC {
         //结构体类型定义：struct structname （ 结构体定义列表 ）
         $$ = new StructDefStmt($2, $4);
+		$$->setTokenCount($1);
     }
     ;
 
 StructDecList: StructDec {
         //结构体声明列表中只有一个声明
         $$ = new TempNode();
+		$$->setTokenCount($1);
         $$->addChild($1);
         //$$ = $1;
     }
@@ -177,6 +188,7 @@ StructDecList: StructDec {
 StructDec: Specifier ID SEMI {
         //：结构体类型 id ；
         $$ = new VarDefStmt($1, $2);
+		$$->setTokenCount($1);
     }
     ;
 
@@ -185,12 +197,14 @@ StructDec: Specifier ID SEMI {
 FunDec: ID LP VarList RP {
         //：函数名 （ 参数列表 ）
         $$ = new TempNode();
+		$$->setTokenCount($1);
         $$->addChild($1);
         $$->addChild($3);
     }
     | ID LP RP {
         //：函数名 （ ）
         $$ = new TempNode();
+		$$->setTokenCount($1);
         $$->addChild($1);
     }
     ;
@@ -208,6 +222,7 @@ VarList: VarList COMMA ParamDec {
 
 ParamDec: Specifier ID {
         $$ = new TempNode();
+		$$->setTokenCount($1);
         $$ -> addChild($1);
         $$ -> addChild($2);
     }
@@ -221,6 +236,7 @@ CompSt:
     LC StmtList RC {
         //：{ 语句块 }
         $$ = new BlockStmt($2);
+		$$->setTokenCount($1);
     }
     | error RC {
         yyerrok;
@@ -233,6 +249,7 @@ StmtList:
         //只有一个语句
         if ($1 == NULL) 
             $1 = new TempNode();
+		$$->setTokenCount($1);
         $1 -> addChild($2);
         $$ = $1;
     }
@@ -249,6 +266,7 @@ DecFor:
     | Exp {
         //
         $$ = new ExprStmtNode($1);
+		$$->setTokenCount($1);
     }
     ;
 
@@ -256,6 +274,7 @@ DecFor:
 Stmt: Exp SEMI {
         //表达式 ；
             $$ = new ExprStmtNode($1);
+		$$->setTokenCount($1);
         
     }
     | Def SEMI {
@@ -267,6 +286,7 @@ Stmt: Exp SEMI {
         //声明结构体变量：struct structname a ；
         StructTypeNode *t = StructTypeNode::getStructType($2);
         $$ = new VarDefStmt(t, $3);
+		$$->setTokenCount($1);
     }
     | CompSt {
         //语句块
@@ -275,54 +295,67 @@ Stmt: Exp SEMI {
     | RETURN Exp SEMI {
         //return语句：return 表达式 ；
         $$ = new ReturnStmt($2);
+		$$->setTokenCount($1);
     }
     | RETURN SEMI {
         //return语句：return ；
         $$ = new ReturnStmt(NULL);
+		$$->setTokenCount($1);
     }
     | IF LP Exp RP Stmt {
         //条件语句：if （ 表达式 ）语句
         $$ = new IFStmt($3, $5, nullptr);
+		$$->setTokenCount($1);
     }
     | IF LP Exp RP Stmt ELSE Stmt %prec LOWER_THAN_ELSE {
         //条件语句：if （ 表达式 ） 语句 else 语句
         $$ = new IFStmt($3, $5, $7);
+		$$->setTokenCount($1);
     }
     | WHILE LP Exp RP Stmt {
         //while语句：while （ 表达式 ）语句
         $$ = new WhileStmt($3, $5);
+		$$->setTokenCount($1);
     }
     | FOR LP SEMI SEMI RP Stmt {
         //无限循环的for语句：for （ ； ；）语句
         $$ = new ForStmt(NULL, NULL, NULL, $6);
+		$$->setTokenCount($1);
     }
     | FOR LP DecFor SEMI SEMI RP Stmt {
         //：for（ 声明 ； ；） 语句
         $$ = new ForStmt($3, NULL, NULL, $7);
+		$$->setTokenCount($1);
     }
     | FOR LP SEMI Exp SEMI RP Stmt {
         //：for （ ； 表达式 ；） 语句 
         $$ = new ForStmt(NULL, $4, NULL, $7);
+		$$->setTokenCount($1);
     }
     | FOR LP SEMI SEMI Exp RP Stmt {
         //：for （ ； ； 表达式 ） 语句
         $$ = new ForStmt(NULL, NULL, $5, $7);
+		$$->setTokenCount($1);
     }
     | FOR LP DecFor SEMI Exp SEMI Exp RP Stmt {
         //：for （ 声明 ； 表达式 ； 表达式 ） 语句
         $$ = new ForStmt($3, $5, $7, $9);
+		$$->setTokenCount($1);
     }
     | FOR LP DecFor SEMI Exp SEMI RP Stmt {
         //：for （ 声明 ； 表达式 ； ） 语句
         $$ = new ForStmt($3, $5, NULL, $8);
+		$$->setTokenCount($1);
     }
     | FOR LP DecFor SEMI SEMI Exp RP Stmt {
         //：for （ 声明 ； ； 表达式 ） 语句
         $$ = new ForStmt($3, NULL, $6, $8);
+		$$->setTokenCount($1);
     }
     | FOR LP SEMI Exp SEMI Exp RP Stmt {
         //：for （ ； 表达式 ； 表达式 ） 语句
         $$ = new ForStmt(NULL, $4, $6, $8);
+		$$->setTokenCount($1);
     }
     | error SEMI {
         //错误
@@ -333,6 +366,7 @@ Stmt: Exp SEMI {
 /* Local Definitions */ 
 Def: Specifier DecList {
         $$ = new VarDefStmt($1, $2);
+		$$->setTokenCount($1);
     }
     | error SEMI {
         yyerrok;
@@ -345,6 +379,7 @@ DecList: Dec {
     | Dec COMMA DecList {
         //a , 声明列表
         $$ = new TempNode();
+		$$->setTokenCount($1);
         $$ -> addChild($1);
         $$ -> addChild($3);
     }
@@ -356,6 +391,7 @@ Dec: VarDec {
     }
     | VarDec ASSIGNOP Exp {
         $$ = new TempNode();
+		$$->setTokenCount($1);
         $$ -> addChild($1);
         $$ -> addChild($3);
         $$ -> addMsg("=");
@@ -371,6 +407,7 @@ VarDec: ID {
     | ID LB INT RB {
         //变量数组：varname [ 数字 ]
         $$ = new TempNode();
+		$$->setTokenCount($1);
         $$->addChild($1);
         $$->addChild($3);
         $$->addMsg("[]");
@@ -382,70 +419,91 @@ VarDec: ID {
 Exp:
     Exp ASSIGNOP Exp {
         $$ = new OP2ExprNode(op_e::Assignop, $1, $3);
+		$$->setTokenCount($1);
     }
     | Exp AND Exp {
         $$ = new OP2ExprNode(op_e::And, $1, $3);
+		$$->setTokenCount($1);
     }
     | Exp OR Exp {
         $$ = new OP2ExprNode(op_e::Or, $1, $3);
+		$$->setTokenCount($1);
     }
     | Exp RELOP Exp {
         $$ = new OP2ExprNode(op_e::Relop, $2.str, $1, $3);
+		$$->setTokenCount($1);
     }
     | Exp PLUS Exp {
         $$ = new OP2ExprNode(op_e::Plus, $1, $3);
+		$$->setTokenCount($1);
     }
     | Exp MINUS Exp {
         $$ = new OP2ExprNode(op_e::Minus, $1, $3);
+		$$->setTokenCount($1);
     }
     | Exp STAR Exp {
         $$ = new OP2ExprNode(op_e::Times, $1, $3);
+		$$->setTokenCount($1);
     }
     | Exp DIV Exp {
         $$ = new OP2ExprNode(op_e::Div, $1, $3);
+		$$->setTokenCount($1);
     }
     | Exp MOD Exp {
         $$ = new OP2ExprNode(op_e::Mod, $1, $3);
+		$$->setTokenCount($1);
     }
     | Exp POWER Exp {
         $$ = new OP2ExprNode(op_e::Power, $1, $3);
+		$$->setTokenCount($1);
     }
     | LP Exp RP {
         $$ = $2;
     }
     | MINUS Exp {
         $$ = new OP1ExprNode(op_e::Minus, $2);
+		$$->setTokenCount($1);
     }
     | NOT Exp {
         $$ = new OP1ExprNode(op_e::Not, $2);
+		$$->setTokenCount($1);
     }
     | SINGALAND ID {
         $$ = new OP1ExprNode(op_e::SignalAnd, new VarExprNode($2));
+		$$->setTokenCount($1);
     }
     | ID LP Args RP {
         $$ = new FunCallExprNode($1, $3);
+		$$->setTokenCount($1);
     }
     | ID LP RP {
         $$ = new FunCallExprNode($1, nullptr);
+		$$->setTokenCount($1);
     }
     | Exp LB Exp RB {
         $$ = new OP2ExprNode(op_e::GetArrayValue, $1, $3);
+		$$->setTokenCount($1);
     }
     | ID {
         $$ = new VarExprNode($1);
+		$$->setTokenCount($1);
     }
     | ID LB Exp RB {
         VarExprNode *t = new VarExprNode($1);
+		$$->setTokenCount($1);
         $$ = new OP2ExprNode(op_e::GetArrayValue, t, $3);
+		$$->setTokenCount($1);
     }
     | ID GETMEMBER ID {
         $$ = new OP2ExprNode(op_e::GetMember, new VarExprNode($1), new VarExprNode($3));
+		$$->setTokenCount($1);
     }
     | INT {
         $$ = $1;
     }
     | STAR ID {
         $$ = new OP1ExprNode(op_e::GetValue, new VarExprNode($2));
+		$$->setTokenCount($1);
     }
     | error RP {
         yyerrok;
@@ -458,6 +516,7 @@ Args: Args COMMA Exp {
     }
     | Exp {
         $$ = new TempNode();
+		$$->setTokenCount($1);
         $$ -> addChild($1);
     }
     ;

@@ -10,9 +10,6 @@
 #include "tree/TempNode.h"
 
 
-struct TokenNode{
-    const char *str;
-    int tokenCount;
-};
+
 
 void init();

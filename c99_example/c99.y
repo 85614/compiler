@@ -288,6 +288,7 @@ function_specifier
 	: INLINE
 	;
 
+
 declarator
 	: pointer direct_declarator
 	| direct_declarator

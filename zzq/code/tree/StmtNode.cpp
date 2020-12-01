@@ -173,10 +173,6 @@ void FuncDecStmt::print(int depth)
         printDepth(depth + 1);
         cout << "Return Type." << endl;
         this->re->print(depth + 2);
-        // printDepth(depth + 1);
-        // cout << "Var Dec Stmt." << endl;
-        // this->re->print(depth + 2);
-        // this->name->print(depth + 2);
         printDepth(depth + 1);
         cout << "Func Name." << endl;
         this->name->print(depth + 2);
