@@ -33,7 +33,7 @@ void print_word_list() {
     fprintf(f, "%-18s%-22s%-12s\n", "单词", "词素", "属性");
     for (int i = 0; i < word_list.size(); ++i) {
         word *ptr = word_list[i];
-        fprintf(f, "%-16s%-20s%-10s", ptr->token.c_str(), ptr->word_type.c_str(), ptr->addr_value.c_str());
+        fprintf(f, "%-16s%-20s%-10s", ptr->word_type.c_str(), ptr->token.c_str(), ptr->addr_value.c_str());
         fprintf(f, "\n");
     }
 }

@@ -17,7 +17,7 @@ struct ExprStmtNode : public StmtNode
     // 表达式语句：表达式+分号
     ExprNode *expr;
     stmt_e get_stmt_e() override { return stmt_e::Expr; };
-    ExprStmtNode(ExprNode *_Expr) : expr(_Expr) {}
+    ExprStmtNode(ExprNode *_Expr) : expr(_Expr) { if(!_Expr) printf("表达式语句的表达式为NULL\n"); }
     ~ExprStmtNode() = default;
     void print(int depth)override;
 };
@@ -57,8 +57,10 @@ struct VarDefStmt : public StmtNode
     ~VarDefStmt() = default;
     VarDefStmt(TypeNode *_Type, ASTNode *_Vars)
     {
+        if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
         this->basicType = _Type;
         addVars(_Vars);
+        if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
     }
     void addVar(ASTNode *type, ASTNode *ID, ASTNode *init)
     {
@@ -133,20 +135,31 @@ struct BlockStmt : public StmtNode
     ~BlockStmt() = default;
     BlockStmt(ASTNode *_Stmts)
     {
+        if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
         addStmts(_Stmts);
+        if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
     }
     stmt_e get_stmt_e() override { return stmt_e::Block; }
+    void addChild(ASTNode *_Stmt)override {
+        if (!_Stmt) 
+            return;
+        if(_Stmt->get_AST_e()!=AST_e::Stmt)
+            printf("添加非语句节点到语句块中");
+        stmts.push_back((StmtNode*)_Stmt);
+    }
     void addStmts(ASTNode *_Stmts)
     {
         if (!_Stmts)
             return;
+        if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
         if (_Stmts->get_AST_e() == AST_e::Temp)
         {
+            if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
             for (ASTNode *n : ((TempNode *)_Stmts)->childList)
-                addStmts(_Stmts);
+                addStmts(n);
         }
         else if (_Stmts->get_AST_e() == AST_e::Stmt)
-        {
+        { 
             stmts.push_back((StmtNode *)_Stmts);
         }
         else
@@ -236,7 +249,10 @@ struct FuncDefStmt : public StmtNode
     FuncDefStmt(TypeNode *_Re, ASTNode *_NameAndArgs, StmtNode *_Block)
         : funcdec(_Re, _NameAndArgs)
     {
-        if (_Block->get_stmt_e() == stmt_e::Block)
+        if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
+        if (!_Block)
+            printf("函数体为NULL\n");
+        if (_Block && _Block->get_stmt_e() == stmt_e::Block)
         {
             this->block = (BlockStmt *)_Block;
         }
@@ -244,6 +260,7 @@ struct FuncDefStmt : public StmtNode
         {
             printf("函数体不是一个块语句");
         }
+        if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
     }
     // 经测试，函数定义的参数列表和函数体同一个作用域，不允许重复定义
 
@@ -283,7 +300,7 @@ struct ReturnStmt : StmtNode
 {
     // return 语句
     ExprNode *expr;
-    ReturnStmt(ExprNode *_Expr) : expr(_Expr){};
+    ReturnStmt(ExprNode *_Expr) : expr(_Expr){ };
     stmt_e get_stmt_e() override { return stmt_e::Return; }
 
     void print(int depth)override;

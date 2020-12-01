@@ -6,6 +6,10 @@
 void VarDefStmt::addVars(ASTNode*_Vars) {
     if(!_Vars)
         return;
+    if (_Vars->get_AST_e() == AST_e::ID) {
+        this->addVar(this->basicType, (IDNode*)_Vars, nullptr);
+        if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
+    }
     if(_Vars->get_AST_e()==AST_e::Temp){
         TempNode* temp = (TempNode*)_Vars;
         if(!temp->msg) {
@@ -55,7 +59,10 @@ void ExprStmtNode::print(int depth)
 {
     printDepth(depth);
     cout << "Expr Stmt. " << endl;
-    this->expr->print(depth + 1);
+    if(expr)
+        this->expr->print(depth + 1);
+    else 
+        printf("打印时表达式语句的表达式为NULL\n");
 }
 
 
@@ -69,10 +76,10 @@ void IFStmt::print(int depth)
     printDepth(depth + 1);
     cout << "Run if true." << endl;
     this->trueRun->print(depth + 2);
-    if (!falseRun)
+    if (falseRun)
     {
-        printDepth(depth);
-        cout << "ELSE Stmt." << endl;
+        // printDepth(depth);
+        // cout << "ELSE Stmt." << endl;
         printDepth(depth + 1);
         cout << "Run if false." << endl;
         this->falseRun->print(depth + 2);
@@ -82,10 +89,12 @@ void IFStmt::print(int depth)
 
 void VarDef::print(int depth)
 {
+    if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
     printDepth(depth);
     cout << "Var def." << endl;
     this->ID->print(depth + 1);
-    if (!this->init)
+    // if (!this->init) // 为什么你又搞出这样的来了！！
+    if(this->init)
     {
         printDepth(depth + 1);
         cout << "Var Init." << endl;
@@ -98,10 +107,12 @@ void VarDefStmt::print(int depth)
     printDepth(depth);
     cout << "Var Def Stmt." << endl;
     this->basicType->print(depth + 1);
-    print(depth + 1);
+    // print(depth + 1);
+    printDepth(depth + 1);
     cout << "Var Def List." << endl;
     for (int k = 0; k < (this->vars).size(); k++)
     {
+        if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
         (this->vars[k]).print(depth + 2);
     }
 }
@@ -137,7 +148,7 @@ void WhileStmt::print(int depth)
 {
     printDepth(depth);
     cout << "While Stmt. " << endl;
-    print(depth + 1);
+    // print(depth + 1);
     cout << "Judge Condition." << endl;
     this->test->print(depth + 2);
     printDepth(depth + 1);
@@ -153,6 +164,7 @@ void WhileStmt::print(int depth)
     {
         (this->stmts)[k]->print(depth + 2);
     }
+    
 }
 
 void FuncDecStmt::print(int depth)

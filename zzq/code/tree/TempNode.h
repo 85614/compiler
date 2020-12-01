@@ -6,7 +6,7 @@ struct TempNode : ASTNode{
     std::vector<ASTNode *> childList;
     const char *msg = nullptr;
     virtual AST_e get_AST_e() override {return AST_e::Temp;}
-    void addChild(ASTNode *child)override { childList.push_back(child); }
+    void addChild(ASTNode *child)override { if(child) childList.push_back(child); }
     virtual void addMsg(const char *_Msg) {
         msg = _Msg;
     }
@@ -18,6 +18,10 @@ struct TempNode : ASTNode{
             else 
                 leafs.push_back(n);
         }   
+    }
+    void print(int depth)override{
+        for (ASTNode *n: childList)
+            n->print(depth);
     }
 };
 

@@ -74,7 +74,8 @@ Program: ExtDefList {
 
 ExtDefList:
     ExtDef {
-        $$ = $1;
+        $$ = new TempNode();
+        $$->addChild($1);
     }
     | ExtDefList ExtDef {
         if ($1 == NULL) {
@@ -89,8 +90,10 @@ ExtDefList:
     ;
 
 ExtDef: Specifier ExtDecList SEMI {
+        // printf("get ExtDef\n");
         //int a, b, c;
         new VarDefStmt($1, $2);
+        $2->print(1);
         //$$ = new TempNode();
         //$$->addChild($1);
         //$$->addChild($2);
@@ -116,7 +119,8 @@ ExtDef: Specifier ExtDecList SEMI {
     ;
 
 ExtDecList: VarDec {
-        $$ = $1;
+        $$ = new TempNode();
+        $$->addChild($1);
     }
     | ExtDecList COMMA VarDec {
         $1->addChild($3);
@@ -158,7 +162,9 @@ StructSpecifier: STRUCT ID LC StructDecList RC {
 
 StructDecList: StructDec {
         //结构体声明列表中只有一个声明
-        $$ = $1;
+        $$ = new TempNode();
+        $$->addChild($1);
+        //$$ = $1;
     }
     | StructDecList StructDec {
         //递归声明结构
@@ -173,20 +179,6 @@ StructDec: Specifier ID SEMI {
     }
     ;
 
-/* Declarators */
-/* 变量声明 */
-VarDec: ID {
-        //变量：varname
-        $$ = $1;
-    }
-    | ID LB INT RB {
-        //变量数组：varname [ 数字 ]
-        $$ = new TempNode();
-        $$->addChild($1);
-        $$->addChild($3);
-        $$->addMsg("[]");
-    }
-    ;
 
 /* 函数声明 */
 FunDec: ID LP VarList RP {
@@ -238,12 +230,10 @@ StmtList:
 	StmtList Stmt {
         //递归语句列表
         //只有一个语句
-        if ($1 == NULL) {
-            $$ = $2;
-        } else {
-            $1 -> addChild($2);
-            $$ = $1;
-        }
+        if ($1 == NULL) 
+            $1 = new TempNode();
+        $1 -> addChild($2);
+        $$ = $1;
     }
     | {
         $$ = NULL;
@@ -341,8 +331,7 @@ Stmt: Exp SEMI {
 
 /* Local Definitions */ 
 Def: Specifier DecList {
-        VarDefStmt* t = new VarDefStmt($1, $2);
-        $$ = t;
+        $$ = new VarDefStmt($1, $2);
     }
     | error SEMI {
         yyerrok;
@@ -362,13 +351,31 @@ DecList: Dec {
 
 Dec: VarDec {
         $$ = $1;
+        // printf("get Dec\n");
     }
     | VarDec ASSIGNOP Exp {
         $$ = new TempNode();
         $$ -> addChild($1);
         $$ -> addChild($3);
+        $$ -> addMsg("=");
     }
     ;
+
+/* Declarators */
+/* 变量声明 */
+VarDec: ID {
+        //变量：varname
+        $$ = $1;
+    }
+    | ID LB INT RB {
+        //变量数组：varname [ 数字 ]
+        $$ = new TempNode();
+        $$->addChild($1);
+        $$->addChild($3);
+        $$->addMsg("[]");
+    }
+    ;
+
 
 /* Expressions */
 Exp:
@@ -476,6 +483,20 @@ std::string replaceExtName(char* fileName) {
     rev += ".asm";
     return rev;
 }
+
+
+void print_word_list();
+void test_lexer()
+{
+    FILE* file = fopen("test.c", "r");
+    yyin = file;
+    do {
+		yyparse();
+	} while(!feof(yyin));
+    print_word_list();
+    thisFile.print(0);
+}
+
 /*
 int main(int argc,char* argv[])
 {

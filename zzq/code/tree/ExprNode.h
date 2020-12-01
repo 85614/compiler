@@ -93,6 +93,7 @@ struct FunCallExprNode: public ExprNode {
     FunCallExprNode(IDNode *_Name, ASTNode *_Args): name(_Name) {
         // this->ret = 
         // this->type = 
+        if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
         addArgs(_Args);
     }
     void addArgs(ASTNode *n)
@@ -116,8 +117,13 @@ struct FunCallExprNode: public ExprNode {
     }
     void print(int depth) override
     {
+        
         printDepth(depth);
-        cout << "Function Call." << getInfo(((BasicTypeNode *)this->ret)->get_basic_type_e()) << endl;
+        USE_DEBUG;
+        cout << "Function Call." 
+            //<< getInfo(((BasicTypeNode *)this->ret)->get_basic_type_e())
+             << endl;
+        USE_DEBUG;
         this->name->print(depth + 1);
         printDepth(depth + 1);
         cout << "Para List" << endl;

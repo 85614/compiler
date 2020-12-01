@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "include.h"
-#include "lexer.h"
+
+void add_word(const char *token,const char *word_type ,const char *addr_value);
 #define MY_RETURN(x) { add_word(yytext, #x, yytext);  return (x); }
 
 extern char *yytext;
@@ -29,7 +30,7 @@ ws    {delim}+
 <COMMENT>([^*]|\en)+|.
 <COMMENT><<EOF>>    {printf("Unterminated comment\n"); return 0;}
  /* C++ comment, a common extension */
-"//".*\n
+"//"[^\n]*
 "int"                             { yylval.str=strdup(yytext); MY_RETURN(TYPE1); }
 "void"                            { yylval.str=strdup(yytext); MY_RETURN(TYPE1);}
 "main"                            { yylval.str=strdup(yytext); MY_RETURN(ID1);}

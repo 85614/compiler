@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include "../symbol/SymbolTable.h"
 #include "enum.h"
-
+#define MY_DEBUG 0
+#define USE_DEBUG { if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;}
 using std::cout;
 using std::endl;
 
@@ -12,18 +13,17 @@ using std::endl;
 struct ASTNode
 {
     virtual AST_e get_AST_e() = 0;
-    virtual void print(int depth) { printf("请实现print\n"); }
-    virtual ~ASTNode()
-    {
-        printf("请实现析构函数");
-    }
+    virtual void print(int depth) { printf("请实现print，get_AST_e()is%d\n", (int)this->get_AST_e()); }
+    virtual ~ASTNode() = default;
     virtual void addChild(ASTNode *child)
     {
-        printf("请实现addchild，get_AST_e()is%d", (int)this->get_AST_e());
+        printf("请实现addchild，get_AST_e()is%d\n", (int)this->get_AST_e());
+        exit(1);
     }
     virtual void addMsg(const char *msg)
     {
-        printf("请实现addMsg，get_AST_e()is%d", (int)this->get_AST_e());
+        printf("请实现addMsg，get_AST_e()is%d\n", (int)this->get_AST_e());
+        exit(1);
     }
 };
 
@@ -40,6 +40,6 @@ struct ScopeNode: ASTNode {
 static void printDepth(int depth)
 {
     for (int k = 0; k < depth; k++)
-        cout << " ";
+        cout << "  ";
     cout << "|--";
 }
