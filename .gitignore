@@ -1,3 +1,5 @@
 .vscode
 a.out
+*.tab.*
+lex.yy.c
 
