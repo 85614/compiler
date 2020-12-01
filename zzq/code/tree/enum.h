@@ -30,7 +30,7 @@ enum class op_e {
     AssignMember = 18   // a.b = ?
 };
 
-const char* getInfo(op_e opE) {
+static const char* getInfo(op_e opE) {
     switch (opE)
     {
     case op_e::Assignop:
@@ -58,7 +58,7 @@ const char* getInfo(op_e opE) {
     case op_e::Not:
         return "Not";
     case op_e::SignalAnd:
-        return "SignalAnd";
+        return "SingalAnd";
     case op_e::GetValue:
         return "GetValue";
     case op_e::GetArrayValue:
@@ -84,7 +84,7 @@ enum class expr_e {
 };
 
 
-const char* getInfo(expr_e temp) {
+static const char* getInfo(expr_e temp) {
     switch (temp)
     {
     case expr_e::Op1:
@@ -111,7 +111,7 @@ enum IDType_e {
     Func // 函数名
 };
 
-const char* getInfo(IDType_e temp) {
+static const char* getInfo(IDType_e temp) {
     switch (temp)
     {
     case unknow:
@@ -135,7 +135,7 @@ enum class type_e {
     FuncType // 函数类型
 };
 
-const char* getInfo(type_e temp) {
+static const char* getInfo(type_e temp) {
     switch (temp)
     {
     case type_e::BasicType:
@@ -160,7 +160,7 @@ enum class basic_type_e {
     STRUCT // 结构体类型
 };
 
-const char* getInfo(basic_type_e temp) {
+static const char* getInfo(basic_type_e temp) {
     switch (temp)
     {
     case basic_type_e::VOID:
@@ -191,7 +191,7 @@ enum class stmt_e {
     Expr // 表达式语句
 };
 
-const char* getInfo(stmt_e temp) {
+static const char* getInfo(stmt_e temp) {
     switch (temp)
     {
     case stmt_e::IF:

@@ -574,15 +574,15 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    70,    70,    76,    79,    91,    98,   100,   104,   108,
-     112,   118,   121,   127,   132,   137,   143,   147,   153,   159,
-     163,   170,   178,   182,   192,   198,   205,   210,   216,   221,
-     228,   232,   238,   248,   254,   258,   265,   270,   275,   280,
-     284,   288,   292,   296,   300,   304,   308,   312,   316,   320,
-     324,   328,   332,   336,   343,   347,   352,   355,   363,   366,
-     375,   378,   381,   384,   387,   390,   393,   396,   399,   402,
-     405,   408,   411,   414,   417,   420,   423,   426,   429,   433,
-     436,   439,   442,   447,   451
+       0,    70,    70,    76,    80,    92,   101,   103,   107,   111,
+     115,   121,   125,   131,   136,   141,   147,   151,   157,   163,
+     169,   176,   184,   190,   197,   202,   208,   213,   220,   224,
+     230,   238,   244,   248,   255,   260,   265,   270,   274,   278,
+     282,   286,   290,   294,   298,   302,   306,   310,   314,   318,
+     322,   326,   333,   336,   341,   344,   352,   356,   366,   370,
+     382,   385,   388,   391,   394,   397,   400,   403,   406,   409,
+     412,   415,   418,   421,   424,   427,   430,   433,   436,   440,
+     443,   446,   449,   454,   458
 };
 #endif
 
@@ -597,8 +597,8 @@ static const char *const yytname[] =
   "ELSE", "WHILE", "STRUCT", "GETMEMBER", "ERRID", "INT1", "TYPE1", "ID1",
   "FOR", "LC", "RC", "$accept", "Program", "ExtDefList", "ExtDef",
   "ExtDecList", "ID", "INT", "TYPE", "Specifier", "StructSpecifier",
-  "StructDecList", "StructDec", "VarDec", "FunDec", "VarList", "ParamDec",
-  "CompSt", "StmtList", "DecFor", "Stmt", "Def", "DecList", "Dec", "Exp",
+  "StructDecList", "StructDec", "FunDec", "VarList", "ParamDec", "CompSt",
+  "StmtList", "DecFor", "Stmt", "Def", "DecList", "Dec", "VarDec", "Exp",
   "Args", YY_NULLPTR
 };
 #endif
@@ -620,7 +620,7 @@ static const yytype_int16 yytoknum[] =
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-56)
+#define YYTABLE_NINF (-54)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -630,20 +630,20 @@ static const yytype_int16 yytoknum[] =
 static const yytype_int16 yypact[] =
 {
       29,    -9,    -3,   -81,    37,    13,   -81,    34,    25,    26,
-     -81,   -81,    39,   -81,   -81,   -81,   -81,    60,    32,   -81,
-       0,   -81,    30,   -81,    -3,   -12,    41,    44,   -81,   -81,
+     -81,   -81,    39,   -81,   -81,   -81,   -81,    60,    32,     0,
+     -81,   -81,    30,   -81,    -3,   -12,    41,    44,   -81,   -81,
      -81,    -3,    27,   -81,    58,   -81,   -81,    -3,   -13,   -81,
      -81,    65,   -81,   143,    64,   -81,   -81,   -81,   -81,    30,
-     -81,   -11,    -3,   302,    -3,   302,   302,   116,    74,    75,
+     -81,   -11,    -3,   302,    -3,   302,   302,   123,    74,    75,
       -3,    82,   -81,    21,   -81,    -3,   -81,   -81,    78,   331,
-     -81,   -81,   -81,    79,   -81,    84,   122,   -81,    96,   435,
-     -81,   349,   302,   302,    -3,    11,   210,   302,    -3,    98,
-     -81,    93,   -81,   302,   302,   302,   302,   302,   302,   302,
-     302,   302,   302,   302,   -81,   -81,   -81,   450,   465,    95,
-      51,   213,   101,   -81,   540,   -81,   540,    -6,   403,   -81,
-     302,    -3,   540,   551,   562,   315,   122,   122,    56,    56,
+     -81,   -81,   -81,    79,   -81,    84,   104,   -81,    96,   435,
+     -81,   349,   302,   302,    -3,    11,   210,   302,    -3,   -81,
+      80,   116,   -81,   302,   302,   302,   302,   302,   302,   302,
+     302,   302,   302,   302,   -81,   -81,   -81,   450,   465,   102,
+      51,   213,   103,   -81,   540,   -81,   540,    -6,   403,   -81,
+      -3,   302,   540,   551,   562,   315,   104,   104,    56,    56,
       56,    56,   419,   177,   177,   -81,   -81,   237,   367,   249,
-     -81,   302,   -81,   540,   -81,   -81,    92,   -81,   177,   480,
+     -81,   302,   -81,   -81,   540,   -81,   101,   -81,   177,   480,
      269,   280,   385,   540,   177,   -81,   177,   177,   495,   177,
      510,   291,   -81,   -81,   -81,   177,   -81,   177,   177,   525,
      -81,   -81,   -81,   177,   -81
@@ -655,39 +655,39 @@ static const yytype_int16 yypact[] =
 static const yytype_int8 yydefact[] =
 {
        0,     0,     0,    15,     0,     0,     3,    16,     0,     0,
-      10,    13,     0,     1,     4,    17,     6,     0,    22,    11,
-       0,     9,     0,     5,     0,     0,     0,     0,     8,    33,
-       7,     0,     0,    19,    22,    12,    25,    29,     0,    27,
-      14,     0,    31,     0,     0,    18,    20,    28,    24,     0,
-      23,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,    30,    77,    80,     0,    39,    32,     0,     0,
-      21,    26,    82,    53,    73,     0,    71,    81,    72,     0,
-      41,     0,     0,     0,     0,     0,     0,     0,     0,    58,
-      54,    56,    37,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,    36,    70,    40,     0,     0,     0,
-       0,     0,     0,    34,    35,    75,    84,     0,     0,    79,
+      10,    13,     0,     1,     4,    17,     6,     0,    58,     0,
+      11,     9,     0,     5,     0,     0,     0,     0,     8,    31,
+       7,     0,     0,    19,    58,    12,    23,    27,     0,    25,
+      14,     0,    29,     0,     0,    18,    20,    26,    22,     0,
+      59,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    28,    77,    80,     0,    37,    30,     0,     0,
+      21,    24,    82,    51,    73,     0,    71,    81,    72,     0,
+      39,     0,     0,     0,     0,     0,     0,     0,     0,    52,
+      54,    56,    35,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    34,    70,    38,     0,     0,     0,
+       0,     0,     0,    32,    33,    75,    84,     0,     0,    79,
        0,     0,    60,    62,    61,    63,    65,    64,    66,    67,
-      68,    69,     0,     0,     0,    38,    55,     0,     0,     0,
-      74,     0,    78,    59,    57,    76,    42,    44,     0,     0,
-       0,     0,     0,    83,     0,    45,     0,     0,     0,     0,
-       0,     0,    43,    48,    47,     0,    46,     0,     0,     0,
-      52,    51,    50,     0,    49
+      68,    69,     0,     0,     0,    36,    53,     0,     0,     0,
+      74,     0,    78,    55,    57,    76,    40,    42,     0,     0,
+       0,     0,     0,    83,     0,    43,     0,     0,     0,     0,
+       0,     0,    41,    46,    45,     0,    44,     0,     0,     0,
+      50,    49,    48,     0,    47
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -81,   -81,   -81,   113,   -81,    -2,    97,   -81,     2,   -81,
-     -81,   105,     8,   -81,   -81,    76,   107,   -81,   -81,   -80,
-      43,    17,   -81,     9,   -81
+     -81,   -81,   -81,   121,   -81,    -2,   106,   -81,     2,   -81,
+     -81,    95,   -81,   -81,    85,   109,   -81,   -81,   -80,    50,
+      16,   -81,     8,     9,   -81
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
       -1,     4,     5,     6,    17,    63,    64,     7,    65,     9,
-      32,    33,    89,    20,    38,    39,    66,    43,   112,    67,
-      68,    90,    91,    69,   117
+      32,    33,    19,    38,    39,    66,    43,   112,    67,    68,
+      89,    90,    91,    69,   117
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -696,7 +696,7 @@ static const yytype_int8 yydefgoto[] =
 static const yytype_int16 yytable[] =
 {
       12,    27,     8,    48,    36,    72,    18,     8,    49,    73,
-     140,    10,   110,    -2,     1,   141,    19,    52,     3,    53,
+     140,    10,   110,    -2,     1,   141,    20,    52,     3,    53,
       28,    54,    34,    42,    31,    55,    56,    37,    11,    44,
        1,   111,    35,    29,    31,    47,    86,    13,    87,     2,
       40,     3,    11,     3,    15,    16,    21,    25,    88,    26,
@@ -704,13 +704,13 @@ static const yytype_int16 yytable[] =
        3,    45,    76,    34,    78,    79,    81,    72,   155,   102,
       40,   136,    22,   103,   162,    26,   163,   164,    42,   166,
       23,    24,   109,    50,    70,   170,   119,   171,   172,    82,
-      83,   107,   108,   174,   114,   116,   118,    85,    92,   -55,
+      83,   107,   108,   174,   114,   116,   118,    85,    92,   -53,
       72,   120,   122,   123,   124,   125,   126,   127,   128,   129,
-     130,   131,   132,   103,   121,   135,   154,    75,    14,    34,
-     138,   139,    52,    41,    53,    71,    54,    30,   113,   143,
-      55,    56,    99,   100,   101,   102,    80,    46,   144,   103,
-       0,     0,     0,     0,    51,    40,   149,    11,   152,    52,
-     153,    53,     0,    54,     0,     0,     0,    55,    56,   158,
+     130,   131,   132,   103,    99,   100,   101,   102,    34,   121,
+     138,   103,   135,   139,    75,   154,    14,    46,    30,    52,
+     144,    53,    41,    54,    71,   113,   143,    55,    56,     0,
+       0,     0,     0,    80,    51,     0,   149,     0,   152,    52,
+     153,    53,    40,    54,    11,     0,     0,    55,    56,   158,
      160,     0,     0,     0,     0,    57,    58,     0,    59,    60,
      169,     0,    40,     3,    11,    61,    29,    62,    51,     0,
        0,     0,     0,    52,     0,    53,     0,    54,     0,     0,
@@ -767,12 +767,12 @@ static const yytype_int16 yycheck[] =
       29,    20,    33,    17,   154,    17,   156,   157,    34,   159,
       20,    21,    84,    18,    20,   165,    88,   167,   168,    15,
       15,    82,    83,   173,    85,    86,    87,    15,    20,    20,
-      16,     3,    93,    94,    95,    96,    97,    98,    99,   100,
-     101,   102,   103,    17,    21,    20,    24,     1,     5,   121,
-     111,    20,     6,    26,     8,    49,    10,    20,    85,   120,
-      14,    15,    10,    11,    12,    13,    20,    32,   121,    17,
-      -1,    -1,    -1,    -1,     1,    29,   137,    31,   139,     6,
-     141,     8,    -1,    10,    -1,    -1,    -1,    14,    15,   150,
+      16,    21,    93,    94,    95,    96,    97,    98,    99,   100,
+     101,   102,   103,    17,    10,    11,    12,    13,   120,     3,
+     111,    17,    20,    20,     1,    24,     5,    32,    19,     6,
+     121,     8,    26,    10,    49,    85,   120,    14,    15,    -1,
+      -1,    -1,    -1,    20,     1,    -1,   137,    -1,   139,     6,
+     141,     8,    29,    10,    31,    -1,    -1,    14,    15,   150,
      151,    -1,    -1,    -1,    -1,    22,    23,    -1,    25,    26,
      161,    -1,    29,    30,    31,    32,    33,    34,     1,    -1,
       -1,    -1,    -1,     6,    -1,     8,    -1,    10,    -1,    -1,
@@ -823,22 +823,22 @@ static const yytype_int8 yystos[] =
 {
        0,     1,    26,    30,    36,    37,    38,    42,    43,    44,
       20,    31,    40,     0,    38,    10,    20,    39,    40,    47,
-      48,    20,    33,    20,    21,    15,    17,     1,    20,    33,
-      51,    43,    45,    46,    40,    47,    16,    43,    49,    50,
-      29,    41,    34,    52,    40,    34,    46,    40,    16,    21,
+      57,    20,    33,    20,    21,    15,    17,     1,    20,    33,
+      50,    43,    45,    46,    40,    57,    16,    43,    48,    49,
+      29,    41,    34,    51,    40,    34,    46,    40,    16,    21,
       18,     1,     6,     8,    10,    14,    15,    22,    23,    25,
-      26,    32,    34,    40,    41,    43,    51,    54,    55,    58,
-      20,    50,    16,    20,    40,     1,    58,    40,    58,    58,
-      20,    58,    15,    15,    40,    15,    15,    17,    27,    47,
+      26,    32,    34,    40,    41,    43,    50,    53,    54,    58,
+      20,    49,    16,    20,    40,     1,    58,    40,    58,    58,
+      20,    58,    15,    15,    40,    15,    15,    17,    27,    55,
       56,    57,    20,     3,     4,     5,     7,     8,     9,    10,
       11,    12,    13,    17,    20,    16,    20,    58,    58,    40,
-       1,    20,    53,    55,    58,    16,    58,    59,    58,    40,
-       3,    21,    58,    58,    58,    58,    58,    58,    58,    58,
+       1,    20,    52,    54,    58,    16,    58,    59,    58,    40,
+      21,     3,    58,    58,    58,    58,    58,    58,    58,    58,
       58,    58,    58,    16,    16,    20,    20,    20,    58,    20,
-      16,    21,    18,    58,    56,    18,    54,    54,    16,    58,
-      20,    20,    58,    58,    24,    54,    16,    16,    58,    16,
-      58,    20,    54,    54,    54,    16,    54,    16,    16,    58,
-      54,    54,    54,    16,    54
+      16,    21,    18,    55,    58,    18,    53,    53,    16,    58,
+      20,    20,    58,    58,    24,    53,    16,    16,    58,    16,
+      58,    20,    53,    53,    53,    16,    53,    16,    16,    58,
+      53,    53,    53,    16,    53
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -847,9 +847,9 @@ static const yytype_int8 yyr1[] =
        0,    35,    36,    37,    37,    38,    38,    38,    38,    38,
       38,    39,    39,    40,    41,    42,    43,    43,    44,    45,
       45,    46,    47,    47,    48,    48,    49,    49,    50,    50,
-      51,    51,    52,    52,    53,    53,    54,    54,    54,    54,
-      54,    54,    54,    54,    54,    54,    54,    54,    54,    54,
-      54,    54,    54,    54,    55,    55,    56,    56,    57,    57,
+      51,    51,    52,    52,    53,    53,    53,    53,    53,    53,
+      53,    53,    53,    53,    53,    53,    53,    53,    53,    53,
+      53,    53,    54,    54,    55,    55,    56,    56,    57,    57,
       58,    58,    58,    58,    58,    58,    58,    58,    58,    58,
       58,    58,    58,    58,    58,    58,    58,    58,    58,    58,
       58,    58,    58,    59,    59
@@ -860,10 +860,10 @@ static const yytype_int8 yyr2[] =
 {
        0,     2,     1,     1,     2,     3,     2,     3,     3,     2,
        2,     1,     3,     1,     1,     1,     1,     2,     5,     1,
-       2,     3,     1,     4,     4,     3,     3,     1,     2,     1,
-       3,     2,     2,     0,     1,     1,     2,     2,     4,     1,
-       3,     2,     5,     7,     5,     6,     7,     7,     7,     9,
-       8,     8,     8,     2,     2,     2,     1,     3,     1,     3,
+       2,     3,     4,     3,     3,     1,     2,     1,     3,     2,
+       2,     0,     1,     1,     2,     2,     4,     1,     3,     2,
+       5,     7,     5,     6,     7,     7,     7,     9,     8,     8,
+       8,     2,     2,     2,     1,     3,     1,     3,     1,     4,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
        3,     2,     2,     2,     4,     3,     4,     1,     4,     3,
        1,     2,     2,     3,     1
@@ -1667,13 +1667,14 @@ yyreduce:
   case 3:
 #line 76 "grammar.y"
            {
-        (yyval.temp) = (yyvsp[0].stmt);
+        (yyval.temp) = new TempNode();
+        (yyval.temp)->addChild((yyvsp[0].stmt));
     }
-#line 1673 "grammar.tab.c"
+#line 1674 "grammar.tab.c"
     break;
 
   case 4:
-#line 79 "grammar.y"
+#line 80 "grammar.y"
                         {
         if ((yyvsp[-1].temp) == NULL) {
             (yyval.temp) = (yyvsp[0].stmt);
@@ -1684,449 +1685,448 @@ yyreduce:
             (yyval.temp) = (yyvsp[-1].temp);
         }
     }
-#line 1688 "grammar.tab.c"
+#line 1689 "grammar.tab.c"
     break;
 
   case 5:
-#line 91 "grammar.y"
+#line 92 "grammar.y"
                                   {
+        // printf("get ExtDef\n");
         //int a, b, c;
         new VarDefStmt((yyvsp[-2].type), (yyvsp[-1].temp));
+        (yyvsp[-1].temp)->print(1);
         //$$ = new TempNode();
         //$$->addChild($1);
         //$$->addChild($2);
     }
-#line 1700 "grammar.tab.c"
+#line 1703 "grammar.tab.c"
     break;
 
   case 6:
-#line 98 "grammar.y"
+#line 101 "grammar.y"
                      {
     }
-#line 1707 "grammar.tab.c"
+#line 1710 "grammar.tab.c"
     break;
 
   case 7:
-#line 100 "grammar.y"
+#line 103 "grammar.y"
                               {
         //函数定义
         (yyval.stmt) = new FuncDefStmt((yyvsp[-2].type),(yyvsp[-1].temp),(yyvsp[0].stmt));
     }
-#line 1716 "grammar.tab.c"
+#line 1719 "grammar.tab.c"
     break;
 
   case 8:
-#line 104 "grammar.y"
+#line 107 "grammar.y"
                             {
         //函数声明
         (yyval.stmt) = new FuncDecStmt((yyvsp[-2].type),(yyvsp[-1].temp));
     }
-#line 1725 "grammar.tab.c"
+#line 1728 "grammar.tab.c"
     break;
 
   case 9:
-#line 108 "grammar.y"
+#line 111 "grammar.y"
                            {
         //结构体定义
         (yyval.stmt) = (yyvsp[-1].stmt);
     }
-#line 1734 "grammar.tab.c"
+#line 1737 "grammar.tab.c"
     break;
 
   case 10:
-#line 112 "grammar.y"
+#line 115 "grammar.y"
                  {
         yyerrok;
         (yyval.stmt) = NULL;
     }
-#line 1743 "grammar.tab.c"
+#line 1746 "grammar.tab.c"
     break;
 
   case 11:
-#line 118 "grammar.y"
+#line 121 "grammar.y"
                    {
-        (yyval.temp) = (yyvsp[0].temp);
+        (yyval.temp) = new TempNode();
+        (yyval.temp)->addChild((yyvsp[0].temp));
     }
-#line 1751 "grammar.tab.c"
+#line 1755 "grammar.tab.c"
     break;
 
   case 12:
-#line 121 "grammar.y"
+#line 125 "grammar.y"
                               {
         (yyvsp[-2].temp)->addChild((yyvsp[0].temp));
         (yyval.temp) = (yyvsp[-2].temp);
     }
-#line 1760 "grammar.tab.c"
+#line 1764 "grammar.tab.c"
     break;
 
   case 13:
-#line 127 "grammar.y"
+#line 131 "grammar.y"
         {
         (yyval.id) = new IDNode((yyvsp[0].str));
     }
-#line 1768 "grammar.tab.c"
+#line 1772 "grammar.tab.c"
     break;
 
   case 14:
-#line 132 "grammar.y"
+#line 136 "grammar.y"
           {
         (yyval.expr) = new ConstExprNode((yyvsp[0].str));
     }
-#line 1776 "grammar.tab.c"
+#line 1780 "grammar.tab.c"
     break;
 
   case 15:
-#line 137 "grammar.y"
+#line 141 "grammar.y"
             {
         (yyval.type) = TypeNode::getType((yyvsp[0].str));
     }
-#line 1784 "grammar.tab.c"
+#line 1788 "grammar.tab.c"
     break;
 
   case 16:
-#line 143 "grammar.y"
+#line 147 "grammar.y"
                 {
         //类型本身：int
         (yyval.type) = (yyvsp[0].type);
     }
-#line 1793 "grammar.tab.c"
+#line 1797 "grammar.tab.c"
     break;
 
   case 17:
-#line 147 "grammar.y"
+#line 151 "grammar.y"
                 {
         //指针：int *
         (yyval.type) = new PointerTypeNode((yyvsp[-1].type));
     }
-#line 1802 "grammar.tab.c"
+#line 1806 "grammar.tab.c"
     break;
 
   case 18:
-#line 153 "grammar.y"
+#line 157 "grammar.y"
                                                {
         //结构体类型定义：struct structname （ 结构体定义列表 ）
         (yyval.stmt) = new StructDefStmt((yyvsp[-3].id), (yyvsp[-1].temp));
     }
-#line 1811 "grammar.tab.c"
+#line 1815 "grammar.tab.c"
     break;
 
   case 19:
-#line 159 "grammar.y"
+#line 163 "grammar.y"
                          {
         //结构体声明列表中只有一个声明
-        (yyval.temp) = (yyvsp[0].stmt);
+        (yyval.temp) = new TempNode();
+        (yyval.temp)->addChild((yyvsp[0].stmt));
+        //$$ = $1;
     }
-#line 1820 "grammar.tab.c"
+#line 1826 "grammar.tab.c"
     break;
 
   case 20:
-#line 163 "grammar.y"
+#line 169 "grammar.y"
                               {
         //递归声明结构
         (yyvsp[-1].temp)->addChild((yyvsp[0].stmt));
         (yyval.temp) = (yyvsp[-1].temp);
     }
-#line 1830 "grammar.tab.c"
+#line 1836 "grammar.tab.c"
     break;
 
   case 21:
-#line 170 "grammar.y"
+#line 176 "grammar.y"
                              {
         //：结构体类型 id ；
         (yyval.stmt) = new VarDefStmt((yyvsp[-2].type), (yyvsp[-1].id));
     }
-#line 1839 "grammar.tab.c"
+#line 1845 "grammar.tab.c"
     break;
 
   case 22:
-#line 178 "grammar.y"
-           {
-        //变量：varname
-        (yyval.temp) = (yyvsp[0].id);
-    }
-#line 1848 "grammar.tab.c"
-    break;
-
-  case 23:
-#line 182 "grammar.y"
-                   {
-        //变量数组：varname [ 数字 ]
-        (yyval.temp) = new TempNode();
-        (yyval.temp)->addChild((yyvsp[-3].id));
-        (yyval.temp)->addChild((yyvsp[-1].expr));
-        (yyval.temp)->addMsg("[]");
-    }
-#line 1860 "grammar.tab.c"
-    break;
-
-  case 24:
-#line 192 "grammar.y"
+#line 184 "grammar.y"
                          {
         //：函数名 （ 参数列表 ）
         (yyval.temp) = new TempNode();
         (yyval.temp)->addChild((yyvsp[-3].id));
         (yyval.temp)->addChild((yyvsp[-1].temp));
     }
-#line 1871 "grammar.tab.c"
+#line 1856 "grammar.tab.c"
     break;
 
-  case 25:
-#line 198 "grammar.y"
+  case 23:
+#line 190 "grammar.y"
                {
         //：函数名 （ ）
         (yyval.temp) = new TempNode();
         (yyval.temp)->addChild((yyvsp[-2].id));
     }
-#line 1881 "grammar.tab.c"
+#line 1866 "grammar.tab.c"
     break;
 
-  case 26:
-#line 205 "grammar.y"
+  case 24:
+#line 197 "grammar.y"
                                 {
         //递归参数列表：参数列表 ， 参数声明
         (yyvsp[-2].temp) -> addChild((yyvsp[0].temp));
         (yyval.temp) = (yyvsp[-2].temp);
     }
-#line 1891 "grammar.tab.c"
+#line 1876 "grammar.tab.c"
     break;
 
-  case 27:
-#line 210 "grammar.y"
+  case 25:
+#line 202 "grammar.y"
                {
         //参数声明比如：int 变量名
         (yyval.temp) = (yyvsp[0].temp);
     }
-#line 1900 "grammar.tab.c"
+#line 1885 "grammar.tab.c"
     break;
 
-  case 28:
-#line 216 "grammar.y"
+  case 26:
+#line 208 "grammar.y"
                        {
         (yyval.temp) = new TempNode();
         (yyval.temp) -> addChild((yyvsp[-1].type));
         (yyval.temp) -> addChild((yyvsp[0].id));
     }
-#line 1910 "grammar.tab.c"
+#line 1895 "grammar.tab.c"
     break;
 
-  case 29:
-#line 221 "grammar.y"
+  case 27:
+#line 213 "grammar.y"
                 {
         //无具体意义void fun(int)
     }
-#line 1918 "grammar.tab.c"
+#line 1903 "grammar.tab.c"
     break;
 
-  case 30:
-#line 228 "grammar.y"
+  case 28:
+#line 220 "grammar.y"
                    {
         //：{ 语句块 }
         (yyval.stmt) = new BlockStmt((yyvsp[-1].temp));
     }
-#line 1927 "grammar.tab.c"
+#line 1912 "grammar.tab.c"
     break;
 
-  case 31:
-#line 232 "grammar.y"
+  case 29:
+#line 224 "grammar.y"
                {
         yyerrok;
     }
-#line 1935 "grammar.tab.c"
+#line 1920 "grammar.tab.c"
     break;
 
-  case 32:
-#line 238 "grammar.y"
+  case 30:
+#line 230 "grammar.y"
                       {
         //递归语句列表
         //只有一个语句
-        if ((yyvsp[-1].temp) == NULL) {
-            (yyval.temp) = (yyvsp[0].stmt);
-        } else {
-            (yyvsp[-1].temp) -> addChild((yyvsp[0].stmt));
-            (yyval.temp) = (yyvsp[-1].temp);
-        }
+        if ((yyvsp[-1].temp) == NULL) 
+            (yyvsp[-1].temp) = new TempNode();
+        (yyvsp[-1].temp) -> addChild((yyvsp[0].stmt));
+        (yyval.temp) = (yyvsp[-1].temp);
+    }
+#line 1933 "grammar.tab.c"
+    break;
+
+  case 31:
+#line 238 "grammar.y"
+      {
+        (yyval.temp) = NULL;
+    }
+#line 1941 "grammar.tab.c"
+    break;
+
+  case 32:
+#line 244 "grammar.y"
+        {
+        //
+        (yyval.stmt) = (yyvsp[0].stmt);
     }
 #line 1950 "grammar.tab.c"
     break;
 
   case 33:
 #line 248 "grammar.y"
-      {
-        (yyval.temp) = NULL;
-    }
-#line 1958 "grammar.tab.c"
-    break;
-
-  case 34:
-#line 254 "grammar.y"
-        {
-        //
-        (yyval.stmt) = (yyvsp[0].stmt);
-    }
-#line 1967 "grammar.tab.c"
-    break;
-
-  case 35:
-#line 258 "grammar.y"
           {
         //
         (yyval.stmt) = new ExprStmtNode((yyvsp[0].expr));
     }
-#line 1976 "grammar.tab.c"
+#line 1959 "grammar.tab.c"
     break;
 
-  case 36:
-#line 265 "grammar.y"
+  case 34:
+#line 255 "grammar.y"
                {
         //表达式 ；
             (yyval.stmt) = new ExprStmtNode((yyvsp[-1].expr));
         
     }
-#line 1986 "grammar.tab.c"
+#line 1969 "grammar.tab.c"
     break;
 
-  case 37:
-#line 270 "grammar.y"
+  case 35:
+#line 260 "grammar.y"
                {
         //定义语句 ；
             (yyval.stmt) = (yyvsp[-1].stmt);
         
     }
-#line 1996 "grammar.tab.c"
+#line 1979 "grammar.tab.c"
     break;
 
-  case 38:
-#line 275 "grammar.y"
+  case 36:
+#line 265 "grammar.y"
                         {
         //声明结构体变量：struct structname a ；
         StructTypeNode *t = StructTypeNode::getStructType((yyvsp[-2].id));
         (yyval.stmt) = new VarDefStmt(t, (yyvsp[-1].id));
     }
-#line 2006 "grammar.tab.c"
+#line 1989 "grammar.tab.c"
     break;
 
-  case 39:
-#line 280 "grammar.y"
+  case 37:
+#line 270 "grammar.y"
              {
         //语句块
         (yyval.stmt) = (yyvsp[0].stmt);
     }
-#line 2015 "grammar.tab.c"
+#line 1998 "grammar.tab.c"
     break;
 
-  case 40:
-#line 284 "grammar.y"
+  case 38:
+#line 274 "grammar.y"
                       {
         //return语句：return 表达式 ；
         (yyval.stmt) = new ReturnStmt((yyvsp[-1].expr));
     }
-#line 2024 "grammar.tab.c"
+#line 2007 "grammar.tab.c"
     break;
 
-  case 41:
-#line 288 "grammar.y"
+  case 39:
+#line 278 "grammar.y"
                   {
         //return语句：return ；
         (yyval.stmt) = new ReturnStmt(NULL);
     }
-#line 2033 "grammar.tab.c"
+#line 2016 "grammar.tab.c"
     break;
 
-  case 42:
-#line 292 "grammar.y"
+  case 40:
+#line 282 "grammar.y"
                         {
         //条件语句：if （ 表达式 ）语句
         (yyval.stmt) = new IFStmt((yyvsp[-2].expr), (yyvsp[0].stmt), nullptr);
     }
-#line 2042 "grammar.tab.c"
+#line 2025 "grammar.tab.c"
     break;
 
-  case 43:
-#line 296 "grammar.y"
+  case 41:
+#line 286 "grammar.y"
                                                         {
         //条件语句：if （ 表达式 ） 语句 else 语句
         (yyval.stmt) = new IFStmt((yyvsp[-4].expr), (yyvsp[-2].stmt), (yyvsp[0].stmt));
     }
-#line 2051 "grammar.tab.c"
+#line 2034 "grammar.tab.c"
     break;
 
-  case 44:
-#line 300 "grammar.y"
+  case 42:
+#line 290 "grammar.y"
                            {
         //while语句：while （ 表达式 ）语句
         (yyval.stmt) = new WhileStmt((yyvsp[-2].expr), (yyvsp[0].stmt));
     }
-#line 2060 "grammar.tab.c"
+#line 2043 "grammar.tab.c"
     break;
 
-  case 45:
-#line 304 "grammar.y"
+  case 43:
+#line 294 "grammar.y"
                                {
         //无限循环的for语句：for （ ； ；）语句
         (yyval.stmt) = new ForStmt(NULL, NULL, NULL, (yyvsp[0].stmt));
     }
-#line 2069 "grammar.tab.c"
+#line 2052 "grammar.tab.c"
     break;
 
-  case 46:
-#line 308 "grammar.y"
+  case 44:
+#line 298 "grammar.y"
                                       {
         //：for（ 声明 ； ；） 语句
         (yyval.stmt) = new ForStmt((yyvsp[-4].stmt), NULL, NULL, (yyvsp[0].stmt));
     }
-#line 2078 "grammar.tab.c"
+#line 2061 "grammar.tab.c"
     break;
 
-  case 47:
-#line 312 "grammar.y"
+  case 45:
+#line 302 "grammar.y"
                                    {
         //：for （ ； 表达式 ；） 语句 
         (yyval.stmt) = new ForStmt(NULL, (yyvsp[-3].expr), NULL, (yyvsp[0].stmt));
     }
-#line 2087 "grammar.tab.c"
+#line 2070 "grammar.tab.c"
     break;
 
-  case 48:
-#line 316 "grammar.y"
+  case 46:
+#line 306 "grammar.y"
                                    {
         //：for （ ； ； 表达式 ） 语句
         (yyval.stmt) = new ForStmt(NULL, NULL, (yyvsp[-2].expr), (yyvsp[0].stmt));
     }
-#line 2096 "grammar.tab.c"
+#line 2079 "grammar.tab.c"
     break;
 
-  case 49:
-#line 320 "grammar.y"
+  case 47:
+#line 310 "grammar.y"
                                               {
         //：for （ 声明 ； 表达式 ； 表达式 ） 语句
         (yyval.stmt) = new ForStmt((yyvsp[-6].stmt), (yyvsp[-4].expr), (yyvsp[-2].expr), (yyvsp[0].stmt));
     }
-#line 2105 "grammar.tab.c"
+#line 2088 "grammar.tab.c"
     break;
 
-  case 50:
-#line 324 "grammar.y"
+  case 48:
+#line 314 "grammar.y"
                                           {
         //：for （ 声明 ； 表达式 ； ） 语句
         (yyval.stmt) = new ForStmt((yyvsp[-5].stmt), (yyvsp[-3].expr), NULL, (yyvsp[0].stmt));
     }
-#line 2114 "grammar.tab.c"
+#line 2097 "grammar.tab.c"
     break;
 
-  case 51:
-#line 328 "grammar.y"
+  case 49:
+#line 318 "grammar.y"
                                           {
         //：for （ 声明 ； ； 表达式 ） 语句
         (yyval.stmt) = new ForStmt((yyvsp[-5].stmt), NULL, (yyvsp[-2].expr), (yyvsp[0].stmt));
     }
-#line 2123 "grammar.tab.c"
+#line 2106 "grammar.tab.c"
     break;
 
-  case 52:
-#line 332 "grammar.y"
+  case 50:
+#line 322 "grammar.y"
                                        {
         //：for （ ； 表达式 ； 表达式 ） 语句
         (yyval.stmt) = new ForStmt(NULL, (yyvsp[-4].expr), (yyvsp[-2].expr), (yyvsp[0].stmt));
+    }
+#line 2115 "grammar.tab.c"
+    break;
+
+  case 51:
+#line 326 "grammar.y"
+                 {
+        //错误
+        yyerrok;
+    }
+#line 2124 "grammar.tab.c"
+    break;
+
+  case 52:
+#line 333 "grammar.y"
+                       {
+        (yyval.stmt) = new VarDefStmt((yyvsp[-1].type), (yyvsp[0].temp));
     }
 #line 2132 "grammar.tab.c"
     break;
@@ -2134,271 +2134,276 @@ yyreduce:
   case 53:
 #line 336 "grammar.y"
                  {
-        //错误
         yyerrok;
     }
-#line 2141 "grammar.tab.c"
+#line 2140 "grammar.tab.c"
     break;
 
   case 54:
-#line 343 "grammar.y"
-                       {
-        VarDefStmt* t = new VarDefStmt((yyvsp[-1].type), (yyvsp[0].temp));
-        (yyval.stmt) = t;
-    }
-#line 2150 "grammar.tab.c"
-    break;
-
-  case 55:
-#line 347 "grammar.y"
-                 {
-        yyerrok;
-    }
-#line 2158 "grammar.tab.c"
-    break;
-
-  case 56:
-#line 352 "grammar.y"
+#line 341 "grammar.y"
              {
         (yyval.temp) = (yyvsp[0].temp);
     }
-#line 2166 "grammar.tab.c"
+#line 2148 "grammar.tab.c"
     break;
 
-  case 57:
-#line 355 "grammar.y"
+  case 55:
+#line 344 "grammar.y"
                         {
         //a , 声明列表
         (yyval.temp) = new TempNode();
         (yyval.temp) -> addChild((yyvsp[-2].temp));
         (yyval.temp) -> addChild((yyvsp[0].temp));
     }
-#line 2177 "grammar.tab.c"
+#line 2159 "grammar.tab.c"
     break;
 
-  case 58:
-#line 363 "grammar.y"
+  case 56:
+#line 352 "grammar.y"
             {
         (yyval.temp) = (yyvsp[0].temp);
+        // printf("get Dec\n");
     }
-#line 2185 "grammar.tab.c"
+#line 2168 "grammar.tab.c"
     break;
 
-  case 59:
-#line 366 "grammar.y"
+  case 57:
+#line 356 "grammar.y"
                           {
         (yyval.temp) = new TempNode();
         (yyval.temp) -> addChild((yyvsp[-2].temp));
         (yyval.temp) -> addChild((yyvsp[0].expr));
+        (yyval.temp) -> addMsg("=");
     }
-#line 2195 "grammar.tab.c"
+#line 2179 "grammar.tab.c"
+    break;
+
+  case 58:
+#line 366 "grammar.y"
+           {
+        //变量：varname
+        (yyval.temp) = (yyvsp[0].id);
+    }
+#line 2188 "grammar.tab.c"
+    break;
+
+  case 59:
+#line 370 "grammar.y"
+                   {
+        //变量数组：varname [ 数字 ]
+        (yyval.temp) = new TempNode();
+        (yyval.temp)->addChild((yyvsp[-3].id));
+        (yyval.temp)->addChild((yyvsp[-1].expr));
+        (yyval.temp)->addMsg("[]");
+    }
+#line 2200 "grammar.tab.c"
     break;
 
   case 60:
-#line 375 "grammar.y"
+#line 382 "grammar.y"
                      {
         (yyval.expr) = new OP2ExprNode(op_e::Assignop, (yyvsp[-2].expr), (yyvsp[0].expr));
     }
-#line 2203 "grammar.tab.c"
+#line 2208 "grammar.tab.c"
     break;
 
   case 61:
-#line 378 "grammar.y"
+#line 385 "grammar.y"
                   {
         (yyval.expr) = new OP2ExprNode(op_e::And, (yyvsp[-2].expr), (yyvsp[0].expr));
     }
-#line 2211 "grammar.tab.c"
+#line 2216 "grammar.tab.c"
     break;
 
   case 62:
-#line 381 "grammar.y"
+#line 388 "grammar.y"
                  {
         (yyval.expr) = new OP2ExprNode(op_e::Or, (yyvsp[-2].expr), (yyvsp[0].expr));
     }
-#line 2219 "grammar.tab.c"
+#line 2224 "grammar.tab.c"
     break;
 
   case 63:
-#line 384 "grammar.y"
+#line 391 "grammar.y"
                     {
         (yyval.expr) = new OP2ExprNode(op_e::Relop, (yyvsp[-1].str), (yyvsp[-2].expr), (yyvsp[0].expr));
     }
-#line 2227 "grammar.tab.c"
+#line 2232 "grammar.tab.c"
     break;
 
   case 64:
-#line 387 "grammar.y"
+#line 394 "grammar.y"
                    {
         (yyval.expr) = new OP2ExprNode(op_e::Plus, (yyvsp[-2].expr), (yyvsp[0].expr));
     }
-#line 2235 "grammar.tab.c"
+#line 2240 "grammar.tab.c"
     break;
 
   case 65:
-#line 390 "grammar.y"
+#line 397 "grammar.y"
                     {
         (yyval.expr) = new OP2ExprNode(op_e::Minus, (yyvsp[-2].expr), (yyvsp[0].expr));
     }
-#line 2243 "grammar.tab.c"
+#line 2248 "grammar.tab.c"
     break;
 
   case 66:
-#line 393 "grammar.y"
+#line 400 "grammar.y"
                    {
         (yyval.expr) = new OP2ExprNode(op_e::Times, (yyvsp[-2].expr), (yyvsp[0].expr));
     }
-#line 2251 "grammar.tab.c"
+#line 2256 "grammar.tab.c"
     break;
 
   case 67:
-#line 396 "grammar.y"
+#line 403 "grammar.y"
                   {
         (yyval.expr) = new OP2ExprNode(op_e::Div, (yyvsp[-2].expr), (yyvsp[0].expr));
     }
-#line 2259 "grammar.tab.c"
+#line 2264 "grammar.tab.c"
     break;
 
   case 68:
-#line 399 "grammar.y"
+#line 406 "grammar.y"
                   {
         (yyval.expr) = new OP2ExprNode(op_e::Mod, (yyvsp[-2].expr), (yyvsp[0].expr));
     }
-#line 2267 "grammar.tab.c"
+#line 2272 "grammar.tab.c"
     break;
 
   case 69:
-#line 402 "grammar.y"
+#line 409 "grammar.y"
                     {
         (yyval.expr) = new OP2ExprNode(op_e::Power, (yyvsp[-2].expr), (yyvsp[0].expr));
     }
-#line 2275 "grammar.tab.c"
+#line 2280 "grammar.tab.c"
     break;
 
   case 70:
-#line 405 "grammar.y"
+#line 412 "grammar.y"
                 {
         (yyval.expr) = (yyvsp[-1].expr);
     }
-#line 2283 "grammar.tab.c"
+#line 2288 "grammar.tab.c"
     break;
 
   case 71:
-#line 408 "grammar.y"
+#line 415 "grammar.y"
                 {
         (yyval.expr) = new OP1ExprNode(op_e::Minus, (yyvsp[0].expr));
     }
-#line 2291 "grammar.tab.c"
+#line 2296 "grammar.tab.c"
     break;
 
   case 72:
-#line 411 "grammar.y"
+#line 418 "grammar.y"
               {
         (yyval.expr) = new OP1ExprNode(op_e::Not, (yyvsp[0].expr));
     }
-#line 2299 "grammar.tab.c"
+#line 2304 "grammar.tab.c"
     break;
 
   case 73:
-#line 414 "grammar.y"
+#line 421 "grammar.y"
                    {
         (yyval.expr) = new OP1ExprNode(op_e::SignalAnd, new VarExprNode((yyvsp[0].id)));
     }
-#line 2307 "grammar.tab.c"
+#line 2312 "grammar.tab.c"
     break;
 
   case 74:
-#line 417 "grammar.y"
+#line 424 "grammar.y"
                     {
         (yyval.expr) = new FunCallExprNode((yyvsp[-3].id), (yyvsp[-1].temp));
     }
-#line 2315 "grammar.tab.c"
+#line 2320 "grammar.tab.c"
     break;
 
   case 75:
-#line 420 "grammar.y"
+#line 427 "grammar.y"
                {
         (yyval.expr) = new FunCallExprNode((yyvsp[-2].id), nullptr);
     }
-#line 2323 "grammar.tab.c"
+#line 2328 "grammar.tab.c"
     break;
 
   case 76:
-#line 423 "grammar.y"
+#line 430 "grammar.y"
                     {
         (yyval.expr) = new OP2ExprNode(op_e::GetArrayValue, (yyvsp[-3].expr), (yyvsp[-1].expr));
     }
-#line 2331 "grammar.tab.c"
+#line 2336 "grammar.tab.c"
     break;
 
   case 77:
-#line 426 "grammar.y"
+#line 433 "grammar.y"
          {
         (yyval.expr) = new VarExprNode((yyvsp[0].id));
     }
-#line 2339 "grammar.tab.c"
+#line 2344 "grammar.tab.c"
     break;
 
   case 78:
-#line 429 "grammar.y"
+#line 436 "grammar.y"
                    {
         VarExprNode *t = new VarExprNode((yyvsp[-3].id));
         (yyval.expr) = new OP2ExprNode(op_e::GetArrayValue, t, (yyvsp[-1].expr));
     }
-#line 2348 "grammar.tab.c"
+#line 2353 "grammar.tab.c"
     break;
 
   case 79:
-#line 433 "grammar.y"
+#line 440 "grammar.y"
                       {
         (yyval.expr) = new OP2ExprNode(op_e::GetMember, new VarExprNode((yyvsp[-2].id)), new VarExprNode((yyvsp[0].id)));
     }
-#line 2356 "grammar.tab.c"
+#line 2361 "grammar.tab.c"
     break;
 
   case 80:
-#line 436 "grammar.y"
+#line 443 "grammar.y"
           {
         (yyval.expr) = (yyvsp[0].expr);
     }
-#line 2364 "grammar.tab.c"
+#line 2369 "grammar.tab.c"
     break;
 
   case 81:
-#line 439 "grammar.y"
+#line 446 "grammar.y"
               {
         (yyval.expr) = new OP1ExprNode(op_e::GetValue, new VarExprNode((yyvsp[0].id)));
     }
-#line 2372 "grammar.tab.c"
+#line 2377 "grammar.tab.c"
     break;
 
   case 82:
-#line 442 "grammar.y"
+#line 449 "grammar.y"
                {
         yyerrok;
     }
-#line 2380 "grammar.tab.c"
+#line 2385 "grammar.tab.c"
     break;
 
   case 83:
-#line 447 "grammar.y"
+#line 454 "grammar.y"
                      {
         (yyvsp[-2].temp) -> addChild((yyvsp[0].expr));
         (yyval.temp) = (yyvsp[-2].temp);
     }
-#line 2389 "grammar.tab.c"
+#line 2394 "grammar.tab.c"
     break;
 
   case 84:
-#line 451 "grammar.y"
+#line 458 "grammar.y"
           {
         (yyval.temp) = new TempNode();
         (yyval.temp) -> addChild((yyvsp[0].expr));
     }
-#line 2398 "grammar.tab.c"
+#line 2403 "grammar.tab.c"
     break;
 
 
-#line 2402 "grammar.tab.c"
+#line 2407 "grammar.tab.c"
 
       default: break;
     }
@@ -2636,7 +2641,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 457 "grammar.y"
+#line 464 "grammar.y"
 
 
 void yyerror(const char* s) {
@@ -2659,6 +2664,20 @@ std::string replaceExtName(char* fileName) {
     rev += ".asm";
     return rev;
 }
+
+
+void print_word_list();
+void test_lexer()
+{
+    FILE* file = fopen("test.c", "r");
+    yyin = file;
+    do {
+		yyparse();
+	} while(!feof(yyin));
+    print_word_list();
+    thisFile.print(0);
+}
+
 /*
 int main(int argc,char* argv[])
 {
