@@ -22,34 +22,35 @@ void yyerror(const char *str);
   struct StmtNode *stmt;
   struct ASTNode *temp;
   const char *str;
+  struct TokenNode lexeme;
 }
 %locations
 %define parse.error verbose
 
 %right ASSIGNOP
 
-%left OR
-%left AND
-%left SINGALAND
-%left <str>  RELOP
-%left  MINUS PLUS
-%left  STAR DIV MOD
-%right  POWER
-%right NOT
-%left LP RP LB RB
-%nonassoc LOWER_THAN_ELSE
-%nonassoc SEMI COMMA
-%nonassoc RETURN IF ELSE WHILE STRUCT GETMEMBER
+%left <lexeme> OR
+%left <lexeme>  AND
+%left  <lexeme> SINGALAND
+%left <lexeme>   RELOP
+%left  <lexeme>  MINUS PLUS
+%left  <lexeme>  STAR DIV MOD
+%right  <lexeme>  POWER
+%right <lexeme>  NOT
+%left  <lexeme> LP RP LB RB
+%nonassoc <lexeme>  LOWER_THAN_ELSE
+%nonassoc  <lexeme> SEMI COMMA
+%nonassoc <lexeme>  RETURN IF ELSE WHILE STRUCT GETMEMBER
 
-%token ERRID
+%token <lexeme>  ERRID
 %type <expr> INT
 %type <type> TYPE
 %type <id> ID
-%token <str> INT1
-%token <str> TYPE1
-%token <str> ID1
-%token FOR
-%token LC RC
+%token  <lexeme> INT1
+%token  <lexeme> TYPE1
+%token <lexeme>  ID1
+%token  <lexeme> FOR
+%token  <lexeme> LC RC
 
 %type <type> Specifier
 %type <expr> Exp 
@@ -129,17 +130,17 @@ ExtDecList: VarDec {
     ;
 
 ID: ID1 {
-        $$ = new IDNode($1);
+        $$ = new IDNode($1.str);
     }
     ;
 
 INT: INT1 {
-        $$ = new ConstExprNode($1);
+        $$ = new ConstExprNode($1.str);
     }
     ;
 
 TYPE: TYPE1 {
-        $$ = TypeNode::getType($1);
+        $$ = TypeNode::getType($1.str);
     }
     ;
 
@@ -389,7 +390,7 @@ Exp:
         $$ = new OP2ExprNode(op_e::Or, $1, $3);
     }
     | Exp RELOP Exp {
-        $$ = new OP2ExprNode(op_e::Relop, $2, $1, $3);
+        $$ = new OP2ExprNode(op_e::Relop, $2.str, $1, $3);
     }
     | Exp PLUS Exp {
         $$ = new OP2ExprNode(op_e::Plus, $1, $3);
