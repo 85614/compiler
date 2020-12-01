@@ -14,10 +14,7 @@ struct IDNode: public ASTNode {
     const char *ID; // 标识符
     StmtNode* belong = nullptr;
     ~IDNode()=default;
-    void print(int depth)override{
-        printDepth(depth);
-        cout << "ID:" << ID << endl;
-    }
+
     AST_e get_AST_e()override{ return AST_e::ID; }
     IDNode(const char *_ID): ID(_ID) {
         // this->id_type

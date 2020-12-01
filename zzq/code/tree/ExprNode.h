@@ -119,11 +119,11 @@ struct FunCallExprNode: public ExprNode {
     {
         
         printDepth(depth);
-        USE_DEBUG;
+        // USE_DEBUG;
         cout << "Function Call." 
             //<< getInfo(((BasicTypeNode *)this->ret)->get_basic_type_e())
-             << endl;
-        USE_DEBUG;
+            << endl;
+        //USE_DEBUG;
         this->name->print(depth + 1);
         printDepth(depth + 1);
         cout << "Para List" << endl;

@@ -205,15 +205,7 @@ struct FuncDecStmt : public StmtNode
             }
             else
             {
-                printf("函数声明的temp节点中，第一个非temp节点不是ID节点\n");
-            }
-        }
-        else if (n->get_AST_e() == AST_e::Type)
-        {
-            args.push_back(std::make_pair<TypeNode *, IDNode *>((TypeNode *)n, nullptr));
-        }
-        else if (n->get_AST_e() == AST_e::ID)
-        {
+                 USE_DEBUG;
             if (args.size() == 0)
             {
                 printf("函数声明参数列表中在ID前无类型\n");
@@ -228,6 +220,11 @@ struct FuncDecStmt : public StmtNode
             {
                 args.back().second = (IDNode *)n;
             }
+            }
+        }
+        else if (n->get_AST_e() == AST_e::Type)
+        {
+            args.push_back(std::make_pair<TypeNode *, IDNode *>((TypeNode *)n, nullptr));
         }
         else
         {

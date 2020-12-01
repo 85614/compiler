@@ -107,7 +107,6 @@ void VarDefStmt::print(int depth)
     printDepth(depth);
     cout << "Var Def Stmt." << endl;
     this->basicType->print(depth + 1);
-    // print(depth + 1);
     printDepth(depth + 1);
     cout << "Var Def List." << endl;
     for (int k = 0; k < (this->vars).size(); k++)
@@ -148,7 +147,7 @@ void WhileStmt::print(int depth)
 {
     printDepth(depth);
     cout << "While Stmt. " << endl;
-    // print(depth + 1);
+    printDepth(depth + 1);
     cout << "Judge Condition." << endl;
     this->test->print(depth + 2);
     printDepth(depth + 1);
@@ -162,7 +161,7 @@ void WhileStmt::print(int depth)
     cout << "Comp Stmt. " << endl;
     for (int k = 0; k < (this->stmts).size(); k++)
     {
-        (this->stmts)[k]->print(depth + 2);
+        (this->stmts)[k]->print(depth + 1);
     }
     
 }

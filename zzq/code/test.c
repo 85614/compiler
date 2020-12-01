@@ -21,7 +21,8 @@
   
 // }
 
-void fun(){
+void fun(int a,int b) {
+    int c = 1;
     print_int(1);
 }
 

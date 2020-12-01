@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "../symbol/SymbolTable.h"
 #include "enum.h"
-#define MY_DEBUG 0
+#define MY_DEBUG 1
 #define USE_DEBUG { if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;}
 using std::cout;
 using std::endl;
