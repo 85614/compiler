@@ -4,6 +4,7 @@
 #include "IDNode.h"
 #include "ASTNode.h"
 #include "TempNode.h"
+#include "ExprNode.h"
 
 struct TypeNode : public ASTNode
 {
@@ -145,20 +146,21 @@ struct ArrayTypeNode : public TypeNode
 {
     // 数组类型
     TypeNode *basicType;
-    size_t len;
     virtual type_e get_type_e() override { return type_e::ArrayType; };
-    ArrayTypeNode(TypeNode *_Basic) : basicType(_Basic)
-    {
-    }
+    //size_t len;
+    // ArrayTypeNode(TypeNode *_Basic, int l) : basicType(_Basic)
+    // {
+    //     len = l;
+    // }
+    std::vector<size_t> len;
+    ArrayTypeNode(TypeNode *_Basic, std::vector<ASTNode*>& leafs) ;
     void print(int depth)
     {
         printDepth(depth);
         cout << "Type Specifier: " << getInfo(((BasicTypeNode *)this->basicType)->get_basic_type_e())
-             << " ARRAY" << endl;
-        printDepth(depth + 1);
-        cout << "Array Size." << endl;
-        printDepth(depth + 2);
-        cout << "Const Dec: " << this->len;
+              << " ";
+        for(int k = 0; k < len.size(); k++) cout<<"[" << len[k] <<"]";
+        cout<<endl;
     }
 };
 

@@ -96,7 +96,6 @@ ExtDef: Specifier ExtDecList SEMI {
         //int a, b, c;
         $$ = new VarDefStmt($1, $2);
 		$$->setTokenCount($1);
-        $2->print(1);
         //$$ = new TempNode();
         //$$->addChild($1);
         //$$->addChild($2);
@@ -399,12 +398,16 @@ Dec: VarDec {
 
 /* Declarators */
 /* 变量声明 */
-VarDec: ID {
-        //变量：varname
+
+
+
+VarDec:
+    ID {
         $$ = $1;
     }
-    | ID LB INT RB {
-        //变量数组：varname [ 数字 ]
+    |VarDec LB INT RB {
+        // $$ = $1;
+        // $$->ArrMsg.push($3->toInt());
         $$ = new TempNode();
 		$$->setTokenCount($1);
         $$->addChild($1);

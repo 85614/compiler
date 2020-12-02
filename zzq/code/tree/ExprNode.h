@@ -2,9 +2,11 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "TypeNode.h"
+//#include "TypeNode.h"
 #include "IDNode.h"
 #include "TempNode.h"
+
+class TypeNode;
 
 using std::cout;
 using std::endl;
@@ -51,7 +53,7 @@ struct OP2ExprNode : public ExprNode
     expr_e get_expr_e() override { return expr_e::Op2; };
     OP2ExprNode(op_e _Op, const char *_OpStr, ExprNode *_First, ExprNode *_Second )
         :op(_Op), first(_First), second(_Second), opStr(_OpStr)
-    { 
+    {
     }
 
     OP2ExprNode(op_e _Op, ExprNode *_First, ExprNode *_Second )
@@ -161,6 +163,12 @@ struct ConstExprNode : public ExprNode
         //this->type =
     }
     expr_e get_expr_e() override { return expr_e::Const; };
+    int toInt() {
+        int num = 0, k = -1;
+        while(value[++k]) 
+            num = num * 10 + value[k] - '0';
+        return num;
+    }
     void print(int depth) override
     {
         printDepth(depth);

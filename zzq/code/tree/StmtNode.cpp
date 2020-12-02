@@ -29,20 +29,21 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
             // 声明数组
             std::vector<ASTNode*> leafs;
             temp->getAllLeaf(leafs);
-            if(leafs.size()!=2){
+            if(leafs.size() < 2){
                 printf("数组声明，变量名+数组长度不为2");
                 return;
             }
-            if (leafs[1]->get_AST_e() != AST_e::Expr)
-                ;
-            auto expr = (ExprNode*)(leafs[1]);
-            if (expr->get_expr_e() != expr_e::Const)
-                ;
-            auto _const = (ConstExprNode*)expr;
-            int len =  atoi(_const->value);
-            addVar(new ArrayTypeNode(basicType),leafs[0], nullptr);
+            // if (leafs[1]->get_AST_e() != AST_e::Expr)
+            //     ;
+            // auto expr = (ExprNode*)(leafs[1]);
+            // if (expr->get_expr_e() != expr_e::Const)
+            //     ;
+            // auto _const = (ConstExprNode*)expr;
+            // int len =  atoi(_const->value);
+            // addVar(new ArrayTypeNode(basicType, len),leafs[0], nullptr);
+            addVar(new ArrayTypeNode(basicType, leafs), leafs[0], nullptr);
 
-        } else if (strcmp(temp->msg, "*") == 0) {            
+        } else if (strcmp(temp->msg, "*") == 0) {           
             // 声明指针
             printf("变量定义: unexcepted *");
             return;
@@ -102,6 +103,7 @@ void VarDef::print(int depth)
         printDepth(depth);
         cout << "Var Dec." << endl;
         this->ID->print(depth + 1);
+        this->type->print(depth + 1);
     }
     if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
     
@@ -121,7 +123,7 @@ void VarDefStmt::print(int depth)
     printDepth(depth);
     if(!flag) cout << "Var Dec Stmt." << endl;
     else cout << "Var Def Stmt." << endl;
-    this->basicType->print(depth + 1);
+    //this->basicType->print(depth + 1);
     
     if ((this->vars).size() > 1)
     {
