@@ -36,7 +36,7 @@ struct OP1ExprNode : public ExprNode
     void print(int depth) override
     {
         printDepth(depth);
-        cout << "Expr  op:" << getInfo(this->op) << endl;
+        cout << "Expr op:" << getInfo(this->op) << endl;
         this->first->print(depth + 1);
     }
 };
@@ -61,7 +61,7 @@ struct OP2ExprNode : public ExprNode
     void print(int depth) override
     {
         printDepth(depth);
-        cout << "Expr  op:" << getInfo(this->op) << endl;
+        cout << "Expr op:" << getInfo(this->op) << endl;
         this->first->print(depth + 1);
         this->second->print(depth + 1);
     }

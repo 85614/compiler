@@ -11,7 +11,8 @@ struct FileNode :public ScopeNode{
    // void addChild(ASTNode* child)override { stmts.push_back(child); }
    AST_e get_AST_e()override{return AST_e::File;}
    void print(int depth) override{
-        root->print(0);
+         cout << "|--FILE :" << endl;
+         root->print(1);
    }
    FileNode(){
       this->belong = &fileGlobal;

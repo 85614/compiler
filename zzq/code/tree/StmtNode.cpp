@@ -89,30 +89,54 @@ void IFStmt::print(int depth)
 
 void VarDef::print(int depth)
 {
-    if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
-    printDepth(depth);
-    cout << "Var def." << endl;
-    this->ID->print(depth + 1);
-    // if (!this->init) // 为什么你又搞出这样的来了！！
     if(this->init)
     {
+        printDepth(depth);
+        cout << "Var def." << endl;
+        this->ID->print(depth + 1);
         printDepth(depth + 1);
         cout << "Var Init." << endl;
         this->init->print(depth + 2);
     }
+    else {
+        printDepth(depth);
+        cout << "Var Dec." << endl;
+        this->ID->print(depth + 1);
+    }
+    if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
+    
+    // if (!this->init) // 为什么你又搞出这样的来了！！
+    
 }
 
 void VarDefStmt::print(int depth)
 {
-    printDepth(depth);
-    cout << "Var Def Stmt." << endl;
-    this->basicType->print(depth + 1);
-    printDepth(depth + 1);
-    cout << "Var Def List." << endl;
+    bool flag = 0; // 有def就是1
     for (int k = 0; k < (this->vars).size(); k++)
     {
-        if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
-        (this->vars[k]).print(depth + 2);
+        if (MY_DEBUG)
+            cout << __FILE__ << __LINE__ << endl;
+        if((this->vars[k]).init) flag = 1;
+    }
+    printDepth(depth);
+    if(!flag) cout << "Var Dec Stmt." << endl;
+    else cout << "Var Def Stmt." << endl;
+    this->basicType->print(depth + 1);
+    
+    if ((this->vars).size() > 1)
+    {
+        printDepth(depth + 1);
+        if(!flag) cout << "Var Dec List." << endl;
+        else cout << "Var Def List." << endl;
+        for (int k = 0; k < (this->vars).size(); k++)
+        {
+            if (MY_DEBUG)
+                cout << __FILE__ << __LINE__ << endl;
+            (this->vars[k]).print(depth + 2);
+        }
+    }
+    else if ((this->vars).size() == 1){
+        (this->vars[0]).print(depth + 1);
     }
 }
 
@@ -120,19 +144,19 @@ void ForStmt::print(int depth)
 {
     printDepth(depth);
     cout << "For Stmt." << endl;
-    if (!this->init)
+    if (this->init)
     {
         printDepth(depth + 1);
         cout << "Init Stmt." << endl;
         this->init->print(depth + 2);
     }
-    if (!this->test)
+    if (this->test)
     {
         printDepth(depth + 1);
         cout << "Judge Conditions." << endl;
         this->test->print(depth + 2);
     }
-    if (!this->other)
+    if (this->other)
     {
         printDepth(depth + 1);
         cout << "Increment" << endl;
