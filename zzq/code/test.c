@@ -6,10 +6,14 @@ int b;
 
 // }
 
-int a;
+int *a;
+int b;
+
+//a = &b;
 int fun()
 {
-    a;
+    b = 1;
+    a = &b;
 }
 
 void fun()
