@@ -13,9 +13,8 @@ struct TempNode : ASTNode{
     ~TempNode()=default;
     void getAllLeaf(std::vector<ASTNode *> &leafs){
         for(ASTNode*n: childList) {
-            if (n->get_AST_e()==AST_e::Temp){
+            if (n->get_AST_e()==AST_e::Temp)
                 ((TempNode*)n)->getAllLeaf(leafs);
-            }               
             else 
                 leafs.push_back(n);
         }   

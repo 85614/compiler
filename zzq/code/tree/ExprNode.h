@@ -2,7 +2,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
-//#include "TypeNode.h"
+#include "TypeNode.h"
 #include "IDNode.h"
 #include "TempNode.h"
 
@@ -93,6 +93,7 @@ struct FunCallExprNode: public ExprNode {
     std::vector<ExprNode*> args; //参数
     expr_e get_expr_e() override { return expr_e::FuncCall; };
     FunCallExprNode(IDNode *_Name, ASTNode *_Args): name(_Name) {
+        _Name->checkExist(true);
         // this->ret = 
         // this->type = 
         if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
@@ -145,6 +146,12 @@ struct VarExprNode : public ExprNode
     VarExprNode(IDNode *_Id) : id(_Id)
     {
         // this->type =
+        _Id->checkExist(true);
+        if (_Id->realID->extra && ((ASTNode*)(_Id->realID->extra))->get_AST_e()==AST_e::Type)
+            this->type = (TypeNode*)_Id->realID->extra;
+        else
+            cout << "变量" <<id->ID <<  "类型不确定" << endl;
+
     }
     void print(int depth) override
     {

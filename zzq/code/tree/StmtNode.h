@@ -6,11 +6,27 @@
 #include "ExprNode.h"
 
 
-struct StmtNode: public ScopeNode {
+struct StmtNode: public ASTNode {
     AST_e get_AST_e()override {return AST_e::Stmt; }
     virtual stmt_e get_stmt_e() = 0;
 };
 
+struct ScopeStmtNode: public StmtNode {
+    // 会产生新作用域ScopeStmtNode的语句
+    SymbolTable *belong = nullptr;
+    void setSymbolTable(SymbolTable *_Parent) {
+        belong = _Parent;
+    }
+    
+    void makeSymbolTable()override{
+        // 会产生新作用域
+        setSymbolTable(global.makeChild(this, this->tokenCount));
+        // cout << "get:";
+        // for (auto id: this->belong->IDList)
+        //     cout << id->name << ", ";
+        // cout << endl;
+    }
+};
 
 struct ExprStmtNode : public StmtNode
 {
@@ -32,9 +48,8 @@ struct IFStmt : public StmtNode
     IFStmt(ExprNode *_Test, StmtNode *_TrueRun, StmtNode *_FalseRun)
         : test(_Test), trueRun(_TrueRun), falseRun(_FalseRun)
     {
-        
-        
     }
+
     ~IFStmt() = default;
     void print(int depth)override;
 };
@@ -57,6 +72,7 @@ struct VarDefStmt : public StmtNode
     ~VarDefStmt() = default;
     VarDefStmt(TypeNode *_Type, ASTNode *_Vars)
     {
+        DEBUG2(_Type);
         if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
         this->basicType = _Type;
         addVars(_Vars);
@@ -87,15 +103,17 @@ struct VarDefStmt : public StmtNode
         var.type = type;
         var.init = init;
         var.ID = ID;
-
+        USE_DEBUG;
+        global.registe(ID, IDType_e::VarDef, type);
+        USE_DEBUG;
         vars.push_back(var);
     }
     void addVars(ASTNode *_Vars);
-
+    
     void print(int depth)override;
 };
 
-struct ForStmt : public StmtNode
+struct ForStmt : public ScopeStmtNode
 {
     // for 语句
     StmtNode *init;  //初始化
@@ -107,8 +125,9 @@ struct ForStmt : public StmtNode
     ForStmt(StmtNode *_Init, ExprNode *_Test, ExprNode *_Other, StmtNode *_Run)
         : init(_Init), test(_Test), other(_Other), run(_Run)
     {
-        this->belong = new SymbolTable(this->belong, this);
+        
     }
+
     void print(int depth)override;
     // 经测试，for语句的初始化语句和执行语句不是同一个作用域
 };
@@ -128,7 +147,7 @@ struct WhileStmt : public StmtNode
     void print(int depth)override;
 };
 
-struct BlockStmt : public StmtNode
+struct BlockStmt : public ScopeStmtNode
 {
     // 语句块
     std::vector<StmtNode *> stmts;
@@ -177,11 +196,19 @@ struct FuncDecStmt : public StmtNode
     TypeNode *re;                                      //返回值类型
     IDNode *name = nullptr;                            //函数名
     std::vector<std::pair<TypeNode *, IDNode *>> args; // 参数列表
+    FuncTypeNode *funType=nullptr;
     stmt_e get_stmt_e() override { return stmt_e::FunDec; }
     ~FuncDecStmt() = default;
     FuncDecStmt(TypeNode *_Re, ASTNode *_NameAndArgs) : re(_Re)
     {
+        DEBUG2(_Re);
         addNameAndArgs(_NameAndArgs);
+        std::vector<TypeNode*> argTypes;
+        for(auto &arg: args){
+            argTypes.push_back(arg.first);
+        }
+        funType = new FuncTypeNode(re, std::move(argTypes));
+        name->setType(IDType_e::FuncDec, funType);
     }
     void addNameAndArgs(ASTNode *n)
     {
@@ -202,24 +229,27 @@ struct FuncDecStmt : public StmtNode
             if (name == nullptr)
             {
                 name = (IDNode *)n;
+                global.registe(name, IDType_e::FuncDec, nullptr);
             }
             else
             {
                  USE_DEBUG;
-            if (args.size() == 0)
-            {
-                printf("函数声明参数列表中在ID前无类型\n");
-                return;
-            }
-            if (args.back().second != nullptr)
-            {
-                printf("函数声明中参数列表中一个类型类型有多个ID\n");
-                return;
-            }
-            if (args.back().second == nullptr)
-            {
-                args.back().second = (IDNode *)n;
-            }
+                if (args.size() == 0)
+                {
+                    printf("函数声明参数列表中在ID前无类型\n");
+                    return;
+                }
+                if (args.back().second != nullptr)
+                {
+                    printf("函数声明中参数列表中一个类型类型有多个ID\n");
+                    return;
+                }
+                if (args.back().second == nullptr)
+                {
+                    auto id = (IDNode *)n;
+                    args.back().second = id;
+                    global.registe(id, IDType_e::VarDef, args.back().first);
+                }
             }
         }
         else if (n->get_AST_e() == AST_e::Type)
@@ -236,7 +266,7 @@ struct FuncDecStmt : public StmtNode
     void print(int depth)override;
 };
 
-struct FuncDefStmt : public StmtNode
+struct FuncDefStmt : public ScopeStmtNode
 {
     // 函数定义语句
     FuncDecStmt funcdec; // 函数声明
@@ -246,6 +276,7 @@ struct FuncDefStmt : public StmtNode
     FuncDefStmt(TypeNode *_Re, ASTNode *_NameAndArgs, StmtNode *_Block)
         : funcdec(_Re, _NameAndArgs)
     {
+        DEBUG2(_Re);
         if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
         if (!_Block)
             printf("函数体为NULL\n");
@@ -258,9 +289,23 @@ struct FuncDefStmt : public StmtNode
             printf("函数体不是一个块语句");
         }
         if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
+         
+        funcdec.name->setType(IDType_e::FuncDef, funcdec.funType);
+        memberTokenCount = _NameAndArgs->tokenCount + 1;
+    }
+    void makeSymbolTable()override{
+        setSymbolTable(global.makeChild(this, memberTokenCount));
+        for(Identifier *id: this->belong->IDList){
+            for (Identifier *id2: block->belong->IDList) {
+                if(id->name == id2->name){
+                    cout << id->name << " 重定义"<<endl;
+                }
+            }
+        }
     }
     // 经测试，函数定义的参数列表和函数体同一个作用域，不允许重复定义
-
+    int memberTokenCount = 0;
+    
 
 
     void print(int depth)override;
@@ -273,21 +318,31 @@ struct StructDecStmt : StmtNode
     stmt_e get_stmt_e() override { return stmt_e::StructDec; }
     StructDecStmt(IDNode *_ID)
     {
-        type = StructTypeNode::getStructType(_ID->ID);
+        type = StructTypeNode::createNode(_ID, nullptr);
+        global.registe(_ID, IDType_e::TypenameDec, type);
+        DEBUG2(global.get(_ID->ID));
     }
 
     void print(int depth)override;
 };
 
-struct StructDefStmt : StmtNode
+struct StructDefStmt : ScopeStmtNode
 {
     // 结构体定义
     StructTypeNode *type;
     stmt_e get_stmt_e() override { return stmt_e::StructDef; }
+    
     StructDefStmt(IDNode *_ID, ASTNode *_Members)
     {
-        type = StructTypeNode::getStructType(_ID->ID);
-        type->addMembers(_Members);
+        type = StructTypeNode::createNode(_ID, _Members);
+        global.registe(_ID, IDType_e::TypenameDef, type);
+        memberTokenCount = _Members->tokenCount;
+        DEBUG2(memberTokenCount);
+        
+    }
+    int memberTokenCount = 0;
+    void makeSymbolTable() override{
+        setSymbolTable(global.makeChild(this, memberTokenCount));
     }
 
     void print(int depth)override;

@@ -12,7 +12,7 @@ struct TypeNode : public ASTNode
     size_t size = -1;
     AST_e get_AST_e() override { return AST_e::Type; }
     virtual type_e get_type_e() = 0;
-    static TypeNode *getType(const char *_Name);
+    static TypeNode *getType(const char *_Name) ;
     
 };
 
@@ -20,7 +20,14 @@ struct BasicTypeNode : public TypeNode
 {
     // 基础类型， 请使用静态对象
     static BasicTypeNode *VOID, *INT;
+    static BasicTypeNode *typeList[2];
     const char *name = nullptr;
+    static TypeNode *getType(const char *_Name){
+        for (auto type: typeList)
+            if (strcmp( type->name,_Name) == 0 )
+                return type;
+        return nullptr;
+    }
     virtual type_e get_type_e() override { return type_e::BasicType; };
     virtual basic_type_e get_basic_type_e() = 0;
     
@@ -81,21 +88,31 @@ struct StructTypeNode : public BasicTypeNode
     // 结构体
     bool defined = false;
     IDNode *ID; // 结构体名
-    static std::vector<StructTypeNode *> structList;
     std::vector<std::pair<TypeNode *, IDNode *>> members; //成员变量
     virtual basic_type_e get_basic_type_e() override { return basic_type_e::STRUCT; };
-    static StructTypeNode *getStructType(IDNode *_ID)
+    static TypeNode *getStructType(IDNode *_ID)
     {
         return getStructType(_ID->ID);
     }
-    static StructTypeNode *getStructType(const char *name)
+    static TypeNode *getStructType(const char *name)
     {
         // find from structList
-        for (StructTypeNode *node : structList)
-        {
-            if (strcmp(node->name, name) == 0)
-                return node;
+        Identifier *n = global.get(name);
+        if (!n) {
+            cout << "类型 "<<name << "未定义"<<endl;
+            exit(1);
         }
+        if (n && (n->IdType == IDType_e::TypenameDec||n->IdType == IDType_e::TypenameDef))
+        {
+            if (n->extra)
+                return n->extra;
+            else 
+                cout <<"类型 " << n->name<< "获取的类型为NULL";
+
+        }
+        
+        DEBUG2(n);
+        // DEBUG2(n->extra);
         return nullptr;
     }
     void addMembers(ASTNode *members)
@@ -140,6 +157,10 @@ struct FuncTypeNode : public TypeNode
     virtual type_e get_type_e() override { return type_e::FuncType; };
     TypeNode *re;                 //返回值类型
     std::vector<TypeNode *> args; // 参数类型
+    FuncTypeNode(TypeNode *_Re, std::vector<TypeNode *> &&_Args)
+        :re(_Re), args(_Args)
+    {
+    }
 };
 
 struct ArrayTypeNode : public TypeNode

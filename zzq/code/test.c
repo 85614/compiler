@@ -4,10 +4,47 @@
 // int b;
 // // void fun(){
 
-// // }
+// // // }
 
-// int *a;
-// int b;
+
+// struct AA
+// {
+//     int a;
+// };
+
+// void fun(){
+
+// }
+// int a;
+// void main(){
+//     // fun();
+// }
+
+// void fun(){
+//     struct AA a;
+
+// }
+
+
+// struct A {
+//     int a;
+// };
+
+
+// void fun(int a){
+//     struct A a;   
+//     struct A a;   
+// }
+
+
+
+// void fun(){
+//     static int a;
+// }
+// int a;
+// int fun(){
+//     a;
+// }
 
 // //a = &b;
 // int fun()
@@ -16,23 +53,34 @@
 //     a = &b;
 // }
 
-// void fun()
-// {
+// struct A{
 //     int a;
-// }
+// };
+
+struct A b;
+
+
+
+// void fun(){
 
 // void fun()
 // {
 // }
+// void fun(){
 
-// void fun()
-// {
-//     print_int(1);
 // }
 
-// int *c;
-int d[1][2][3][4][5][6][7], a, b, c[2];
-{
+// void fun2(){
+//     fun();
+// }
+
+//     int c;
+//     int i = 0;
+// int main() 
+// {
+//     (a + 8)[1];
+//     int a = 1, b = 2;
+//     a = b ^ 2 ^ 3;
     
 }
 // int i;

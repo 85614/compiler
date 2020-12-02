@@ -4,4 +4,5 @@ void test_lexer();
 int main(){
    init();
    test_lexer();
+   global.checkRepeat();
 }

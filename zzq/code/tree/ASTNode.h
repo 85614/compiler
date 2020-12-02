@@ -13,15 +13,21 @@ struct TokenNode{
     int tokenCount;
 };
 
-// template<AST_e e> struct __AST_getter{ static_assert(false, "未实现的类型"); };
+
+// 全局作用域符号表
+extern SymbolTable global;
+// 文件全局作用域 static 大概用不到吧
+extern SymbolTable staticGlobal;
+
 
 struct ASTNode
 {
-    virtual AST_e get_AST_e() = 0;
+    
     int tokenCount = 0; //第一个词法单元的序号
     virtual void print(int depth) { printf("请实现print，get_AST_e()is\n") ; cout << (int)this->get_AST_e(); }
     void printt(int depth) {printf("请实现print，get_AST_e()is\n") ; cout << (int)this->get_AST_e();}
     virtual ~ASTNode() = default;
+    virtual AST_e get_AST_e() = 0;
     virtual void addChild(ASTNode *child)
     {
         printf("请实现addchild，get_AST_e()is%d\n", (int)this->get_AST_e());
@@ -32,18 +38,21 @@ struct ASTNode
         printf("请实现addMsg，get_AST_e()is%d\n", (int)this->get_AST_e());
         exit(1);
     }
-    bool setTokenCount(const TokenNode&tn){
+    void setTokenCount(const TokenNode&tn){
         this->tokenCount = tn.tokenCount;
-        return true;
-    
+        // DEBUG2(this->tokenCount)
+        makeSymbolTable();
     }
-    bool setTokenCount(ASTNode *n) {
+protected:
+    virtual void makeSymbolTable(){} // 可能需要生成新的作用域
+public:
+    void setTokenCount(ASTNode *n) {
         
         if(!n){
             USE_DEBUG;
             cout << "$1为空。"  <<(int)this->get_AST_e()<< endl; 
             exit(1);
-            return false; 
+            
         }
         else if (n->tokenCount == 0) {
             USE_DEBUG;
@@ -56,13 +65,13 @@ struct ASTNode
             cout << (int)this->get_AST_e() << endl;  
             USE_DEBUG;
             exit(1);
-            return false;
+            
         }
         else {
             this->tokenCount = n->tokenCount;
-            return true;
+            makeSymbolTable();
         }
-  
+        // DEBUG2(this->tokenCount)
        
     }   
 
@@ -71,10 +80,7 @@ struct ASTNode
 struct ScopeNode: ASTNode {
     SymbolTable *belong = nullptr;
     void setSymbolTable(SymbolTable *_Parent) {
-        if (belong)
-            belong->parent = belong;
-        else 
-            belong = _Parent;
+        belong = _Parent;
     }
 };
 

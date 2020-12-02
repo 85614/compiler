@@ -104,23 +104,29 @@ static const char* getInfo(expr_e temp) {
     }
 }
 
-enum IDType_e {
+enum class IDType_e {
     unknow, //暂时未知，之后得到
-    Typename, //类型名
-    Var, // 变量名
-    Func // 函数名
+    TypenameDec, // 结构体声明
+    TypenameDef, // 结构体定义
+    VarDec, // 变量声明
+    VarDef, // 变量定义
+    FuncDec, // 函数声明
+    FuncDef // 函数定义
 };
 
 static const char* getInfo(IDType_e temp) {
     switch (temp)
     {
-    case unknow:
+    case IDType_e::unknow:
         return "unknow";
-    case Typename:
+    case IDType_e::TypenameDef:
+    case IDType_e::TypenameDec:
         return "Typename";
-    case Var:
+    case IDType_e::VarDec:
+    case IDType_e::VarDef:
         return "Var";
-    case Func:
+    case IDType_e::FuncDec:
+    case IDType_e::FuncDef:
         return "Func";
     default:
         return "Const";

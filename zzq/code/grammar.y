@@ -69,7 +69,7 @@ void yyerror(const char *str);
 
 /* 开始符号 */
 Program: ExtDefList {
-        thisFile.root = $1;
+        thisFile.addChild($1);
     }
     ;
 
@@ -160,6 +160,10 @@ Specifier: TYPE {
         //指针：int *
         $$ = new PointerTypeNode($1);
 		$$->setTokenCount($1);
+    }
+    | STRUCT ID {
+        $$ = TypeNode::getType($2->ID);
+        $$->setTokenCount($1);
     }
     ;
 
@@ -282,8 +286,7 @@ Stmt: Exp SEMI {
     }
     | STRUCT ID ID SEMI {
         //声明结构体变量：struct structname a ；
-        StructTypeNode *t = StructTypeNode::getStructType($2);
-        $$ = new VarDefStmt(t, $3);
+        $$ = new VarDefStmt(StructTypeNode::getStructType($2), $3);
 		$$->setTokenCount($1);
     }
     | CompSt {
