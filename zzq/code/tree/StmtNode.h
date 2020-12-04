@@ -110,7 +110,7 @@ struct VarDefStmt : public StmtNode
         vars.push_back(var);
     }
     void addVars(ASTNode *_Vars);
-    
+
     void print(int depth)override;
 };
 

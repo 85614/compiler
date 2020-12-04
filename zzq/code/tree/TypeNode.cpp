@@ -35,16 +35,26 @@ TypeNode *TypeNode::getType(const char *_Name) {
     return ans;
 }
 
-ArrayTypeNode::ArrayTypeNode(TypeNode *_Basic, std::vector<ASTNode *> &leafs) : basicType(_Basic)
+// ArrayTypeNode::ArrayTypeNode(TypeNode *_Basic, std::vector<ASTNode *> &leafs) : basicType(_Basic)
+// {
+//     for (int k = 1; k < leafs.size(); k++)
+//     {
+//         if (leafs[k]->get_AST_e() != AST_e::Expr)
+//             ;
+//         auto expr = (ExprNode *)(leafs[k]);
+//         if (expr->get_expr_e() != expr_e::Const)
+//             ;
+//         auto _const = (ConstExprNode *)expr;
+//         len.push_back((size_t)atoi(_const->value));
+//     }
+// }
+
+ArrayTypeNode::ArrayTypeNode(TypeNode *_Basic, ExprNode *_Size)
+    :basicType(_Basic)
 {
-    for (int k = 1; k < leafs.size(); k++)
-    {
-        if (leafs[k]->get_AST_e() != AST_e::Expr)
-            ;
-        auto expr = (ExprNode *)(leafs[k]);
-        if (expr->get_expr_e() != expr_e::Const)
-            ;
-        auto _const = (ConstExprNode *)expr;
-        len.push_back((size_t)atoi(_const->value));
+    if (_Size->get_expr_e() != expr_e::Const) {
+        cout << "数组内[]的不是数字" << endl;
+        exit(1);
     }
+    len = atoi(((ConstExprNode*)_Size)->value);
 }

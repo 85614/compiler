@@ -3,20 +3,24 @@
 #include "TypeNode.h"
 #include "ExprNode.h"
 
+
+
 void VarDefStmt::addVars(ASTNode*_Vars) {
+    
     if(!_Vars)
         return;
     if (_Vars->get_AST_e() == AST_e::ID) {
         this->addVar(this->basicType, (IDNode*)_Vars, nullptr);
         if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
     }
-    if(_Vars->get_AST_e()==AST_e::Temp){
+    else if(_Vars->get_AST_e()==AST_e::Temp){
         TempNode* temp = (TempNode*)_Vars;
-        if(!temp->msg) {
+        if(temp->msg.empty()) {
             // 没有消息，此temp节点是一个变量列表
             for(ASTNode *n: temp->childList)
                 addVars(n);
-        } else if (strcmp(temp->msg, "=") == 0) {
+        } else if (temp->msg == "=") {
+            // temp = left + init 
             // 带初始化
             std::vector<ASTNode*> leafs;
             temp->getAllLeaf(leafs);
@@ -24,35 +28,60 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
                 printf("带初始化的变量声明，变量名+初始化值数量不为2");
                 return;
             }
-            addVar(this->basicType, leafs[0],leafs[1]);
-        } else if (strcmp(temp->msg, "[]") == 0) {
-            // 声明数组
-            std::vector<ASTNode*> leafs;
-            temp->getAllLeaf(leafs);
-            if(leafs.size() < 2){
-                printf("数组声明，变量名+数组长度不为2");
-                return;
-            }
-            // if (leafs[1]->get_AST_e() != AST_e::Expr)
-            //     ;
-            // auto expr = (ExprNode*)(leafs[1]);
-            // if (expr->get_expr_e() != expr_e::Const)
-            //     ;
-            // auto _const = (ConstExprNode*)expr;
-            // int len =  atoi(_const->value);
-            // addVar(new ArrayTypeNode(basicType, len),leafs[0], nullptr);
-            addVar(new ArrayTypeNode(basicType, leafs), leafs[0], nullptr);
-
-        } else if (strcmp(temp->msg, "*") == 0) {           
-            // 声明指针
-            printf("变量定义: unexcepted *");
-            return;
-            // std::vector<ASTNode*> leafs;
-            // temp->getAllLeaf(leafs);
+            addVars(leafs[0]);
+            if (leafs[1]->get_AST_e()==AST_e::Expr)
+                vars.back().init = (ExprNode*)(leafs[1]);
+            else 
+                cout << "初始化值不是表达式" << endl; 
         } else {
-            printf("变量定义是出现不期望的节点类型\n");
+            if (temp->childList.empty()) {
+                cout << "变量声明语句中有空temp结点" << endl;
+                exit(1);
+            }else if (vars.back().init) {
+                cout << "变量声明类型声明好前已经有初始化值" << endl;
+                exit(1);
+            } 
+            addVars(temp->childList[0]);
+            if (vars.empty()){
+                cout << "变量声明没有id" << endl;
+                exit(1);
+            }
+            auto oldType = vars.back().type;
+            if (temp->msg ==  "[]") {
+                // temp =  (ID + []) + [] .....
+                // 
+                // 声明数组
+                if (temp->childList.size() != 2) {
+                    cout << "[] temp 结点子节点不是两个 " <<endl;
+                    exit(1);
+                }
+                if (temp->childList[1]->get_AST_e()!=AST_e::Expr) {
+                    cout << "数组[]中的不是表达式"<<endl;
+                    exit(1);
+                }
+                vars.back().type = new ArrayTypeNode(oldType, (ExprNode*)temp->childList[1]);
+            
+            } else if ((temp->msg)[0] == '*') { 
+                // temp = ***... + ID          
+                // 声明指针
+        
+                addVars(temp->childList[0]);
+                auto type = oldType;
+                for (int i = 0; i < temp->msg.size(); ++i ) {
+                    type = new PointerTypeNode(type, 1);
+                }
+                vars.back().type = type;
+                
+            } else {
+                printf("变量定义出现未识别的结点类型\n");
+            }
         }
     }
+    else {
+        cout << "变量声明语句中出现不应出现的结点类型" << endl;
+        
+    }
+   
 }
 
 

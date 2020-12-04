@@ -6,6 +6,8 @@
 #include "TempNode.h"
 #include "ExprNode.h"
 
+struct ExprNode;
+
 struct TypeNode : public ASTNode
 {
 
@@ -63,11 +65,6 @@ struct IntegerTypeNode : public BasicTypeNode
     {
         printDepth(depth);
         cout << "Type Specifier: INTEGER" << endl;
-    }
-
-    void print_(int depth) {
-        printDepth(depth);
-        cout << "Type Specifier: INTEGER";
     }
 };
 
@@ -174,21 +171,18 @@ struct PointerTypeNode : public TypeNode
     TypeNode *basicType;
     int dimension = 0;
     virtual type_e get_type_e() override { return type_e::PointerType; };
-    PointerTypeNode(TypeNode *_Basic, int d) : basicType(_Basic), dimension(d) {};
+    PointerTypeNode(TypeNode *_Basic, int d) : basicType(_Basic), dimension(d) {
+        if (d != 1 ) {
+            cout << "指针有好多个* "<< endl;
+            exit(1);
+        }
+    };
 
     void print(int depth)
     {
         printDepth(depth);
-        cout << "Type Specifier: " << getInfo(((BasicTypeNode *)this->basicType)->get_basic_type_e());
-        for(int k = 0; k < dimension; k++) cout << '*';
-        cout << endl;
-    }
-
-    void print_(int depth)
-    {
-        printDepth(depth);
-        cout << "Type Specifier: " << getInfo(((BasicTypeNode *)this->basicType)->get_basic_type_e());
-        for(int k = 0; k < dimension; k++) cout << '*';
+        cout << "Type Specifier: POINTER" << endl;
+        this->basicType->print(depth + 1);
     }
 };
 
@@ -197,24 +191,18 @@ struct ArrayTypeNode : public TypeNode
     // 数组类型
     TypeNode *basicType;
     virtual type_e get_type_e() override { return type_e::ArrayType; };
-    //size_t len;
-    // ArrayTypeNode(TypeNode *_Basic, int l) : basicType(_Basic)
-    // {
-    //     len = l;
-    // }
-    std::vector<size_t> len;
-    ArrayTypeNode(TypeNode *_Basic, std::vector<ASTNode*>& leafs) ;
-    void print(int depth)
-    {
-        if((this->basicType)->get_type_e() != type_e::PointerType) {
-            printDepth(depth);
-            cout << "Type Specifier: " << getInfo(((BasicTypeNode *)this->basicType)->get_basic_type_e())
-              << " ";
-        }
-        else ((PointerTypeNode*)(this->basicType))->print_(depth);
-        
-        for(int k = 0; k < len.size(); k++) cout<<"[" << len[k] <<"]";
-        cout<<endl;
+    size_t len;
+    ArrayTypeNode(TypeNode *_Basic, ExprNode *_Size);
+    ArrayTypeNode(TypeNode *_Basic, std::vector<ASTNode*>& leafs){
+        cout << "ArrayNode 构造函数已过时" << endl;
+        exit(1);
+    }
+    void print(int depth) {
+        printDepth(depth);
+        cout << "Type Specifier: Array" << endl;
+        printDepth(depth + 1);
+        cout << "Size: " << this->len << endl;
+        this->basicType->print(depth + 1);
     }
 };
 
