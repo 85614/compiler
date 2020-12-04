@@ -21,8 +21,8 @@ void yyerror(const char *str);
   struct ExprNode *expr;
   struct StmtNode *stmt;
   struct ASTNode *temp;
-  const char *str;
   struct TokenNode lexeme;
+  int ival;
 }
 %locations
 %define parse.error verbose
@@ -65,6 +65,7 @@ void yyerror(const char *str);
 %type <temp> StructDecList
 %type <temp> Dec DecList Args ParamDec VarList FunDec 
 %type <stmt> DecFor
+%type <ival> Pointer
 %%
 
 /* 开始符号 */
@@ -156,14 +157,23 @@ Specifier: TYPE {
         //类型本身：int
         $$ = $1;
     }
-    | TYPE STAR {
+    | TYPE Pointer {
         //指针：int *
-        $$ = new PointerTypeNode($1);
+        $$ = new PointerTypeNode($1, $2);
 		$$->setTokenCount($1);
     }
     | STRUCT ID {
         $$ = TypeNode::getType($2->ID);
         $$->setTokenCount($1);
+    }
+    ;
+
+Pointer:
+    Pointer STAR{
+        $$ = $1 + 1;
+    }
+    |STAR {
+        $$ = 1;
     }
     ;
 

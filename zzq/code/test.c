@@ -57,8 +57,16 @@
 //     int a;
 // };
 
-struct A b;
+int a[1][2][3];
 
+int main() {
+    int** b, d[3][4];
+    int c[1][2];
+    b = &c;
+    a[0][0][1] = 1;
+    //print_int(a[0][0][1]);
+    return 0;
+}
 
 
 // void fun(){
@@ -82,7 +90,7 @@ struct A b;
 //     int a = 1, b = 2;
 //     a = b ^ 2 ^ 3;
     
-}
+//}
 // int i;
 // int main() 
 // {

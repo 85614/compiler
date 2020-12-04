@@ -64,6 +64,11 @@ struct IntegerTypeNode : public BasicTypeNode
         printDepth(depth);
         cout << "Type Specifier: INTEGER" << endl;
     }
+
+    void print_(int depth) {
+        printDepth(depth);
+        cout << "Type Specifier: INTEGER";
+    }
 };
 
 struct FloatTypeNode : public BasicTypeNode
@@ -163,6 +168,30 @@ struct FuncTypeNode : public TypeNode
     }
 };
 
+struct PointerTypeNode : public TypeNode 
+{
+    // 指针类型
+    TypeNode *basicType;
+    int dimension = 0;
+    virtual type_e get_type_e() override { return type_e::PointerType; };
+    PointerTypeNode(TypeNode *_Basic, int d) : basicType(_Basic), dimension(d) {};
+
+    void print(int depth)
+    {
+        printDepth(depth);
+        cout << "Type Specifier: " << getInfo(((BasicTypeNode *)this->basicType)->get_basic_type_e());
+        for(int k = 0; k < dimension; k++) cout << '*';
+        cout << endl;
+    }
+
+    void print_(int depth)
+    {
+        printDepth(depth);
+        cout << "Type Specifier: " << getInfo(((BasicTypeNode *)this->basicType)->get_basic_type_e());
+        for(int k = 0; k < dimension; k++) cout << '*';
+    }
+};
+
 struct ArrayTypeNode : public TypeNode
 {
     // 数组类型
@@ -177,26 +206,15 @@ struct ArrayTypeNode : public TypeNode
     ArrayTypeNode(TypeNode *_Basic, std::vector<ASTNode*>& leafs) ;
     void print(int depth)
     {
-        printDepth(depth);
-        cout << "Type Specifier: " << getInfo(((BasicTypeNode *)this->basicType)->get_basic_type_e())
+        if((this->basicType)->get_type_e() != type_e::PointerType) {
+            printDepth(depth);
+            cout << "Type Specifier: " << getInfo(((BasicTypeNode *)this->basicType)->get_basic_type_e())
               << " ";
+        }
+        else ((PointerTypeNode*)(this->basicType))->print_(depth);
+        
         for(int k = 0; k < len.size(); k++) cout<<"[" << len[k] <<"]";
         cout<<endl;
     }
 };
 
-struct PointerTypeNode : public TypeNode
-{
-    // 指针类型
-    TypeNode *basicType;
-    virtual type_e get_type_e() override { return type_e::PointerType; };
-    PointerTypeNode(TypeNode *_Basic) : basicType(_Basic)
-    {
-    }
-    void print(int depth)
-    {
-        printDepth(depth);
-        cout << "Type Specifier: " << getInfo(((BasicTypeNode *)this->basicType)->get_basic_type_e())
-             << " POINTER" << endl;
-    }
-};

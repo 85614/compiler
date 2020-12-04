@@ -80,6 +80,7 @@ struct VarDefStmt : public StmtNode
     }
     void addVar(ASTNode *type, ASTNode *ID, ASTNode *init)
     {
+        DEBUG2(type);
         if (type && type->get_AST_e() != AST_e::Type)
         {
             printf("变量定义语句，变量名类型不是一个类型节点\n");
