@@ -35,7 +35,7 @@ ws    {delim}+
 "//"[^\n]*
 "int"                             { yylval.lexeme.str=strdup(yytext); MY_RETURN(TYPE1); }
 "void"                            { yylval.lexeme.str=strdup(yytext); MY_RETURN(TYPE1);}
-"main"                            { yylval.lexeme.str=strdup(yytext); MY_RETURN(ID1);}
+"main"                            { yylval.lexeme.str=strdup(yytext); MY_RETURN(ID);}
 "return"                          { MY_RETURN(RETURN); }
 "for"                             { MY_RETURN(FOR);}
 "while"                           { MY_RETURN(WHILE);}
@@ -63,7 +63,7 @@ ws    {delim}+
 "{"                               { MY_RETURN(LC); }
 "}"                               { MY_RETURN(RC); }
 "."                               { MY_RETURN(GETMEMBER); }
-{L}({D}|{L})*                     { yylval.lexeme.str=strdup(yytext); MY_RETURN(ID1); }
+{L}({D}|{L})*                     { yylval.lexeme.str=strdup(yytext); MY_RETURN(ID); }
 {D}{L}({D}|{L})*                  { MY_RETURN (ERRID); }
 [ \t\v\f\r\n]                     { }
 (([1-9]|-){D}*)|0                     { yylval.lexeme.str=strdup(yytext); MY_RETURN(INT1);}

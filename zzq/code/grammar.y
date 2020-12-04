@@ -45,10 +45,9 @@ void yyerror(const char *str);
 %token <lexeme>  ERRID
 %type <expr> INT
 %type <type> TYPE
-%type <id> ID
+%token <id> ID
 %token  <lexeme> INT1
 %token  <lexeme> TYPE1
-%token <lexeme>  ID1
 %token  <lexeme> FOR
 %token  <lexeme> LC RC
 
@@ -134,11 +133,6 @@ ExtDecList: VarDec {
     }
     ;
 
-ID: ID1 {
-        $$ = new IDNode($1.str);
-		$$->setTokenCount($1);
-    }
-    ;
 
 INT: INT1 {
         $$ = new ConstExprNode($1.str);

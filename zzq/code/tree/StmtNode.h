@@ -300,6 +300,7 @@ struct FuncDefStmt : public ScopeStmtNode
             for (Identifier *id2: block->belong->IDList) {
                 if(id->name == id2->name){
                     cout << id->name << " 重定义"<<endl;
+                    exit(1);
                 }
             }
         }

@@ -29,7 +29,8 @@ BasicTypeNode *BasicTypeNode::typeList[2]{ BasicTypeNode::VOID, BasicTypeNode::I
 void init() {
 
      // ProgramNode::root.belong = &global;
-
+     global.registe(new IDNode("print_int"), IDType_e::FuncDec, 
+     new FuncTypeNode(BasicTypeNode::VOID, std::vector<TypeNode*>{BasicTypeNode::INT}));
      ProgramNode::root.files.push_back(&thisFile);
 
      global.belong = &ProgramNode::root;

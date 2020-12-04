@@ -2,7 +2,8 @@
 #include <vector>
 #include <algorithm>
 #include "Identifier.h"
-#define DEBUG2(x)  { cout<<__FILE__ << " " << __LINE__ << "  " <<#x <<" is "<<x <<endl;}
+// #define DEBUG2(x)  { cout<<__FILE__ << " " << __LINE__ << "  " <<#x <<" is "<<x <<endl;}
+#define DEBUG2(x) {}
 
 struct ASTNode;
 struct SymbolTable;
