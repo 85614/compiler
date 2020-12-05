@@ -1,6 +1,7 @@
 #include "TypeNode.h"
 #include "IDNode.h"
 #include "ExprNode.h"
+#include "StmtNode.h"
 
 StructTypeNode * StructTypeNode::createNode(IDNode *_ID, ASTNode *_Members) {
     // StructTypeNode *result = getStructType(_ID->ID);
@@ -58,3 +59,30 @@ ArrayTypeNode::ArrayTypeNode(TypeNode *_Basic, ExprNode *_Size)
     }
     len = atoi(((ConstExprNode*)_Size)->value);
 }
+
+
+void StructTypeNode::addMembers(ASTNode *_Members)
+    {
+        if (!_Members)
+            return;
+        if (_Members->get_AST_e() == AST_e::Temp)
+        {
+            for (ASTNode *child : ((TempNode *)_Members)->childList)
+                addMembers(child);
+        }
+        else if (_Members->get_AST_e() == AST_e::Stmt){
+            StmtNode *stmt = (StmtNode*)_Members;
+            if (stmt->get_stmt_e() == stmt_e::VarDef) {
+                VarDefStmt *varDef = (VarDefStmt *)stmt;
+                for (auto &var: varDef->vars) {
+                    auto member = std::make_pair(var.type, var.ID);
+                    members.push_back(member);
+                }
+            } else {
+                cout << "结构体内部的语句不是声明语句，stmt_e:"<< getInfo(stmt->get_stmt_e()) << endl;
+            }
+        }else {
+            cout << "结构体内部的语句不是语句，AST_e:"<< int(_Members->get_AST_e()) << endl;
+        }        
+        this->defined = true;
+    }

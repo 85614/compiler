@@ -1,63 +1,13 @@
 
-// int a;
-// int a;
-// int b;
-// // void fun(){
+struct Test
+{
+    int a;
+    int b;
+};
 
-// // // }
-
-
-// struct AA
-// {
-//     int a;
-// };
-
-// void fun(){
-
-// }
-// int a;
-// void main(){
-//     // fun();
-// }
-
-// void fun(){
-//     struct AA a;
-
-// }
-
-
-// struct A {
-//     int a;
-// };
-
-
-// void fun(int a){
-//     struct A a;   
-//     struct A a;   
-// }
-
-
-
-// void fun(){
-//     static int a;
-// }
-// int a;
-// int fun(){
-//     a;
-// }
-
-// //a = &b;
-// int fun()
-// {
-//     b = 1;
-//     a = &b;
-// }
-
-// struct A{
-//     int a;
-// };
 
 int a[1][2][3];
+
 
 int main() {
     int** b, d;
@@ -69,29 +19,6 @@ int main() {
 }
 
 
-// void fun(){
-
-// void fun()
-// {
-// }
-// void fun(){
-
-// }
-
-// void fun2(){
-//     fun();
-// }
-
-//     int c;
-//     int i = 0;
-// int main() 
-// {
-//     (a + 8)[1];
-//     int a = 1, b = 2;
-//     a = b ^ 2 ^ 3;
-    
-//}
-// int i;
 // int main() 
 // {
 //     (a + 8)[1];

@@ -117,17 +117,7 @@ struct StructTypeNode : public BasicTypeNode
         // DEBUG2(n->extra);
         return nullptr;
     }
-    void addMembers(ASTNode *members)
-    {
-        if (!members)
-            return;
-        if (members->get_AST_e() == AST_e::Temp)
-        {
-            for (ASTNode *child : ((TempNode *)members)->childList)
-                addMembers(child);
-        }
-        this->defined = true;
-    }
+    void addMembers(ASTNode *members);
     static StructTypeNode *createNode(IDNode *_ID, ASTNode *members);
     void print(int depth)
     {
