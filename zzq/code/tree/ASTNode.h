@@ -33,7 +33,7 @@ struct ASTNode
         printf("请实现addchild，get_AST_e()is%d\n", (int)this->get_AST_e());
         exit(1);
     }
-    virtual void addMsg(const char *msg)
+    virtual void addMsg(std::string &&)
     {
         printf("请实现addMsg，get_AST_e()is%d\n", (int)this->get_AST_e());
         exit(1);

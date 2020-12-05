@@ -1,14 +1,16 @@
 #pragma once
 #include <vector>
+#include <string>
 #include "ASTNode.h"
 
 struct TempNode : ASTNode{
     std::vector<ASTNode *> childList;
-    const char *msg = nullptr;
+    std::string msg = "";
     virtual AST_e get_AST_e() override {return AST_e::Temp;}
     void addChild(ASTNode *child)override { if(child) childList.push_back(child); }
-    virtual void addMsg(const char *_Msg) {
-        msg = _Msg;
+    virtual void addMsg(std::string &&_Msg) {
+        msg += _Msg;
+        
     }
     ~TempNode()=default;
     void getAllLeaf(std::vector<ASTNode *> &leafs){

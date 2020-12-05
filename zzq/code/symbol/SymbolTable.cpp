@@ -10,6 +10,5 @@
           }
       }
       it = IDList.insert(it, item);
-      cout << endl << "registe   " << (*it)->name << " tokenCount: "<<
-          (*it)->tokenCount << endl;
+
   }
