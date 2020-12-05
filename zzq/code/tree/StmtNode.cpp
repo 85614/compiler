@@ -14,6 +14,7 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
         if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
     }
     else if(_Vars->get_AST_e()==AST_e::Temp){
+        
         TempNode* temp = (TempNode*)_Vars;
         if(temp->msg.empty()) {
             // 没有消息，此temp节点是一个变量列表
@@ -22,26 +23,30 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
         } else if (temp->msg == "=") {
             // temp = left + init 
             // 带初始化
+            
             std::vector<ASTNode*> leafs;
             temp->getAllLeaf(leafs);
             if(leafs.size()!=2){
                 printf("带初始化的变量声明，变量名+初始化值数量不为2");
-                return;
+                exit(1);
             }
             addVars(leafs[0]);
             if (leafs[1]->get_AST_e()==AST_e::Expr)
                 vars.back().init = (ExprNode*)(leafs[1]);
             else 
                 cout << "初始化值不是表达式" << endl; 
+            
         } else {
             if (temp->childList.empty()) {
                 cout << "变量声明语句中有空temp结点" << endl;
                 exit(1);
-            }else if (vars.back().init) {
+            }
+            addVars(temp->childList[0]);
+            if (vars.back().init) {
                 cout << "变量声明类型声明好前已经有初始化值" << endl;
                 exit(1);
             } 
-            addVars(temp->childList[0]);
+            
             if (vars.empty()){
                 cout << "变量声明没有id" << endl;
                 exit(1);
@@ -51,6 +56,7 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
                 // temp =  (ID + []) + [] .....
                 // 
                 // 声明数组
+                
                 if (temp->childList.size() != 2) {
                     cout << "[] temp 结点子节点不是两个 " <<endl;
                     exit(1);
@@ -60,12 +66,10 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
                     exit(1);
                 }
                 vars.back().type = new ArrayTypeNode(oldType, (ExprNode*)temp->childList[1]);
-            
+                
             } else if ((temp->msg)[0] == '*') { 
                 // temp = ***... + ID          
-                // 声明指针
-        
-                addVars(temp->childList[0]);
+                // 声明指针    
                 auto type = oldType;
                 for (int i = 0; i < temp->msg.size(); ++i ) {
                     type = new PointerTypeNode(type, 1);
@@ -76,6 +80,7 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
                 printf("变量定义出现未识别的结点类型\n");
             }
         }
+        
     }
     else {
         cout << "变量声明语句中出现不应出现的结点类型" << endl;
