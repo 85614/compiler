@@ -15,7 +15,7 @@ struct TokenNode{
 
 
 // 全局作用域符号表
-extern SymbolTable global;
+extern SymbolTable *global;
 // 文件全局作用域 static 大概用不到吧
 extern SymbolTable staticGlobal;
 
@@ -42,6 +42,10 @@ struct ASTNode
         this->tokenCount = tn.tokenCount;
         // DEBUG2(this->tokenCount)
         makeSymbolTable();
+    }
+    void error(){
+        print(0);
+        exit(1);
     }
 protected:
     virtual void makeSymbolTable(){} // 可能需要生成新的作用域

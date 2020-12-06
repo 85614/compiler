@@ -27,7 +27,7 @@ StructTypeNode * StructTypeNode::createNode(IDNode *_ID, ASTNode *_Members) {
 }
 
 
-TypeNode *TypeNode::getType(const char *_Name) {
+TypeNode *TypeNode::getType(const std::string & _Name) {
     auto ans = BasicTypeNode::getType(_Name);
     if (!ans )
     ans = StructTypeNode::getStructType(_Name);
@@ -57,7 +57,7 @@ ArrayTypeNode::ArrayTypeNode(TypeNode *_Basic, ExprNode *_Size)
         cout << "数组内[]的不是数字" << endl;
         exit(1);
     }
-    len = atoi(((ConstExprNode*)_Size)->value);
+    len = atoi(((ConstExprNode*)_Size)->value.c_str());
 }
 
 

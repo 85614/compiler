@@ -32,10 +32,12 @@ void add_word(const char *token,const char *word_type ,const char *addr_value) {
     } else if (new_word->word_type == "ID") {
         IDNode* id = new IDNode(yylval.lexeme.str);
         id->setTokenCount(yylval.lexeme);
+        void *str = (void*)yylval.lexeme.str;
         yylval.id = id;
         new_word->idptr = id;
         // int temp = &addr_value;
         new_word->addr_value = "标识符地址";
+        free(str);
     } else {
         new_word->addr_value = "";
     }

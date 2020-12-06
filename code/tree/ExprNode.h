@@ -14,10 +14,44 @@ using std::endl;
 struct ExprNode : public ASTNode
 {
     // 抽象表达式节点
-    TypeNode *type = nullptr;
-    AST_e get_AST_e() override { return AST_e::Expr; }
     
+    AST_e get_AST_e() override { return AST_e::Expr; }
     virtual expr_e get_expr_e() = 0;
+    virtual TypeNode *getType()  { 
+        if (!type) {
+            cout << "表达式值的类型未确定, 表达式：" << endl;
+            print(0);
+            exit(1);
+        } 
+        return type;
+    }
+    virtual bool isConstExpr() {
+        // 是否是字面值常量
+        if (isConst == -1) {
+            cout << "是否是字面值常量未确定" <<endl;
+            print(0);
+            exit(1);
+        }
+        return isConst;
+    } 
+    virtual bool isLeftValue() { 
+        // 是否是左值（有内存，可以取地址）
+        if (isLeft == -1) {
+            cout << "是否是字面值常量未确定" <<endl;
+            print(0);
+            exit(1);
+        }
+        return isLeft;
+    }
+    void init(TypeNode* _Type, bool _IsConst, bool _IsLeft) {
+        type = _Type;
+        isConst = _IsConst;
+        isLeft = _IsLeft;
+    }
+protected:
+    TypeNode *type = nullptr; // 表达式的类型
+    int isConst = -1;
+    int isLeft = -1;
 };
 
 struct OP1ExprNode : public ExprNode
@@ -34,7 +68,9 @@ struct OP1ExprNode : public ExprNode
         op(_Op), first(_First)
     {
         // this->type =
+        // init();
     }
+    void init();
     void print(int depth) override
     {
         printDepth(depth);
@@ -48,18 +84,20 @@ struct OP2ExprNode : public ExprNode
     // 2目运算表达式节点
     ExprNode *first, *second;
     op_e op;
-    const char *opStr = nullptr; // 如果是比较运算符，区分 < > <= >=, 其他情况是null
+    std::string opStr; // 如果是比较运算符，区分 < > <= >=, 其他情况是null
     ~OP2ExprNode()=default;
     expr_e get_expr_e() override { return expr_e::Op2; };
     OP2ExprNode(op_e _Op, const char *_OpStr, ExprNode *_First, ExprNode *_Second )
         :op(_Op), first(_First), second(_Second), opStr(_OpStr)
-    {
+    {   
+        // init();
     }
-
     OP2ExprNode(op_e _Op, ExprNode *_First, ExprNode *_Second )
-        :op(_Op), first(_First), second(_Second), opStr(nullptr)
+        :op(_Op), first(_First), second(_Second), opStr("")
     { 
+        // init();
     }
+    void init();
     void print(int depth) override
     {
         printDepth(depth);
@@ -87,7 +125,6 @@ struct OP3ExprNode : public ExprNode
 
 struct FunCallExprNode: public ExprNode {
     // 函数调用表达式节点
-    TypeNode *ret = nullptr; //返回值类型
     IDNode *name;
     ~FunCallExprNode()=default;
     std::vector<ExprNode*> args; //参数
@@ -145,7 +182,7 @@ struct VarExprNode : public ExprNode
     expr_e get_expr_e() override { return expr_e::Var; };
     VarExprNode(IDNode *_Id) : id(_Id)
     {
-        // this->type =
+        // init(id->realID->extra, false, true);
         _Id->checkExist(true);
         if (_Id->realID->extra && ((ASTNode*)(_Id->realID->extra))->get_AST_e()==AST_e::Type)
             this->type = (TypeNode*)_Id->realID->extra;
@@ -163,12 +200,14 @@ struct VarExprNode : public ExprNode
 struct ConstExprNode : public ExprNode
 {
     // 常量表达式
-    const char *value;
+    std::string value;
     ~ConstExprNode() = default;
     ConstExprNode(const char *_Value) : value(_Value)
     {
-        //this->type =
+        // init();
     }
+    using ExprNode::init;
+    void init();
     expr_e get_expr_e() override { return expr_e::Const; };
     int toInt() {
         int num = 0, k = -1;

@@ -6,16 +6,15 @@ ProgramNode ProgramNode::root;
 FileNode thisFile;
 
 // 全局作用域符号表
-SymbolTable global{&ProgramNode::root, nullptr};
+SymbolTable *global = new SymbolTable{&ProgramNode::root, nullptr};
 // staic文件全局作用域 static 大概用不到吧
-SymbolTable staticGlobal{&thisFile, &global};
+SymbolTable staticGlobal{&thisFile, global};
 
 
 extern FileNode thisFile;
 
 VoidTypeNode VoidTypeNode::VOID{"void"};
 IntegerTypeNode IntegerTypeNode::INT{"int", 4};
-FloatTypeNode FloatTypeNode::FLOAT{"float", 4};
 
 
 
@@ -29,10 +28,10 @@ BasicTypeNode *BasicTypeNode::typeList[2]{ BasicTypeNode::VOID, BasicTypeNode::I
 void init() {
 
      // ProgramNode::root.belong = &global;
-     global.registe(new IDNode("print_int"), IDType_e::FuncDec, 
+     global->registe(new IDNode("print_int"), IDType_e::FuncDec, 
      new FuncTypeNode(BasicTypeNode::VOID, std::vector<TypeNode*>{BasicTypeNode::INT}));
      ProgramNode::root.files.push_back(&thisFile);
 
-     global.belong = &ProgramNode::root;
-     // global.parent = nullptr;
+     global->belong = &ProgramNode::root;
+     // global->parent = nullptr;
 }

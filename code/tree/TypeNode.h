@@ -14,8 +14,15 @@ struct TypeNode : public ASTNode
     size_t size = -1;
     AST_e get_AST_e() override { return AST_e::Type; }
     virtual type_e get_type_e() = 0;
-    static TypeNode *getType(const char *_Name) ;
-    
+    static TypeNode *getType(const std::string &_Name) ;
+    virtual bool assignable(TypeNode *type) const { return isSame(type); }
+    virtual bool isSame(TypeNode *type) const = 0;
+    static void checkNull(TypeNode *type, const char *tip){
+        if (!type){
+            cout << tip << endl;
+            exit(1);
+        }
+    }
 };
 
 struct BasicTypeNode : public TypeNode
@@ -23,16 +30,16 @@ struct BasicTypeNode : public TypeNode
     // 基础类型， 请使用静态对象
     static BasicTypeNode *VOID, *INT;
     static BasicTypeNode *typeList[2];
-    const char *name = nullptr;
-    static TypeNode *getType(const char *_Name){
+    std::string name;
+    static TypeNode *getType(const std::string &_Name){
         for (auto type: typeList)
-            if (strcmp( type->name,_Name) == 0 )
+            if (type->name == _Name)
                 return type;
         return nullptr;
     }
     virtual type_e get_type_e() override { return type_e::BasicType; };
     virtual basic_type_e get_basic_type_e() = 0;
-    
+
 };
 
 struct VoidTypeNode : public BasicTypeNode
@@ -40,31 +47,50 @@ struct VoidTypeNode : public BasicTypeNode
     // void 类型
     static VoidTypeNode VOID;
     virtual basic_type_e get_basic_type_e() override { return basic_type_e::VOID; };
-    VoidTypeNode(const char *_Name)
-    {
-        this->name = _Name;
-    }
+
     void print(int depth)
     {
         printDepth(depth);
         cout << "Type Specifier: VOID" << endl;
     }
+    bool assignable(TypeNode *type) const override{
+        return false;
+    }
+    bool isSame(TypeNode *type) const override {
+        checkNull(type, "in isSame type is NULL");
+        return type == &VOID;
+    }
+private:
+    VoidTypeNode(const char *_Name)
+    {
+        this->name = _Name;
+    }
 };
+
 
 struct IntegerTypeNode : public BasicTypeNode
 {
     // 整数类型
     static IntegerTypeNode INT;
     virtual basic_type_e get_basic_type_e() override { return basic_type_e::INTEGER; };
-    IntegerTypeNode(const char *_Name, size_t _Size)
-    {
-        this->name = _Name;
-        this->size = size;
-    }
+    
     void print(int depth)
     {
         printDepth(depth);
         cout << "Type Specifier: INTEGER" << endl;
+    }
+    bool assignable(TypeNode *type) const override{
+        return isSame(type);
+    }
+    bool isSame(TypeNode *type) const override {
+        checkNull(type, "in isSame type is NULL");
+        return type == &INT;
+    }
+private:
+    IntegerTypeNode(const char *_Name, size_t _Size)
+    {
+        this->name = _Name;
+        this->size = size;
     }
 };
 
@@ -73,15 +99,24 @@ struct FloatTypeNode : public BasicTypeNode
     // 浮点数
     static FloatTypeNode FLOAT;
     virtual basic_type_e get_basic_type_e() override { return basic_type_e::FLOAT; };
-    FloatTypeNode(const char *_Name, size_t _Size)
-    {
-        this->name = _Name;
-        this->size = size;
-    }
+
     void print(int depth)
     {
         printDepth(depth);
         cout << "Type Specifier: FLOAT" << endl;
+    }
+    bool assignable(TypeNode *type) const override{
+        return isSame(type);
+    }
+    bool isSame(TypeNode *type) const override {
+        checkNull(type, "in isSame type is NULL");
+        return type == &FLOAT;
+    }
+private:
+    FloatTypeNode(const char *_Name, size_t _Size)
+    {
+        this->name = _Name;
+        this->size = size;
     }
 };
 
@@ -94,12 +129,24 @@ struct StructTypeNode : public BasicTypeNode
     virtual basic_type_e get_basic_type_e() override { return basic_type_e::STRUCT; };
     static TypeNode *getStructType(IDNode *_ID)
     {
-        return getStructType(_ID->ID);
+        return getStructType(_ID->ID.c_str());
     }
-    static TypeNode *getStructType(const char *name)
+    bool isSame(TypeNode *type) const override {
+        checkNull(type, "in isSame type is NULL");
+        if (type->get_type_e() == type_e::BasicType) {
+            auto basicT = (BasicTypeNode*) type;
+            if (basicT->get_basic_type_e() == basic_type_e::STRUCT){
+                auto structT = (StructTypeNode*) type;
+                if (structT->ID->isSame(this->ID))
+                    return true;
+            }
+        }
+        return false;
+    }
+    static TypeNode *getStructType(const std::string &name)
     {
         // find from structList
-        Identifier *n = global.get(name);
+        Identifier *n = global->get(name);
         if (!n) {
             cout << "类型 "<<name << "未定义"<<endl;
             exit(1);
@@ -157,6 +204,25 @@ struct FuncTypeNode : public TypeNode
         :re(_Re), args(_Args)
     {
     }
+    bool assignable(TypeNode *type) const override{
+        return false;
+    }
+    bool isSame(TypeNode *type) const override {
+        checkNull(type, "in isSame type is NULL");
+        if (type->get_type_e() != type_e::FuncType) 
+            return false;
+        auto funcT = (FuncTypeNode*)type;
+        if (!re->isSame(funcT->re))
+            return false;
+        auto &rightArgs = funcT->args;
+        if (rightArgs.size() != args.size())
+            return false;
+        for (int i = 0; i < args.size(); ++i) {
+            if (!args[i]->isSame(rightArgs[i]))
+                return false;
+        }
+        return true;
+    }
 };
 
 struct PointerTypeNode : public TypeNode 
@@ -165,13 +231,19 @@ struct PointerTypeNode : public TypeNode
     TypeNode *basicType;
     int dimension = 0;
     virtual type_e get_type_e() override { return type_e::PointerType; };
-    PointerTypeNode(TypeNode *_Basic, int d) : basicType(_Basic), dimension(d) {
+    PointerTypeNode(TypeNode *_Basic, int d = 1) : basicType(_Basic), dimension(d) {
         if (d != 1 ) {
             cout << "指针有好多个* "<< endl;
             exit(1);
         }
     };
-
+    bool isSame(TypeNode *type) const override{
+        checkNull(type, "in assignable type is NULL");
+        if (type->get_type_e() != type_e::PointerType) 
+            return false;
+        auto pointT = (PointerTypeNode*) type;
+        return basicType->isSame(pointT->basicType);
+    }
     void print(int depth)
     {
         printDepth(depth);
@@ -190,6 +262,16 @@ struct ArrayTypeNode : public TypeNode
     ArrayTypeNode(TypeNode *_Basic, std::vector<ASTNode*>& leafs){
         cout << "ArrayNode 构造函数已过时" << endl;
         exit(1);
+    }
+    bool assignable(TypeNode *type) const override {
+        return false;
+    }
+    bool isSame(TypeNode *type) const override{
+        checkNull(type, "in assignable type is NULL");
+        if (type->get_type_e() != type_e::ArrayType) 
+            return false;
+        auto arrayT = (ArrayTypeNode*) type;
+        return basicType->isSame(arrayT->basicType);
     }
     void print(int depth) {
         printDepth(depth);
