@@ -68,7 +68,7 @@ struct OP1ExprNode : public ExprNode
         op(_Op), first(_First)
     {
         // this->type =
-        // init();
+        init();
     }
     void init();
     void print(int depth) override
@@ -90,14 +90,41 @@ struct OP2ExprNode : public ExprNode
     OP2ExprNode(op_e _Op, const char *_OpStr, ExprNode *_First, ExprNode *_Second )
         :op(_Op), first(_First), second(_Second), opStr(_OpStr)
     {   
-        // init();
+        init();
     }
     OP2ExprNode(op_e _Op, ExprNode *_First, ExprNode *_Second )
         :op(_Op), first(_First), second(_Second), opStr("")
     { 
-        // init();
+        init();
     }
     void init();
+    using ExprNode::init;
+    void print(int depth) override
+    {
+        printDepth(depth);
+        cout << "Expr op:" << getInfo(this->op) << endl;
+        this->first->print(depth + 1);
+        this->second->print(depth + 1);
+    }
+};
+
+struct MemberExprNode : public ExprNode
+{
+    // 取成员
+    ExprNode *first;
+    IDNode *second;
+    op_e op;
+    std::string opStr; // 如果是比较运算符，区分 < > <= >=, 其他情况是null
+    ~MemberExprNode()=default;
+    expr_e get_expr_e() override { return expr_e::Op2; };
+    MemberExprNode(ExprNode *_First, IDNode *member)
+        :first(_First), second(member)
+    {
+        
+        init();
+    }
+    void init();
+    using ExprNode::init;
     void print(int depth) override
     {
         printDepth(depth);
@@ -116,7 +143,8 @@ struct OP3ExprNode : public ExprNode
     expr_e get_expr_e() override { return expr_e::Op3; };
     OP3ExprNode(op_e _Op, ExprNode *_First, ExprNode *_Second, ExprNode *_Third) : op(_Op), first(_First), second(_Second), third(_Third)
     {
-        // this->type =
+        cout <<" 三目运算符未实现" <<endl;
+        exit(1);
     }
     // void print(int depth) override {
 
@@ -132,10 +160,13 @@ struct FunCallExprNode: public ExprNode {
     FunCallExprNode(IDNode *_Name, ASTNode *_Args): name(_Name) {
         _Name->checkExist(true);
         // this->ret = 
-        // this->type = 
+        
         if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
         addArgs(_Args);
+        init();
     }
+    using ExprNode::init;
+    void init();
     void addArgs(ASTNode *n)
     {
         if (!n)
@@ -182,13 +213,13 @@ struct VarExprNode : public ExprNode
     expr_e get_expr_e() override { return expr_e::Var; };
     VarExprNode(IDNode *_Id) : id(_Id)
     {
-        // init(id->realID->extra, false, true);
+        
         _Id->checkExist(true);
         if (_Id->realID->extra && ((ASTNode*)(_Id->realID->extra))->get_AST_e()==AST_e::Type)
             this->type = (TypeNode*)_Id->realID->extra;
         else
             cout << "变量" <<id->ID <<  "类型不确定" << endl;
-
+        init(id->getType(), false, true);
     }
     void print(int depth) override
     {
@@ -204,7 +235,7 @@ struct ConstExprNode : public ExprNode
     ~ConstExprNode() = default;
     ConstExprNode(const char *_Value) : value(_Value)
     {
-        // init();
+        init();
     }
     using ExprNode::init;
     void init();

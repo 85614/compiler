@@ -94,6 +94,11 @@ struct VarDefStmt : public StmtNode
     void addVar(TypeNode *type, IDNode *ID, ExprNode *init)
     {
         VarDef var;
+        if (!type->decAble()) {
+            cout << "不允许声明此类型的变量" << endl;
+            type->print(0);
+            exit (1);
+        }
         var.type = type;
         var.init = init;
         var.ID = ID;
@@ -178,7 +183,7 @@ struct BlockStmt : public ScopeStmtNode
     void print(int depth)override;
 };
 
-struct FuncDecStmt : public StmtNode
+struct FuncDecStmt : public ScopeStmtNode
 {
     // 函数声明语句
     TypeNode *re;                                      //返回值类型
@@ -196,6 +201,7 @@ struct FuncDecStmt : public StmtNode
         }
         funType = new FuncTypeNode(re, std::move(argTypes));
         name->setType(IDType_e::FuncDec, funType);
+        memberTokenCount = _NameAndArgs->tokenCount + 1;
     }
     void addNameAndArgs(ASTNode *n)
     {
@@ -249,9 +255,6 @@ struct FuncDecStmt : public StmtNode
                 for (auto var: varDef->vars){
                     args.push_back(std::make_pair(var.type, var.ID));
                 }
-                    
-
-                
             }
         }
         else
@@ -260,7 +263,10 @@ struct FuncDecStmt : public StmtNode
             return;
         }
     }
-
+    int memberTokenCount = 0;
+    void makeSymbolTable()override {
+        setSymbolTable(global->makeChild(this, memberTokenCount));
+    }
     void print(int depth)override;
 };
 
@@ -319,6 +325,7 @@ struct StructDecStmt : StmtNode
     StructDecStmt(IDNode *_ID)
     {
         type = StructTypeNode::createNode(_ID, nullptr);
+        DEBUG2(_ID->ID);
         global->registe(_ID, IDType_e::TypenameDec, type);
     }
 

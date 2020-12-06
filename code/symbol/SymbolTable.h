@@ -29,10 +29,24 @@ public:
             exit(1);
             return std::pair<const SymbolTable*, Identifier*>(this, nullptr);
         }
+        Identifier *result = nullptr;
         for (auto it = global->IDList.rbegin(); it != global->IDList.rend(); ++it) {
-            if ((*it)->name == name) 
-                return std::make_pair(this, *it);
+            if ((*it)->name == name) {
+                switch ((*it)->IdType)
+                {       
+                case IDType_e::FuncDec:
+                case IDType_e::VarDec:
+                case IDType_e::TypenameDec:
+                    // 找到声明，尝试找定义
+                    result = *it;
+                    break;
+                default:
+                    return std::make_pair(this, *it);
+                }
+            }
         }
+        if (result) 
+            return std::make_pair(this, result);
         if (parent) 
             return parent->getTableAndID(name);
         return std::pair<const SymbolTable*, Identifier*>(this, nullptr);
@@ -41,7 +55,6 @@ public:
     static bool isRepeat(Identifier *id, Identifier *id2);
 
     void checkRepeat(){
-        auto child = this;
         for (auto it = IDList.begin(); it != IDList.end(); ++it) {
             for (auto it2 = it; ++it2, it2 != IDList.end();) {
                 if (isRepeat(*it, *it2)){

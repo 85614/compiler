@@ -81,12 +81,6 @@ public:
 
 };
 
-struct ScopeNode: ASTNode {
-    SymbolTable *belong = nullptr;
-    void setSymbolTable(SymbolTable *_Parent) {
-        belong = _Parent;
-    }
-};
 
 static void printDepth(int depth)
 {

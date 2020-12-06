@@ -15,6 +15,6 @@ int main() {
   int b;
   fun(1, &b);
   b = fun2(&a);
-  b = fun(b, &b);
+  // b = fun(b, &b);
 
 }

@@ -3,7 +3,7 @@
 #include "../tree/TypeNode.h"
  void SymbolTable::registe(IDNode *ID, IDType_e idType, TypeNode * extra)
  {
-
+    // DEBUG2(ID->ID);
     auto item = new Identifier(ID, idType, extra);
     auto it = IDList.begin();
     for (; it!= IDList.end();++it) {
@@ -16,6 +16,7 @@
   }
 
 bool SymbolTable::isRepeat(Identifier *id, Identifier *id2){
+    
     if (id == id2) {
         cout <<" Identifier 重复" << endl;
         exit(1);

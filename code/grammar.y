@@ -516,7 +516,7 @@ Exp:
 		$$->setTokenCount($1);
     }
     | ID GETMEMBER ID {
-        $$ = new OP2ExprNode(op_e::GetMember, new VarExprNode($1), new VarExprNode($3));
+        $$ = new MemberExprNode(new VarExprNode($1), $3);
 		$$->setTokenCount($1);
     }
     | INT {
