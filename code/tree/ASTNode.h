@@ -38,19 +38,18 @@ struct ASTNode
         printf("请实现addMsg，get_AST_e()is%d\n", (int)this->get_AST_e());
         exit(1);
     }
-    void setTokenCount(const TokenNode&tn){
+    void setTokenCount(const TokenNode&tn, bool make = true){
         this->tokenCount = tn.tokenCount;
         // DEBUG2(this->tokenCount)
-        makeSymbolTable();
+        if (make)
+            makeSymbolTable();
     }
     void error(){
         print(0);
         exit(1);
     }
-protected:
     virtual void makeSymbolTable(){} // 可能需要生成新的作用域
-public:
-    void setTokenCount(ASTNode *n) {
+    void setTokenCount(ASTNode *n, bool make = true) {
         
         if(!n){
             USE_DEBUG;
@@ -73,11 +72,14 @@ public:
         }
         else {
             this->tokenCount = n->tokenCount;
-            makeSymbolTable();
+            if (make)
+                makeSymbolTable();
         }
         // DEBUG2(this->tokenCount)
        
     }   
+public:
+   
 
 };
 

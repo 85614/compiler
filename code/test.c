@@ -1,20 +1,17 @@
 
 
-struct A{
-    int a;
-};
-
-void fun(int a, int *b);
-
-int fun2(struct A *a);
-
-
+int fibo(int n) {
+    if (n == 1) {
+        return 1;
+    } else if (n == 2) {
+        return 2;
+    }
+    int a = fibo(n - 1);
+    int b = fibo(n - 2);
+    return a + b;
+}
 
 int main() {
-  struct A a;
-  int b;
-  fun(1, &b);
-  b = fun2(&a);
-  b = fun(b, &b);
-
+    int d = fibo(5);
+    print_int(d);
 }

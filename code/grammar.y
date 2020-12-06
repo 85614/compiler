@@ -64,6 +64,7 @@ void yyerror(const char *str);
 %type <temp> Dec DecList Args ParamDec VarList FunDec 
 %type <stmt> DecFor
 %type <temp> Pointer
+%type <stmt> FuncDecStmt
 %%
 
 /* 开始符号 */
@@ -101,15 +102,15 @@ ExtDef: Specifier ExtDecList SEMI {
     }
     | Specifier SEMI {
     }
-    | Specifier FunDec CompSt {
+    | FuncDecStmt CompSt {
         //函数定义
-        $$ = new FuncDefStmt($1,$2,$3);
+        $$ = new FuncDefStmt($1,$2);
 		$$->setTokenCount($1);
     }
-    | Specifier FunDec SEMI {
+    | FuncDecStmt SEMI {
         //函数声明
-        $$ = new FuncDecStmt($1,$2);
-		$$->setTokenCount($1);
+        $$ = $1;
+        $1->makeSymbolTable();
     }
     | StructSpecifier SEMI {
         //结构体定义
@@ -118,6 +119,13 @@ ExtDef: Specifier ExtDecList SEMI {
     | error SEMI {
         yyerrok;
         $$ = NULL;
+    }
+    ;
+
+FuncDecStmt: Specifier FunDec {
+        //函数声明
+        $$ = new FuncDecStmt($1,$2);
+		$$->setTokenCount($1, false);
     }
     ;
 
@@ -173,6 +181,10 @@ Pointer:
 StructSpecifier: STRUCT ID LC StructDecList RC {
         //结构体类型定义：struct structname （ 结构体定义列表 ）
         $$ = new StructDefStmt($2, $4);
+		$$->setTokenCount($1);
+    }
+    | STRUCT ID LC RC {
+        $$ = new StructDefStmt($2, nullptr);
 		$$->setTokenCount($1);
     }
     ;

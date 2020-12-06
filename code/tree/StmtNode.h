@@ -273,12 +273,12 @@ struct FuncDecStmt : public ScopeStmtNode
 struct FuncDefStmt : public ScopeStmtNode
 {
     // 函数定义语句
-    FuncDecStmt funcdec; // 函数声明
+    FuncDecStmt &funcdec; // 函数声明
     BlockStmt *block;    //函数体
     ~FuncDefStmt() = default;
     stmt_e get_stmt_e() override { return stmt_e::FunDef; }
-    FuncDefStmt(TypeNode *_Re, ASTNode *_NameAndArgs, StmtNode *_Block)
-        : funcdec(_Re, _NameAndArgs)
+    FuncDefStmt(StmtNode *_Dec, StmtNode *_Block) 
+        :funcdec(*(FuncDecStmt*)_Dec)
     {
         if (!_Block)
             printf("函数体为NULL\n");
@@ -292,8 +292,9 @@ struct FuncDefStmt : public ScopeStmtNode
         }
          
         funcdec.name->setType(IDType_e::FuncDef, funcdec.funType);
-        memberTokenCount = _NameAndArgs->tokenCount + 1;
+        memberTokenCount = _Block->tokenCount;
     }
+    
     void makeSymbolTable()override{
         setSymbolTable(global->makeChild(this, memberTokenCount));
         // DEBUG2(this->belong);
@@ -343,7 +344,11 @@ struct StructDefStmt : ScopeStmtNode
         type = StructTypeNode::createNode(_ID, _Members);
         global->registe(_ID, IDType_e::TypenameDef, type);
         memberTokenCount = _Members->tokenCount;
-        
+    }
+    StructDefStmt(IDNode *_ID, int a)
+        :StructDefStmt(_ID, nullptr)
+    {
+        type->defined = true;
     }
     int memberTokenCount = 0;
     void makeSymbolTable() override{
