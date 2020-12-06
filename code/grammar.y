@@ -203,7 +203,7 @@ StructDecList: StructDec {
     }
     ;
 
-StructDec: Specifier ID SEMI {
+StructDec: Specifier VarDec SEMI {
         //：结构体类型 id ；
         $$ = new VarDefStmt($1, $2);
 		$$->setTokenCount($1);
