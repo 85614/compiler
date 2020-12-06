@@ -1,8 +1,8 @@
 struct test {
     int **a;
-    int b[4];
+    int b[4], **f;
     int c;
-    int d;
+    int d, e;
 };
 
 int main() {

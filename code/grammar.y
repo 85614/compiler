@@ -17,7 +17,7 @@ void yyerror(const char *str);
 
 %union{
   struct TypeNode *type;
-  struct IDNode *id;
+  IDNode *id;
   struct ExprNode *expr;
   struct StmtNode *stmt;
   struct ASTNode *temp;
@@ -54,17 +54,16 @@ void yyerror(const char *str);
 %type <expr> Exp 
 %type <stmt> Stmt Def
 %type <stmt> StructSpecifier
-%type <stmt> StructDec
 %type <temp> StmtList
 %type <temp> ExtDefList ExtDecList
 %type <stmt> ExtDef 
 %type <temp> VarDec
 %type <stmt> CompSt
-%type <temp> StructDecList
 %type <temp> Dec DecList Args ParamDec VarList FunDec 
 %type <stmt> DecFor
 %type <temp> Pointer
 %type <stmt> FuncDecStmt
+%type <stmt> StructDecStmt
 %%
 
 /* 开始符号 */
@@ -160,7 +159,7 @@ Specifier: TYPE {
         //类型本身：int
         $$ = $1;
     }
-    | STRUCT ID {
+    | StructDecStmt {
         $$ = TypeNode::getType($2->ID);
         $$->setTokenCount($1);
     }
@@ -178,37 +177,21 @@ Pointer:
     }
     ;
 
-StructSpecifier: STRUCT ID LC StructDecList RC {
+StructSpecifier: StructDecStmt LC ExtDefList RC {
         //结构体类型定义：struct structname （ 结构体定义列表 ）
         $$ = new StructDefStmt($2, $4);
 		$$->setTokenCount($1);
     }
-    | STRUCT ID LC RC {
-        $$ = new StructDefStmt($2, nullptr);
+    | StructDecStmt LC RC {
+        $$ = new StructDefStmt($2, 1);
 		$$->setTokenCount($1);
     }
     ;
 
-StructDecList: StructDec {
-        //结构体声明列表中只有一个声明
-        $$ = new TempNode();
-		$$->setTokenCount($1);
-        $$->addChild($1);
-        //$$ = $1;
-    }
-    | StructDecList StructDec {
-        //递归声明结构
-        $1->addChild($2);
-        $$ = $1;
-    }
-    ;
+StructDecStmt: STRUCT ID {
+    
+}
 
-StructDec: Specifier VarDec SEMI {
-        //：结构体类型 id ；
-        $$ = new VarDefStmt($1, $2);
-		$$->setTokenCount($1);
-    }
-    ;
 
 
 /* 函数声明 */
@@ -306,7 +289,7 @@ Stmt: Exp SEMI {
             $$ = $1;
         
     }
-    | STRUCT ID ID SEMI {
+    | StructDecStmt ID SEMI {
         //声明结构体变量：struct structname a ；
         $$ = new VarDefStmt(StructTypeNode::getStructType($2), $3);
 		$$->setTokenCount($1);

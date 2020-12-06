@@ -113,7 +113,7 @@ struct MemberExprNode : public ExprNode
     // 取成员
     ExprNode *first;
     IDNode *second;
-    op_e op;
+    op_e op = op_e::GetMember;
     std::string opStr; // 如果是比较运算符，区分 < > <= >=, 其他情况是null
     ~MemberExprNode()=default;
     expr_e get_expr_e() override { return expr_e::Op2; };
