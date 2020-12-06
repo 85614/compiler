@@ -242,6 +242,18 @@ struct FuncDecStmt : public StmtNode
         {
             args.push_back(std::make_pair<TypeNode *, IDNode *>((TypeNode *)n, nullptr));
         }
+        else if (n->get_AST_e() == AST_e::Stmt) {
+            auto stmt = (StmtNode*) n;
+            if (stmt->get_stmt_e() == stmt_e::VarDef){
+                auto varDef = (VarDefStmt*)stmt;
+                for (auto var: varDef->vars){
+                    args.push_back(std::make_pair(var.type, var.ID));
+                }
+                    
+
+                
+            }
+        }
         else
         {
             printf("函数声明参数列表内有除type节点和id节点以外的节点\n");

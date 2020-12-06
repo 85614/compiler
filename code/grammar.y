@@ -227,10 +227,11 @@ VarList: VarList COMMA ParamDec {
     ;
 
 ParamDec: Specifier VarDec {
-        $$ = new TempNode();
+        $$ = new VarDefStmt($1, $2);
+        //$$ = new TempNode();
 		$$->setTokenCount($1);
-        $$ -> addChild($1);
-        $$ -> addChild($2);
+        //$$ -> addChild($1);
+        //$$ -> addChild($2);
     }
     | Specifier {
         //无具体意义void fun(int)
