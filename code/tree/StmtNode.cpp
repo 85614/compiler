@@ -137,7 +137,7 @@ void VarDef::print(int depth)
         printDepth(depth);
         cout << "Var Dec." << endl;
         this->ID->print(depth + 1);
-        this->type->print(depth + 1);
+        this->type->simplePrint(depth + 1);
     }
     if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
     

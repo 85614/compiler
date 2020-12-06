@@ -24,8 +24,8 @@ struct ASTNode
 {
     
     int tokenCount = 0; //第一个词法单元的序号
-    virtual void print(int depth) { printf("请实现print，get_AST_e()is\n") ; cout << (int)this->get_AST_e(); }
-    void printt(int depth) {printf("请实现print，get_AST_e()is\n") ; cout << (int)this->get_AST_e();}
+    virtual void print(int depth) { printf("请实现print，get_AST_e()is\n") ; cout << (int)this->get_AST_e(); exit(1);}
+    virtual void simplePrint(int depth) { this->print(depth); }
     virtual ~ASTNode() = default;
     virtual AST_e get_AST_e() = 0;
     virtual void addChild(ASTNode *child)

@@ -137,6 +137,10 @@ struct StructTypeNode : public BasicTypeNode
             }
         }
     }
+    void simplePrint(int depth) override {
+        printDepth(depth);
+        cout << "Type Specifier: Sturct " << this->ID->ID << endl;
+    }
 
 private:
     StructTypeNode() = default;
