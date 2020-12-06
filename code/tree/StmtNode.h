@@ -20,7 +20,7 @@ struct ScopeStmtNode: public StmtNode {
     
     void makeSymbolTable()override{
         // 会产生新作用域
-        setSymbolTable(global.makeChild(this, this->tokenCount));
+        setSymbolTable(global->makeChild(this, this->tokenCount));
 
     }
 };
@@ -97,7 +97,7 @@ struct VarDefStmt : public StmtNode
         var.type = type;
         var.init = init;
         var.ID = ID;
-        global.registe(ID, IDType_e::VarDef, type);
+        global->registe(ID, IDType_e::VarDef, type);
         vars.push_back(var);
     }
     void addVars(ASTNode *_Vars);
@@ -216,7 +216,7 @@ struct FuncDecStmt : public StmtNode
             if (name == nullptr)
             {
                 name = (IDNode *)n;
-                global.registe(name, IDType_e::FuncDec, nullptr);
+                global->registe(name, IDType_e::FuncDec, nullptr);
             }
             else
             {
@@ -234,7 +234,7 @@ struct FuncDecStmt : public StmtNode
                 {
                     auto id = (IDNode *)n;
                     args.back().second = id;
-                    global.registe(id, IDType_e::VarDef, args.back().first);
+                    global->registe(id, IDType_e::VarDef, args.back().first);
                 }
             }
         }
@@ -277,9 +277,13 @@ struct FuncDefStmt : public ScopeStmtNode
         memberTokenCount = _NameAndArgs->tokenCount + 1;
     }
     void makeSymbolTable()override{
-        setSymbolTable(global.makeChild(this, memberTokenCount));
+        setSymbolTable(global->makeChild(this, memberTokenCount));
+        // DEBUG2(this->belong);
+        // DEBUG2(block->belong);
         for(Identifier *id: this->belong->IDList){
             for (Identifier *id2: block->belong->IDList) {
+                // DEBUG2(id->name);
+                // DEBUG2(id2->name);
                 if(id->name == id2->name){
                     cout << id->name << " 重定义"<<endl;
                     exit(1);
@@ -303,7 +307,7 @@ struct StructDecStmt : StmtNode
     StructDecStmt(IDNode *_ID)
     {
         type = StructTypeNode::createNode(_ID, nullptr);
-        global.registe(_ID, IDType_e::TypenameDec, type);
+        global->registe(_ID, IDType_e::TypenameDec, type);
     }
 
     void print(int depth)override;
@@ -318,13 +322,13 @@ struct StructDefStmt : ScopeStmtNode
     StructDefStmt(IDNode *_ID, ASTNode *_Members)
     {
         type = StructTypeNode::createNode(_ID, _Members);
-        global.registe(_ID, IDType_e::TypenameDef, type);
+        global->registe(_ID, IDType_e::TypenameDef, type);
         memberTokenCount = _Members->tokenCount;
         
     }
     int memberTokenCount = 0;
     void makeSymbolTable() override{
-        setSymbolTable(global.makeChild(this, memberTokenCount));
+        setSymbolTable(global->makeChild(this, memberTokenCount));
     }
 
     void print(int depth)override;

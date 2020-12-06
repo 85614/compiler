@@ -135,12 +135,14 @@ ExtDecList: VarDec {
 
 INT: INT1 {
         $$ = new ConstExprNode($1.str);
+        free((void*)$1.str);
 		$$->setTokenCount($1);
     }
     ;
 
 TYPE: TYPE1 {
         $$ = TypeNode::getType($1.str);
+        free((void*)$1.str);
         $$->setTokenCount($1);
     }
     ;
@@ -442,6 +444,7 @@ Exp:
     }
     | Exp RELOP Exp {
         $$ = new OP2ExprNode(op_e::Relop, $2.str, $1, $3);
+        free((void*)$2.str);
 		$$->setTokenCount($1);
     }
     | Exp PLUS Exp {
@@ -472,7 +475,7 @@ Exp:
         $$ = $2;
     }
     | MINUS Exp {
-        $$ = new OP1ExprNode(op_e::Minus, $2);
+        $$ = new OP1ExprNode(op_e::Negative, $2);
 		$$->setTokenCount($1);
     }
     | NOT Exp {
@@ -564,6 +567,7 @@ void test_lexer()
     do {
 		yyparse();
 	} while(!feof(yyin));
+    global->checkRepeat();
     print_word_list();
     thisFile.print(0);
 }
@@ -605,6 +609,7 @@ int main(int argc,char* argv[])
     do {
 		yyparse();
 	} while(!feof(yyin));
+    
     if (flag_print_ast) {
         root->printTree();
     }

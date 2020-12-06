@@ -11,15 +11,17 @@ struct IDNode: public ASTNode {
     // TypeNode *type = nullptr; // 变量或函数的类型
     // SymbolTable *symboltable = nullptr; // 所属的符号表（作用域）
 
-    const char *ID; // 标识符
+    std::string ID;
     Identifier *realID = nullptr;
-    ~IDNode()=default;
+    SymbolTable *symbolTable;
+    ~IDNode() = default;
 
     AST_e get_AST_e()override{ return AST_e::ID; }
     IDNode(const char *_ID): ID(_ID) {
         if (!_ID)
             printf("标识符是空指针字符串\n");
-        this->realID = global.get(_ID);
+        this->realID = global->get(_ID);
+        symbolTable = global;
         if (!this->realID)
             this->realID = staticGlobal.get(_ID);
         // if (!this->realID)
@@ -27,21 +29,27 @@ struct IDNode: public ASTNode {
         // 只有非声明语句需要报错
     }  
     void setType(IDType_e IDType, TypeNode *type) {
-        if (!realID){
-            printf("ID %s 未声明", ID);
-            return;
-        }
-        else {
+        if (checkExist()){
             realID->IdType = IDType;
             realID->extra = type;
         }
             
     }
-    void checkExist(bool _Existed)const {
+    bool isSame(IDNode *_Right) const{
+        if (ID != _Right->ID)
+            return false;
+        if (symbolTable == _Right->symbolTable)
+            return true;
+        return symbolTable->getTableAndID(ID).first == _Right->symbolTable->getTableAndID(ID).first;
+            
+    }
+    bool checkExist(bool _Existed = true)const {
         if (existed()!=_Existed) {
-            printf("未声明的标识符%s\n", ID);
+            cout << "ID "<< ID << "未声明" << endl;
             exit(1);
+            return false;
         }
+        return true;
     }
     bool existed() const {return realID;}
     void print(int depth) {
@@ -49,4 +57,6 @@ struct IDNode: public ASTNode {
         cout << "ID Declaration: " << this->ID << endl;
     }
 };
+
+
 

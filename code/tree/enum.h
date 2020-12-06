@@ -1,4 +1,5 @@
 #pragma once
+
 enum class AST_e {
     Stmt, // 语句
     ID, // 标识符
@@ -33,44 +34,44 @@ enum class op_e {
 static const char* getInfo(op_e opE) {
     switch (opE)
     {
-    case op_e::Assignop:
-        return "Assignop \"=\" ";
-    case op_e::Relop:
-        return "Relop";
-    case op_e::Plus:
-        return "Plus \"+\" ";
-    case op_e::Minus:
-        return "Minus \"-\" ";
-    case op_e::Times:
-        return "Times \"*\" ";
-    case op_e::Div:
-        return "Div \"/\" ";
-    case op_e::Mod:
-        return "Mod \"%\" ";
-    case op_e::Power:
-        return "Power \"^\" ";
-    case op_e::And:
-        return "And \"&&\" ";
-    case op_e::Or:
-        return "Or \"||\" ";
-    case op_e::Negative:
-        return "Negative \"-\" ";
-    case op_e::Not:
-        return "Not \"!\" ";
-    case op_e::SignalAnd:
-        return "SingalAnd \"&\" ";
-    case op_e::GetValue:
-        return "GetValue";
-    case op_e::GetArrayValue:
-        return " GetArrayValue \"[]\" ";
-    case op_e::GetMember:
-        return "GetMember \".\" ";
-    case op_e::AssignArray:
-        return "AssignArray \"[]\" ";
-    case op_e::AssignMember:
-        return "AssignMember \".\" ";
-    default:
-        return "something wrong";
+        case op_e::Assignop:
+            return "Assignop \"=\" ";
+        case op_e::Relop:
+            return "Relop";
+        case op_e::Plus:
+            return "Plus \"+\" ";
+        case op_e::Minus:
+            return "Minus \"-\" ";
+        case op_e::Times:
+            return "Times \"*\" ";
+        case op_e::Div:
+            return "Div \"/\" ";
+        case op_e::Mod:
+            return "Mod \"%\" ";
+        case op_e::Power:
+            return "Power \"^\" ";
+        case op_e::And:
+            return "And \"&&\" ";
+        case op_e::Or:
+            return "Or \"||\" ";
+        case op_e::Negative:
+            return "Negative \"-\" ";
+        case op_e::Not:
+            return "Not \"!\" ";
+        case op_e::SignalAnd:
+            return "SingalAnd \"&\" ";
+        case op_e::GetValue:
+            return "GetValue";
+        case op_e::GetArrayValue:
+            return " GetArrayValue \"[]\" ";
+        case op_e::GetMember:
+            return "GetMember \".\" ";
+        case op_e::AssignArray:
+            return "AssignArray \"[]\" ";
+        case op_e::AssignMember:
+            return "AssignMember \".\" ";
+        default:
+            return "something wrong";
     }
 }
 
