@@ -35,6 +35,18 @@ struct IDNode: public ASTNode {
         }
             
     }
+    TypeNode *getType() const {
+        if (realID->extra) {
+            return realID->extra;
+        }
+        else {
+            if (realID->IdType == IDType_e::TypenameDec)
+                cout << "不允许使用不完整的类型" << ID << endl;
+            else 
+                cout << "ID "<< ID << "类型不确定" << endl;
+        }
+        return nullptr;
+    }
     bool isSame(IDNode *_Right) const{
         if (ID != _Right->ID)
             return false;

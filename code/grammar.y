@@ -64,6 +64,7 @@ void yyerror(const char *str);
 %type <temp> Dec DecList Args ParamDec VarList FunDec 
 %type <stmt> DecFor
 %type <temp> Pointer
+%type <stmt> FuncDecStmt
 %%
 
 /* 开始符号 */
@@ -101,15 +102,15 @@ ExtDef: Specifier ExtDecList SEMI {
     }
     | Specifier SEMI {
     }
-    | Specifier FunDec CompSt {
+    | FuncDecStmt CompSt {
         //函数定义
-        $$ = new FuncDefStmt($1,$2,$3);
+        $$ = new FuncDefStmt($1,$2);
 		$$->setTokenCount($1);
     }
-    | Specifier FunDec SEMI {
+    | FuncDecStmt SEMI {
         //函数声明
-        $$ = new FuncDecStmt($1,$2);
-		$$->setTokenCount($1);
+        $$ = $1;
+        $1->makeSymbolTable();
     }
     | StructSpecifier SEMI {
         //结构体定义
@@ -118,6 +119,13 @@ ExtDef: Specifier ExtDecList SEMI {
     | error SEMI {
         yyerrok;
         $$ = NULL;
+    }
+    ;
+
+FuncDecStmt: Specifier FunDec {
+        //函数声明
+        $$ = new FuncDecStmt($1,$2);
+		$$->setTokenCount($1, false);
     }
     ;
 
@@ -175,6 +183,10 @@ StructSpecifier: STRUCT ID LC StructDecList RC {
         $$ = new StructDefStmt($2, $4);
 		$$->setTokenCount($1);
     }
+    | STRUCT ID LC RC {
+        $$ = new StructDefStmt($2, nullptr);
+		$$->setTokenCount($1);
+    }
     ;
 
 StructDecList: StructDec {
@@ -191,7 +203,7 @@ StructDecList: StructDec {
     }
     ;
 
-StructDec: Specifier ID SEMI {
+StructDec: Specifier VarDec SEMI {
         //：结构体类型 id ；
         $$ = new VarDefStmt($1, $2);
 		$$->setTokenCount($1);
@@ -516,7 +528,7 @@ Exp:
 		$$->setTokenCount($1);
     }
     | ID GETMEMBER ID {
-        $$ = new OP2ExprNode(op_e::GetMember, new VarExprNode($1), new VarExprNode($3));
+        $$ = new MemberExprNode(new VarExprNode($1), $3);
 		$$->setTokenCount($1);
     }
     | INT {

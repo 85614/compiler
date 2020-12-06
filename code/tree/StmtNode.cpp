@@ -65,8 +65,8 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
                     cout << "数组[]中的不是表达式"<<endl;
                     exit(1);
                 }
-                vars.back().type = new ArrayTypeNode(oldType, (ExprNode*)temp->childList[1]);
-                
+                vars.back().type= new ArrayTypeNode(oldType, (ExprNode*)temp->childList[1]);
+                vars.back().ID->setType(IDType_e::VarDef, vars.back().type);
             } else if ((temp->msg)[0] == '*') { 
                 // temp = ***... + ID          
                 // 声明指针    
@@ -75,7 +75,7 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
                     type = new PointerTypeNode(type, 1);
                 }
                 vars.back().type = type;
-                
+                vars.back().ID->setType(IDType_e::VarDef, vars.back().type);
             } else {
                 printf("变量定义出现未识别的结点类型\n");
             }
