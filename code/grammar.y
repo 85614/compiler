@@ -217,6 +217,12 @@ FunDec: ID LP VarList RP {
 
 VarList: VarList COMMA ParamDec {
         //递归参数列表：参数列表 ， 参数声明
+        if ($1->get_AST_e() != AST_e::Temp) {
+            auto temp = $1;
+            $1 = new TempNode();
+            $1->addChild(temp);
+        }
+            
         $1 -> addChild($3);
         $$ = $1;
     }

@@ -129,6 +129,7 @@ void VarDef::print(int depth)
         printDepth(depth);
         cout << "Var def." << endl;
         this->ID->print(depth + 1);
+        this->type->simplePrint(depth + 1);
         printDepth(depth + 1);
         cout << "Var Init." << endl;
         this->init->print(depth + 2);
@@ -242,8 +243,8 @@ void FuncDecStmt::print(int depth)
         {
             printDepth(depth + 2);
             cout << "Var Dec." << endl;
-            (this->args)[k].first->print(depth + 3);
             (this->args)[k].second->print(depth + 3);
+            (this->args)[k].first->print(depth + 3);
         }
     }
 
