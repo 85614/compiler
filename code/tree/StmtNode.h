@@ -71,6 +71,14 @@ struct VarDefStmt : public StmtNode
     {
         this->basicType = _Type;
         addVars(_Vars);
+        for (auto &var:vars) {
+            auto type = var.type;
+            if (!type->decAble()) {
+                cout << "不允许声明此类型的变量，ID："<<var.ID->ID<<"，类型：" << endl;
+                type->print(0);
+                exit (1);
+            }
+        }
     }
     void addVar(ASTNode *type, ASTNode *ID, ASTNode *init)
     {
@@ -94,12 +102,7 @@ struct VarDefStmt : public StmtNode
     void addVar(TypeNode *type, IDNode *ID, ExprNode *init)
     {
         VarDef var;
-        if (!type->decAble()) {
-            cout << "不允许声明此类型的变量" << endl;
-            DEBUG2(ID->ID);
-            type->print(0);
-            exit (1);
-        }
+        
         var.type = type;
         var.init = init;
         var.ID = ID;
