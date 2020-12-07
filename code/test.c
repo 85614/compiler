@@ -1,9 +1,12 @@
-// struct B;
 // struct AA{
 //     int a;
 // };
 
 // struct AA *a;
+
+int a;
+
+struct A;
 
 struct test {
     // int **a;

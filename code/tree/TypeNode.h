@@ -180,7 +180,8 @@ struct StructTypeNode : public BasicTypeNode
     void print(int depth)
     {
         printDepth(depth);
-        cout << "Sturct Name." << endl;
+        if(defined) cout << "Sturct Name." << endl;
+        else cout << "Undefined Struct." << endl; 
         this->ID->print(depth + 1);
         if (defined)
         {
@@ -193,12 +194,7 @@ struct StructTypeNode : public BasicTypeNode
                 (this->members)[k].first->print(depth + 2);
                 (this->members)[k].second->print(depth + 2);
             }
-        } 
-        else {
-            printDepth(depth + 1);
-            cout << "Undefined" << endl;
-        } 
-            
+        }  
     }
     void simplePrint(int depth) override {
         printDepth(depth);

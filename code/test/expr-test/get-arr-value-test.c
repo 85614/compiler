@@ -12,6 +12,9 @@ int main() {
   ptr[a];
   arr[0];
   arr[a];
+
+  int p[3][5][4];
+  print_int(p[2][3][2]);
   // a[0];
   // e[0];
 

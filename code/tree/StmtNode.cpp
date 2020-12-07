@@ -129,8 +129,8 @@ void VarDef::print(int depth)
     {
         printDepth(depth);
         cout << "Var def." << endl;
-        this->ID->print(depth + 1);
         this->type->simplePrint(depth + 1);
+        this->ID->print(depth + 1);
         printDepth(depth + 1);
         cout << "Var Init." << endl;
         this->init->print(depth + 2);
@@ -138,8 +138,8 @@ void VarDef::print(int depth)
     else {
         printDepth(depth);
         cout << "Var Dec." << endl;
-        this->ID->print(depth + 1);
         this->type->simplePrint(depth + 1);
+        this->ID->print(depth + 1);
     }
     if (MY_DEBUG) cout<<__FILE__<< __LINE__ <<endl;
     

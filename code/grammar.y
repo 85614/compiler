@@ -99,8 +99,6 @@ ExtDef: Specifier ExtDecList SEMI {
         //$$->addChild($1);
         //$$->addChild($2);
     }
-    | Specifier SEMI {
-    }
     | FuncDecStmt CompSt {
         //函数定义
         $$ = new FuncDefStmt($1,$2);
@@ -185,6 +183,9 @@ StructSpecifier: StructDecStmt LC ExtDefList RC {
     | StructDecStmt LC RC {
         $$ = new StructDefStmt($1, nullptr, true);
 		$$->setTokenCount($1);
+    }
+    | StructDecStmt {
+        $$ = $1;
     }
     ;
 
@@ -287,12 +288,11 @@ Stmt: Exp SEMI {
     }
     | Def SEMI {
         //定义语句 ；
-            $$ = $1;
-        
+        $$ = $1;
     }
-    | STRUCT ID ID SEMI {
+    | Specifier ID SEMI {
         //声明结构体变量：struct structname a ；
-        $$ = new VarDefStmt(StructTypeNode::getStructType($2), $3);
+        $$ = new VarDefStmt($1, $2);
 		$$->setTokenCount($1);
     }
     | CompSt {
