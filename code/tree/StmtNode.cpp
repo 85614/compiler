@@ -68,6 +68,7 @@ void VarDefStmt::addVars(ASTNode*_Vars) {
                 vars.back().type= new ArrayTypeNode(oldType, (ExprNode*)temp->childList[1]);
                 vars.back().ID->setType(IDType_e::VarDef, vars.back().type);
             } else if ((temp->msg)[0] == '*') { 
+                DEBUG2("get *");
                 // temp = ***... + ID          
                 // 声明指针    
                 auto type = oldType;

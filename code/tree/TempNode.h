@@ -9,6 +9,7 @@ struct TempNode : ASTNode{
     virtual AST_e get_AST_e() override {return AST_e::Temp;}
     void addChild(ASTNode *child)override { if(child) childList.push_back(child); }
     virtual void addMsg(std::string &&_Msg) {
+        DEBUG2(_Msg);
         msg += _Msg;
         
     }

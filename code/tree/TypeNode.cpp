@@ -4,13 +4,13 @@
 #include "StmtNode.h"
 
 StructTypeNode * StructTypeNode::createNode(IDNode *_ID, ASTNode *_Members) {
-        StructTypeNode *result;
-        result = new StructTypeNode;
-        result->ID = _ID;
-        result->name = _ID->ID;
-        result->defined = _Members;
-        result->addMembers(_Members);
-        return result;
+    StructTypeNode *result;
+    result = new StructTypeNode;
+    result->ID = _ID;
+    result->name = _ID->ID;
+    result->defined = _Members;
+    result->addMembers(_Members);
+    return result;
 }
 
 

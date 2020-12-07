@@ -96,6 +96,7 @@ struct VarDefStmt : public StmtNode
         VarDef var;
         if (!type->decAble()) {
             cout << "不允许声明此类型的变量" << endl;
+            DEBUG2(ID->ID);
             type->print(0);
             exit (1);
         }
@@ -326,7 +327,7 @@ struct StructDecStmt : StmtNode
     StructDecStmt(IDNode *_ID)
     {
         type = StructTypeNode::createNode(_ID, nullptr);
-        DEBUG2(_ID->ID);
+        // DEBUG2(_ID->ID);
         global->registe(_ID, IDType_e::TypenameDec, type);
     }
 
@@ -336,19 +337,36 @@ struct StructDecStmt : StmtNode
 struct StructDefStmt : ScopeStmtNode
 {
     // 结构体定义
-    StructTypeNode *type;
+    
     stmt_e get_stmt_e() override { return stmt_e::StructDef; }
     
-    StructDefStmt(IDNode *_ID, ASTNode *_Members)
+    // StructDefStmt(IDNode *_ID, ASTNode *_Members)
+    // {
+    //     type = StructTypeNode::createNode(_ID, _Members);
+    //     global->registe(_ID, IDType_e::TypenameDef, type);
+    //     memberTokenCount = _Members->tokenCount;
+    // }
+    // StructDefStmt(IDNode *_ID, int a)
+    //     :StructDefStmt(_ID, nullptr)
+    // {
+    //     type->setDefined();
+    // }
+    IDNode *defID;
+    StructTypeNode *type;
+    StructDecStmt *dec;
+    StructDefStmt(StmtNode *_Dec, ASTNode *_Members, bool empty=false) 
+        :dec((StructDecStmt*)_Dec)
     {
-        type = StructTypeNode::createNode(_ID, _Members);
-        global->registe(_ID, IDType_e::TypenameDef, type);
+        if (_Dec->get_stmt_e() != stmt_e::StructDec) {
+            cout << "结构体定义中，第一个参数不是结构体声明语句" << endl;
+            exit(1);
+        }
+        defID = new IDNode(dec->type->ID->ID.c_str());
+        type = StructTypeNode::createNode(defID, _Members);
+        if(empty)
+            type->setDefined();
+        global->registe(defID, IDType_e::TypenameDef, type);
         memberTokenCount = _Members->tokenCount;
-    }
-    StructDefStmt(IDNode *_ID, int a)
-        :StructDefStmt(_ID, nullptr)
-    {
-        type->defined = true;
     }
     int memberTokenCount = 0;
     void makeSymbolTable() override{

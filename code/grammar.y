@@ -17,7 +17,7 @@ void yyerror(const char *str);
 
 %union{
   struct TypeNode *type;
-  IDNode *id;
+  struct IDNode *id;
   struct ExprNode *expr;
   struct StmtNode *stmt;
   struct ASTNode *temp;
@@ -159,7 +159,7 @@ Specifier: TYPE {
         //类型本身：int
         $$ = $1;
     }
-    | StructDecStmt {
+    | STRUCT ID {
         $$ = TypeNode::getType($2->ID);
         $$->setTokenCount($1);
     }
@@ -179,17 +179,18 @@ Pointer:
 
 StructSpecifier: StructDecStmt LC ExtDefList RC {
         //结构体类型定义：struct structname （ 结构体定义列表 ）
-        $$ = new StructDefStmt($2, $4);
+        $$ = new StructDefStmt($1, $3);
 		$$->setTokenCount($1);
     }
     | StructDecStmt LC RC {
-        $$ = new StructDefStmt($2, 1);
+        $$ = new StructDefStmt($1, nullptr, true);
 		$$->setTokenCount($1);
     }
     ;
 
 StructDecStmt: STRUCT ID {
-    
+    $$ = new StructDecStmt($2);
+    $$->setTokenCount($2);
 }
 
 
@@ -289,7 +290,7 @@ Stmt: Exp SEMI {
             $$ = $1;
         
     }
-    | StructDecStmt ID SEMI {
+    | STRUCT ID ID SEMI {
         //声明结构体变量：struct structname a ；
         $$ = new VarDefStmt(StructTypeNode::getStructType($2), $3);
 		$$->setTokenCount($1);

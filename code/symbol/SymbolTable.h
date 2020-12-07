@@ -55,6 +55,10 @@ public:
     static bool isRepeat(Identifier *id, Identifier *id2);
 
     void checkRepeat(){
+        // DEBUG2("checkRepeat");
+        // for (auto id: IDList) {
+        //     DEBUG2(id->name);
+        // }
         for (auto it = IDList.begin(); it != IDList.end(); ++it) {
             for (auto it2 = it; ++it2, it2 != IDList.end();) {
                 if (isRepeat(*it, *it2)){

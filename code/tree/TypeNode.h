@@ -176,6 +176,7 @@ struct StructTypeNode : public BasicTypeNode
     }
     void addMembers(ASTNode *members);
     static StructTypeNode *createNode(IDNode *_ID, ASTNode *members);
+    void setDefined(){ defined = true; }
     void print(int depth)
     {
         printDepth(depth);
@@ -192,7 +193,12 @@ struct StructTypeNode : public BasicTypeNode
                 (this->members)[k].first->print(depth + 2);
                 (this->members)[k].second->print(depth + 2);
             }
-        }
+        } 
+        else {
+            printDepth(depth + 1);
+            cout << "Undefined" << endl;
+        } 
+            
     }
     void simplePrint(int depth) override {
         printDepth(depth);
