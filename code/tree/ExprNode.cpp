@@ -5,17 +5,32 @@
  void OP1ExprNode::init(){
         switch (this->op)
         {
-            case op_e::Negative:
             case op_e::Not:
+                if (first->getType()->get_type_e() == type_e::PointerType 
+                    || first->getType()->get_type_e() == type_e::ArrayType) {
+                    this->type = BasicTypeNode::INT;
+                    this->isConst = first->isConstExpr();
+                    this->isLeft = false;
+                    break;
+                }
+            case op_e::Negative:
                 // 负号
-                if (!first->getType()->isSame(BasicTypeNode::INT)) {
+                if (first->getType()->isSame(BasicTypeNode::INT)) {
+                    this->type = BasicTypeNode::INT;
+                    this->isConst = first->isConstExpr();
+                    this->isLeft = false; 
+                    break;   
+                }
+                if (op == op_e::Negative) {
                     cout << "必须包含算数类型" << endl;
                     first->getType()->print(0);
                     exit(1);
                 }
-                this->type = BasicTypeNode::INT;
-                this->isConst = first->isConstExpr();
-                this->isLeft = false;
+                else {
+                    cout << "取非运算必须包含int类型、指针类型和数组类型" << endl;
+                    first->getType()->print(0);
+                    exit(1);
+                }
                 break;
             case op_e::SignalAnd:
                 // 取地址
@@ -58,7 +73,7 @@ void OP2ExprNode::init() {
                 cout << "赋值运算的左边不是左值" << endl; 
                 error();
             } else if (!first->getType()->assignable(second->getType())) {
-                cout << "复制运算类型不兼容" << endl;
+                cout << "赋值运算类型不兼容" << endl;
                 first->print(0);
                 second->print(0);
                 error();

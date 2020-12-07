@@ -30,7 +30,7 @@ struct ExprStmtNode : public StmtNode
     // 表达式语句：表达式+分号
     ExprNode *expr;
     stmt_e get_stmt_e() override { return stmt_e::Expr; };
-    ExprStmtNode(ExprNode *_Expr) : expr(_Expr) { if(!_Expr) printf("表达式语句的表达式为NULL\n"); }
+    ExprStmtNode(ExprNode *_Expr) : expr(_Expr) { if(!_Expr) cout << "表达式语句的表达式为NULL\n" << endl; }
     ~ExprStmtNode() = default;
     void print(int depth)override;
 };
@@ -84,17 +84,17 @@ struct VarDefStmt : public StmtNode
     {
         if (type && type->get_AST_e() != AST_e::Type)
         {
-            printf("变量定义语句，变量名类型不是一个类型节点\n");
+            cout << "变量定义语句，变量名类型不是一个类型节点\n" << endl;
             return;
         }
         if (ID && ID->get_AST_e() != AST_e::ID)
         {
-            printf("变量定义语句，变量名不是一个id节点\n");
+            cout << "变量定义语句，变量名不是一个id节点\n" << endl;
             return;
         }
         if (init && init->get_AST_e() != AST_e::Expr)
         {
-            printf("变量定义语句，变量名初始化值不是一个表达式节点\n");
+            cout << "变量定义语句，变量名初始化值不是一个表达式节点\n" << endl;
             return;
         }
         addVar((TypeNode *)type, (IDNode *)ID, (ExprNode *)init);
@@ -162,7 +162,7 @@ struct BlockStmt : public ScopeStmtNode
         if (!_Stmt) 
             return;
         if(_Stmt->get_AST_e()!=AST_e::Stmt)
-            printf("添加非语句节点到语句块中");
+            cout << "添加非语句节点到语句块中" << endl;
         stmts.push_back((StmtNode*)_Stmt);
     }
     void addStmts(ASTNode *_Stmts)
@@ -180,7 +180,7 @@ struct BlockStmt : public ScopeStmtNode
         }
         else
         {
-            printf("语句块内不全是语句\n");
+            cout << "语句块内不全是语句\n" << endl;
         }
     }
 
@@ -212,7 +212,7 @@ struct FuncDecStmt : public ScopeStmtNode
         if (!n)
         {
             if (!name)
-                printf("函数声明内无函数名");
+                cout << "函数声明内无函数名" << endl;
             return;
         }
         if (n->get_AST_e() == AST_e::Temp)
@@ -232,12 +232,12 @@ struct FuncDecStmt : public ScopeStmtNode
             {
                 if (args.size() == 0)
                 {
-                    printf("函数声明参数列表中在ID前无类型\n");
+                    cout << "函数声明参数列表中在ID前无类型\n" << endl;
                     return;
                 }
                 if (args.back().second != nullptr)
                 {
-                    printf("函数声明中参数列表中一个类型类型有多个ID\n");
+                    cout << "函数声明中参数列表中一个类型类型有多个ID\n" << endl;
                     return;
                 }
                 if (args.back().second == nullptr)
@@ -263,7 +263,7 @@ struct FuncDecStmt : public ScopeStmtNode
         }
         else
         {
-            printf("函数声明参数列表内有除type节点和id节点以外的节点\n");
+            cout << "函数声明参数列表内有除type节点和id节点以外的节点\n" << endl;
             return;
         }
     }
@@ -285,14 +285,14 @@ struct FuncDefStmt : public ScopeStmtNode
         :funcdec(*(FuncDecStmt*)_Dec)
     {
         if (!_Block)
-            printf("函数体为NULL\n");
+            cout << "函数体为NULL\n" << endl;
         if (_Block && _Block->get_stmt_e() == stmt_e::Block)
         {
             this->block = (BlockStmt *)_Block;
         }
         else
         {
-            printf("函数体不是一个块语句");
+            cout << "函数体不是一个块语句" << endl;
         }
          
         funcdec.name->setType(IDType_e::FuncDef, funcdec.funType);
