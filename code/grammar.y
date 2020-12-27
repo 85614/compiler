@@ -568,6 +568,7 @@ void print12(){
     print_word_list();
     thisFile.print(0);
 }
+void addGlobalChildren();
 void test_lexer()
 {
     FILE* file = fopen("test.c", "r");
@@ -575,8 +576,8 @@ void test_lexer()
     do {
 		yyparse();
 	} while(!feof(yyin));
+    addGlobalChildren();
     global->checkRepeat();
-    
 }
 
 /*

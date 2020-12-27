@@ -37,6 +37,13 @@ void init()
 std::ofstream os("code.asm");
 std::ostream &theOs = os;
 
+void addGlobalChildren()
+{
+    for (auto &stmt : thisFile.stmts)
+        if (stmt->get_AST_e() == AST_e::Stmt)
+            addChildSymbolTable(global, (StmtNode *)stmt);
+}
+
 void initGlobalVar(std::ostream &os)
 {
     for (auto &stmt : thisFile.stmts)
@@ -69,7 +76,6 @@ print_int:
 )";
     for (auto &stmt : thisFile.stmts)
     {
-        
 
         if (stmt->get_AST_e() == AST_e::Stmt && ((StmtNode *)stmt)->get_stmt_e() == stmt_e::VarDef)
             continue;
@@ -81,9 +87,9 @@ print_int:
     {
         if (id->IdType == IDType_e::VarDef)
         {
-            
-            os << "    "<<id->name << " dd ";
-            
+
+            os << "    " << id->name << " dd ";
+
             for (int i = 0; i < id->extra->size; i += 4)
             {
                 if (i != 0)

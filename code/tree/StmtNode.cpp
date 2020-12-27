@@ -84,7 +84,7 @@ void VarDefStmt::addVars(ASTNode *_Vars)
             }
             else if ((temp->msg)[0] == '*')
             {
-                
+
                 // temp = ***... + ID
                 // 声明指针
                 auto type = oldType;
@@ -298,8 +298,10 @@ void ReturnStmt::print(int depth)
     this->expr->print(depth + 1);
 }
 void initGlobalVar(std::ostream &os);
+int curReturnLabel = 0;
 void FuncDefStmt::output(std::ostream &os)
 {
+    int returnLable = ++curReturnLabel;
     os << funcdec.name->ID;
     os << ":\n    push ebp\n    mov ebp, esp\n";
 
@@ -313,7 +315,9 @@ void FuncDefStmt::output(std::ostream &os)
     {
         stmt->output(os);
     }
-    os << "    mov esp, ebp\n    pop ebp\n    ret\n\n";
+    if (returnLable != curReturnLabel)
+        my_error("return label error");
+    os << "return_" << returnLable << ":\n    mov esp, ebp\n    pop ebp\n    ret\n\n";
 }
 void ReturnStmt::output(std::ostream &os)
 {
@@ -322,5 +326,7 @@ void ReturnStmt::output(std::ostream &os)
     {
         os << "    mov eax, " << v->str() << "\n";
     }
+
+    os << "    jmp return_" << curReturnLabel << "\n";
     delete v;
 }

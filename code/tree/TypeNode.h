@@ -390,6 +390,7 @@ inline bool isRef(TypeNode *t)
     return t->get_type_e() == type_e::ArrayType ||
            isStruct(t);
 }
+
 static int getBaseTypeSize(TypeNode *t)
 {
     if (t->get_type_e() == type_e::ArrayType)
@@ -398,4 +399,22 @@ static int getBaseTypeSize(TypeNode *t)
         return ((PointerTypeNode *)t)->basicType->size;
     my_error("不是数组或指针没有基本类型");
     return 0;
+}
+
+inline TypeNode *getBasicType(TypeNode *t)
+{
+    if (t->get_type_e() == type_e::ArrayType)
+        return ((ArrayTypeNode *)t)->basicType;
+    else if (t->get_type_e() == type_e::PointerType)
+        return ((PointerTypeNode *)t)->basicType;
+    return nullptr;
+}
+
+static bool hasSameBasic(TypeNode *t1, TypeNode *t2)
+{
+    auto base1 = getBasicType(t1);
+    auto base2 = getBasicType(t2);
+    if (base1 && base2 && base1->isSame(base2))
+        return true;
+    return false;
 }

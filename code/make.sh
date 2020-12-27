@@ -1,6 +1,6 @@
 #!/bin/bash
 echo bison
-bison -d  grammar.y
+bison -d  ./grammar.y
 echo flex
 flex lexer.l
 echo gcc

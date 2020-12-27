@@ -3,6 +3,8 @@
 void test_lexer();
 void output();
 void print12();
+
+
 int main(){
    init();
    test_lexer();

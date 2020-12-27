@@ -54,7 +54,7 @@ ValPtr *FunCallExprNode::calValue(std::ostream &os, bool getAddr)
 
 ValPtr *OP1ExprNode::calValue(std::ostream &os, bool getAddr)
 {
-    
+
     switch (this->op)
     {
     case op_e::Not:
@@ -263,6 +263,23 @@ ValPtr *OP2ExprNode::calValue(std::ostream &os, bool getAddr)
         if (hasSwap && op == op_e::Minus)
             os << "    neg " << v1->str() << "\n";
         delete v2;
+        if (hasSameBasic(first->getType(), second->getType()))
+        {
+            int eleSize = getBaseTypeSize(first->getType());
+            if (v1->str() != "eax")
+            {
+                holdReg(v1);
+                auto eax = newRegValPtr(0);
+                unholdReg(v1);
+                os << "    mov eax, " << v1->str() << "\n";
+                delete v1;
+                v1 = eax;
+            }
+            storeReg(3);
+            holdReg(3);
+            os << "    idiv " << toHex(eleSize);
+            unholdReg(3);
+        }
         return v1;
         // a + b
         // a - b
@@ -530,8 +547,13 @@ void OP2ExprNode::init()
         }
     }
     break;
-    case op_e::Plus:
     case op_e::Minus:
+        if (hasSameBasic(first->getType(), second->getType()))
+        {
+            init(BasicTypeNode::INT, false, false);
+            return;
+        }
+    case op_e::Plus:
     {
         // a + b
         // a - b

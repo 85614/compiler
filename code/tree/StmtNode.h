@@ -426,12 +426,12 @@ struct FuncDefStmt : public StmtNode
     void output(std::ostream &os) override;
     void makeSymbolTable() override
     {
-                        funcdec.makeSymbolTable();
-                for (Identifier *id : funcdec.belong->IDList)
+        funcdec.makeSymbolTable();
+        for (Identifier *id : funcdec.belong->IDList)
         {
             for (Identifier *id2 : block->belong->IDList)
             {
-                                                if (id->name == id2->name)
+                if (id->name == id2->name)
                 {
                     cout << id->name << " 重定义" << endl;
                     exit(1);
@@ -440,7 +440,7 @@ struct FuncDefStmt : public StmtNode
         }
         addChildSymbolTable(funcdec.belong, block);
         funcdec.belong->setIndividual();
-            }
+    }
     // 经测试，函数定义的参数列表和函数体同一个作用域，不允许重复定义
     int memberTokenCount = 0;
 
@@ -455,7 +455,7 @@ struct StructDecStmt : StmtNode
     StructDecStmt(IDNode *_ID)
     {
         type = StructTypeNode::createNode(_ID, nullptr);
-                global->registe(_ID, IDType_e::TypenameDec, type);
+        global->registe(_ID, IDType_e::TypenameDec, type);
     }
 
     void print(int depth) override;
@@ -497,8 +497,8 @@ struct StructDefStmt : ScopeStmtNode
         // for (auto &&member : structT->members)
         // {
         //     // if (member.second->ID == second->ID)
-        //     
-        //     
+        //
+        //
         // }
     }
 
