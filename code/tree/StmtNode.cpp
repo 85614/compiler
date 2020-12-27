@@ -19,6 +19,16 @@ void VarDefStmt::addVars(ASTNode *_Vars)
     {
 
         TempNode *temp = (TempNode *)_Vars;
+
+        // DEBUG2(temp);
+        // DEBUG2(temp->msg);
+        // for (auto child : temp->childList)
+        //     if (child->get_AST_e() == AST_e::Temp)
+        //     {
+        //         DEBUG2(child);
+        //         DEBUG2(((TempNode *)child)->msg);
+        //     }
+
         if (temp->msg.empty())
         {
             // 没有消息，此temp节点是一个变量列表
@@ -30,16 +40,14 @@ void VarDefStmt::addVars(ASTNode *_Vars)
             // temp = left + init
             // 带初始化
 
-            std::vector<ASTNode *> leafs;
-            temp->getAllLeaf(leafs);
-            if (leafs.size() != 2)
+            if (temp->childList.size() != 2)
             {
                 printf("带初始化的变量声明，变量名+初始化值数量不为2");
                 exit(1);
             }
-            addVars(leafs[0]);
-            if (leafs[1]->get_AST_e() == AST_e::Expr)
-                vars.back().init = (ExprNode *)(leafs[1]);
+            addVars(temp->childList[0]);
+            if (temp->childList[1]->get_AST_e() == AST_e::Expr)
+                vars.back().init = (ExprNode *)(temp->childList[1]);
             else
                 cout << "初始化值不是表达式" << endl;
         }
@@ -50,7 +58,12 @@ void VarDefStmt::addVars(ASTNode *_Vars)
                 cout << "变量声明语句中有空temp结点" << endl;
                 exit(1);
             }
+            // for(auto child: temp->childList)
+            //     child->print(0);
+            // if (temp->childList.size() != 1)
+            //     my_error("预期外的多个节点");
             addVars(temp->childList[0]);
+            
             if (vars.back().init)
             {
                 cout << "变量声明类型声明好前已经有初始化值" << endl;
@@ -87,6 +100,8 @@ void VarDefStmt::addVars(ASTNode *_Vars)
 
                 // temp = ***... + ID
                 // 声明指针
+                if (temp->childList.size()!=1)
+                    my_error("*temp节点的子节点不是1个");
                 auto type = oldType;
                 for (int i = 0; i < temp->msg.size(); ++i)
                 {

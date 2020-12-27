@@ -28,7 +28,8 @@ main:
     sal ebx, 0x2
     add eax, ebx
     mov [ebp-0x14], eax
-    mov eax, [ebp-0x10]
+    mov eax, ebp
+    sub eax, 0xc
     mov ebx, 2
     sal ebx, 0x2
     add eax, ebx
