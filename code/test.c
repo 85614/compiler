@@ -1,29 +1,17 @@
-// struct AA{
-//     int a;
-// };
 
-// struct AA *a;
 
-int a;
-
-struct A;
-
-struct test {
-    // int **a;
-    // int b[4], **f;
-    // int c;
-    // int d, e;
-    // struct AA *ptr;
-    struct test *ptr;
-};
-
-// int main() {
-//     struct test t;
-//     // struct test* ptr;
-//     // ptr = &t;
-//     // t.a = 1;
-//     // t.b = 2;
-//     t.c = 3;
-//     // t.d = t.b * t.c;
-//     print_int(t.d);
-// }
+int main()
+{
+    int a = 1;
+    {
+        print_int(a);
+    }
+    {
+        int a = 2;
+        print_int(a);
+    }
+    {
+        int a = 3;
+        print_int(a);
+    }
+}

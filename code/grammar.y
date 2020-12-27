@@ -563,6 +563,11 @@ std::string replaceExtName(char* fileName) {
 
 
 void print_word_list();
+
+void print12(){
+    print_word_list();
+    thisFile.print(0);
+}
 void test_lexer()
 {
     FILE* file = fopen("test.c", "r");
@@ -571,8 +576,7 @@ void test_lexer()
 		yyparse();
 	} while(!feof(yyin));
     global->checkRepeat();
-    print_word_list();
-    thisFile.print(0);
+    
 }
 
 /*

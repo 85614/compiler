@@ -1,4 +1,4 @@
-
+#include "base.h"
 #include "symbol/SymbolTable.h"
 #include "tree/IDNode.h"
 #include "tree/ExprNode.h"

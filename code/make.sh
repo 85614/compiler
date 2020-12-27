@@ -14,4 +14,12 @@ g++ \
   grammar.tab.c \
   lex.yy.c \
   lexer.cpp \
-  tree/ExprNode.cpp
+  tree/ExprNode.cpp\
+  register/register.cpp\
+  register/TempValue.cpp\
+  base.cpp
+
+echo ./a.out
+./a.out
+echo cat ./code.asm
+cat ./code.asm

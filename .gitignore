@@ -2,4 +2,8 @@
 a.out
 *.tab.*
 lex.yy.c
-
+test.o
+test.s
+test0
+test1
+test1.asm

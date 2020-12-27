@@ -10,6 +10,11 @@ StructTypeNode * StructTypeNode::createNode(IDNode *_ID, ASTNode *_Members) {
     result->name = _ID->ID;
     result->defined = _Members;
     result->addMembers(_Members);
+    if (result->defined) {
+        result->size = 0;
+        for (auto &member: result->members) 
+            result->size += member.first->size;
+    }
     return result;
 }
 
@@ -45,6 +50,7 @@ ArrayTypeNode::ArrayTypeNode(TypeNode *_Basic, ExprNode *_Size)
         exit(1);
     }
     len = atoi(((ConstExprNode*)_Size)->value.c_str());
+    this->size = len * _Basic->size;
 }
 
 
