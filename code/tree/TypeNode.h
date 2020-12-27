@@ -391,6 +391,13 @@ inline bool isRef(TypeNode *t)
            isStruct(t);
 }
 
+static int tryGetBaseTypeSize(TypeNode *t) {
+    if (t->get_type_e() == type_e::ArrayType)
+        return ((ArrayTypeNode *)t)->basicType->size;
+    else if (t->get_type_e() == type_e::PointerType)
+        return ((PointerTypeNode *)t)->basicType->size;
+    return 0;
+}
 static int getBaseTypeSize(TypeNode *t)
 {
     if (t->get_type_e() == type_e::ArrayType)

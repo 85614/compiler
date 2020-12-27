@@ -95,7 +95,7 @@ ValPtr *OP1ExprNode::calValue(std::ostream &os, bool getAddr)
                     v->_IsRef = true;
                 return v;
             }
-            my_error("un check 注释");
+            // my_error("un check 注释");
             // auto v = first->calValue(os);
             if (getAddr)
                 return v;
@@ -146,6 +146,17 @@ ValPtr *MemberExprNode::calValue(std::ostream &os, bool getAddr)
             return new ValPtr(new MemValue(os, v));
         }
     }
+}
+
+int getZhiShu(size_t x)
+{
+    int ans = 0;
+    while (x > 1)
+    {
+        x >>= 1;
+        ++ans;
+    }
+    return ans;
 }
 
 ValPtr *OP2ExprNode::calValue(std::ostream &os, bool getAddr)
@@ -250,35 +261,34 @@ ValPtr *OP2ExprNode::calValue(std::ostream &os, bool getAddr)
         auto v1 = first->calValue(os);
         auto v2 = second->calValue(os);
         bool hasSwap = false;
-        if (!v1->isRegister())
-            if (v2->isRegister())
-            {
-                std::swap(v1, v2);
-                hasSwap = true;
-            }
+        holdReg(v2);
+        v1->load(os);
+        unholdReg(v2);
+        int eleSize1 = tryGetBaseTypeSize(first->getType());
+        int eleSize2 = tryGetBaseTypeSize(second->getType());
+        if (eleSize1 != eleSize2)
+        {
+            // 只有一个是指针或数组
+            if (eleSize2)
+                os << "    sal " << v1->str() << ", " << toHex(getZhiShu(eleSize2)) << "\n";
             else
-                v1->load(os);
+            {
+                holdReg(v1);
+                v2->load(os);
+                unholdReg(v1);
+                os << "    sal " << v2->str() << ", " << toHex(getZhiShu(eleSize1)) << "\n";
+            }
+        }
+
         os << (this->op == op_e::Plus ? "    add " : "    sub ");
         os << v1->str() << ", " << v2->str() << "\n";
-        if (hasSwap && op == op_e::Minus)
-            os << "    neg " << v1->str() << "\n";
         delete v2;
         if (hasSameBasic(first->getType(), second->getType()))
         {
+            // 如果是指针-指针
             int eleSize = getBaseTypeSize(first->getType());
-            if (v1->str() != "eax")
-            {
-                holdReg(v1);
-                auto eax = newRegValPtr(0);
-                unholdReg(v1);
-                os << "    mov eax, " << v1->str() << "\n";
-                delete v1;
-                v1 = eax;
-            }
-            storeReg(3);
-            holdReg(3);
-            os << "    idiv " << toHex(eleSize);
-            unholdReg(3);
+            v1->load(os);
+            os << "    sar " << v1->str() << ", " << toHex(getZhiShu(eleSize)) << "\n";
         }
         return v1;
         // a + b
@@ -492,6 +502,7 @@ void OP1ExprNode::init()
         }
         else
         {
+            DEBUG2(getInfo(first->getType()->get_type_e()));
             cout << "只能对数组类型和指针类型解引用" << endl;
             exit(1);
         }

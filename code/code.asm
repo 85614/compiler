@@ -15,53 +15,58 @@ print_int:
     pop ebp
     ret
 
-fibo:
-    push ebp
-    mov ebp, esp
-    sub esp, 0x8
-    mov eax, [ebp+0x8]
-    cmp eax, 1
-    jne goto0
-    mov eax, 1
-    jmp return_1
-    jmp if_over_0
-goto0:
-    mov eax, [ebp+0x8]
-    cmp eax, 2
-    jne goto1
-    mov eax, 2
-    jmp return_1
-goto1:
-if_over_0:
-    mov eax, [ebp+0x8]
-    sub eax, 1
-    push eax
-    call fibo
-    mov [ebp-0x4], eax
-    mov eax, [ebp+0x8]
-    sub eax, 2
-    push eax
-    call fibo
-    mov [ebp-0x8], eax
-    mov eax, [ebp-0x4]
-    add eax, [ebp-0x8]
-    jmp return_1
-return_1:
-    mov esp, ebp
-    pop ebp
-    ret
-
 main:
     push ebp
     mov ebp, esp
-    sub esp, 0x4
-    push 5
-    call fibo
-    mov [ebp-0x4], eax
-    mov eax, [ebp-0x4]
+    sub esp, 0x1c
+    mov eax, ebp
+    sub eax, 0xc
+    mov [ebp-0x10], eax
+    mov eax, ebp
+    sub eax, 0xc
+    mov ebx, 1
+    sal ebx, 0x2
+    add eax, ebx
+    mov [ebp-0x14], eax
+    mov eax, [ebp-0x10]
+    mov ebx, 2
+    sal ebx, 0x2
+    add eax, ebx
+    mov [ebp-0x18], eax
+    mov eax, 1
+    mov ebx, [ebp-0x10]
+    mov [ebx], eax
+    mov eax, 2
+    mov ebx, [ebp-0x14]
+    mov [ebx], eax
+    mov eax, 3
+    mov ebx, [ebp-0x18]
+    mov [ebx], eax
+    mov eax, 0
+    mov [ebp-0x1c], eax
+for_go_on_0:
+    mov eax, [ebp-0x1c]
+    cmp eax, 3
+    jge goto0
+    mov eax, 0x4
+    imul eax, [ebp-0x1c]
+    mov ebx, ebp
+    sub ebx, 0xc
+    add eax, ebx
+    mov ebx, [eax]
+    push ebx
+    call print_int
+    mov eax, [ebp-0x1c]
+    add eax, 1
+    mov [ebp-0x1c], eax
+    jmp for_go_on_0
+goto0:
+    mov eax, [ebp-0x18]
+    sub eax, [ebp-0x10]
+    sar eax, 0x2
     push eax
     call print_int
-return_2:
+return_1:
     mov esp, ebp
     pop ebp
     ret
