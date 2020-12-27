@@ -28,7 +28,7 @@ struct ScopeStmtNode : public StmtNode
         setSymbolTable(global->makeChild(this, this->tokenCount));
         addChild();
     }
-    virtual void addChild(){};
+    virtual void addChild() = 0;
 };
 
 inline ScopeStmtNode *toScope(StmtNode *stmt)
