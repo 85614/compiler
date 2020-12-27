@@ -11,6 +11,7 @@ struct StmtNode : public ASTNode
     AST_e get_AST_e() override { return AST_e::Stmt; }
     virtual stmt_e get_stmt_e() = 0;
     virtual bool isScope() { return false; }
+    virtual void addChild(SymbolTable *) = 0;
 };
 
 struct ScopeStmtNode : public StmtNode
@@ -26,9 +27,8 @@ struct ScopeStmtNode : public StmtNode
     {
         // 会产生新作用域
         setSymbolTable(global->makeChild(this, this->tokenCount));
-        addChild();
+        addChild(belong);
     }
-    virtual void addChild() = 0;
 };
 
 inline ScopeStmtNode *toScope(StmtNode *stmt)
@@ -38,7 +38,15 @@ inline ScopeStmtNode *toScope(StmtNode *stmt)
     my_error("scope cat error");
     return nullptr;
 }
-
+inline void addChildSymbolTable(SymbolTable *father, StmtNode *child)
+{
+    if (!child)
+        return;
+    if (child->isScope())
+        father->addChild(toScope(child)->belong);
+    else 
+        child->addChild(father);
+}
 struct ExprStmtNode : public StmtNode
 {
     // 表达式语句：表达式+分号
@@ -51,6 +59,7 @@ struct ExprStmtNode : public StmtNode
                  << endl;
     }
     std::string dasdhasjhdgs;
+    virtual void addChild(SymbolTable *) override {}
 
     void output(std::ostream &os) override
     {
@@ -87,6 +96,11 @@ struct IFStmt : public StmtNode
             os << "if_over_" << label << ":\n";
         }
     }
+    virtual void addChild(SymbolTable *table) override
+    {
+        addChildSymbolTable(table, falseRun);
+        addChildSymbolTable(table, trueRun);
+    }
     ~IFStmt() = default;
     void print(int depth) override;
 };
@@ -122,6 +136,7 @@ struct VarDefStmt : public StmtNode
             }
         }
     }
+    virtual void addChild(SymbolTable *table) override{}
     void addVar(ASTNode *type, ASTNode *ID, ASTNode *init)
     {
         if (type && type->get_AST_e() != AST_e::Type)
@@ -178,12 +193,6 @@ struct VarDefStmt : public StmtNode
     void print(int depth) override;
 };
 
-inline void addChildSymbolTable(SymbolTable *father, StmtNode *child)
-{
-    if (child->isScope())
-        father->addChild(toScope(child)->belong);
-}
-
 struct ForStmt : public ScopeStmtNode
 {
     // for 语句
@@ -197,10 +206,10 @@ struct ForStmt : public ScopeStmtNode
         : init(_Init), test(_Test), other(_Other), run(_Run)
     {
     }
-    virtual void addChild() override
+    virtual void addChild(SymbolTable *table) override
     {
         // 添加子作用域
-        addChildSymbolTable(belong, run);
+        addChildSymbolTable(table, run);
     }
 
     void output(std::ostream &os) override
@@ -242,7 +251,10 @@ struct WhileStmt : public StmtNode
         os << "    jmp while_go_on_" << label << "\n";
         os << "goto" << label << ":\n";
     }
-
+    virtual void addChild(SymbolTable *table) override
+    {
+        addChildSymbolTable(table, run);
+    }
     void print(int depth) override;
 };
 
@@ -264,11 +276,13 @@ struct BlockStmt : public ScopeStmtNode
             cout << "添加非语句节点到语句块中" << endl;
         stmts.push_back((StmtNode *)_Stmt);
     }
-    virtual void addChild() override
+    virtual void addChild(SymbolTable *table) override
+
     {
         // 添加子作用域
         for (auto stmt : stmts)
             addChildSymbolTable(belong, stmt);
+        
     }
     void addStmts(ASTNode *_Stmts)
     {
@@ -318,7 +332,7 @@ struct FuncDecStmt : public ScopeStmtNode
         name->setType(IDType_e::FuncDec, funType);
         memberTokenCount = _NameAndArgs->tokenCount + 1;
     }
-    virtual void addChild() override
+    virtual void addChild(SymbolTable *table) override
     {
         // 添加子作用域
     }
@@ -422,6 +436,7 @@ struct FuncDefStmt : public StmtNode
         memberTokenCount = _Block->tokenCount;
         //this->belong;//
     }
+    virtual void addChild(SymbolTable *table) override{}
 
     void output(std::ostream &os) override;
     void makeSymbolTable() override
@@ -457,6 +472,7 @@ struct StructDecStmt : StmtNode
         type = StructTypeNode::createNode(_ID, nullptr);
         global->registe(_ID, IDType_e::TypenameDec, type);
     }
+    virtual void addChild(SymbolTable *table) override {}
 
     void print(int depth) override;
 };
@@ -484,10 +500,8 @@ struct StructDefStmt : ScopeStmtNode
         global->registe(defID, IDType_e::TypenameDef, type);
         memberTokenCount = _Members->tokenCount;
     }
-    virtual void addChild() override
-    {
-        // 添加子作用域
-    }
+    virtual void addChild(SymbolTable *table) override {}
+
     int memberTokenCount = 0;
     void makeSymbolTable() override
     {
@@ -513,4 +527,5 @@ struct ReturnStmt : StmtNode
     stmt_e get_stmt_e() override { return stmt_e::Return; }
     void output(std::ostream &os) override;
     void print(int depth) override;
+    virtual void addChild(SymbolTable *table) override{}
 };
