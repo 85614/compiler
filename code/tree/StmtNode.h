@@ -44,7 +44,7 @@ inline void addChildSymbolTable(SymbolTable *father, StmtNode *child)
         return;
     if (child->isScope())
         father->addChild(toScope(child)->belong);
-    else 
+    else
         child->addChild(father);
 }
 struct ExprStmtNode : public StmtNode
@@ -134,9 +134,12 @@ struct VarDefStmt : public StmtNode
                 type->print(0);
                 exit(1);
             }
+
+            if (var.init && !type->assignable(var.init->getType()))
+                my_error("初始化类型不匹配");
         }
     }
-    virtual void addChild(SymbolTable *table) override{}
+    virtual void addChild(SymbolTable *table) override {}
     void addVar(ASTNode *type, ASTNode *ID, ASTNode *init)
     {
         if (type && type->get_AST_e() != AST_e::Type)
@@ -167,6 +170,7 @@ struct VarDefStmt : public StmtNode
         var.init = init;
         var.ID = ID;
         global->registe(ID, IDType_e::VarDef, type);
+
         vars.push_back(var);
     }
     void addVars(ASTNode *_Vars);
@@ -282,7 +286,6 @@ struct BlockStmt : public ScopeStmtNode
         // 添加子作用域
         for (auto stmt : stmts)
             addChildSymbolTable(belong, stmt);
-        
     }
     void addStmts(ASTNode *_Stmts)
     {
@@ -436,7 +439,7 @@ struct FuncDefStmt : public StmtNode
         memberTokenCount = _Block->tokenCount;
         //this->belong;//
     }
-    virtual void addChild(SymbolTable *table) override{}
+    virtual void addChild(SymbolTable *table) override {}
 
     void output(std::ostream &os) override;
     void makeSymbolTable() override
@@ -527,5 +530,5 @@ struct ReturnStmt : StmtNode
     stmt_e get_stmt_e() override { return stmt_e::Return; }
     void output(std::ostream &os) override;
     void print(int depth) override;
-    virtual void addChild(SymbolTable *table) override{}
+    virtual void addChild(SymbolTable *table) override {}
 };

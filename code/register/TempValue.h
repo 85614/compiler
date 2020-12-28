@@ -23,6 +23,9 @@ MemValue *newMemValue(std::ostream &os, ValPtr *addr);
 
 StateValue *newStateValue(std::string trueGo, std::string flaseGo);
 RegValue *newRegValue(ValPtr *ptr, int i);
+void holdReg(ValPtr *vp);
+void unholdReg(ValPtr *vp);
+
 struct Value
 {
 
@@ -104,9 +107,9 @@ struct RegValue : public Value
   // 暂存
   virtual Value *store(std::ostream &os, ValPtr *owner) override
   {
-
-    os << "    push " << registers[index] << "\n";
     stack_esp -= 4;
+    os << "    sub esp, 0x4\n";
+    os << "    mov [ebp-" << toHex(-stack_esp) << "], " << registers[index] << "\n";  
     Value *addr = (Value *)newConstValue("ebp", stack_esp);
     auto addrPtr = newValPtr(addr);
     freeReg(index);
@@ -167,7 +170,7 @@ struct ConstValue : public Value
 
   virtual Value *load(std::ostream &os, ValPtr *owner, int _Index) override
   {
-    
+
     int oldoff = off;
     off = 0;
     auto ans = Value::load(os, owner, _Index);
@@ -178,7 +181,7 @@ struct ConstValue : public Value
       else
         os << "    sub " << ans->str() << ", " << toHex(-oldoff) << "\n";
     }
-    
+
     return ans;
   }
 };
@@ -271,7 +274,8 @@ struct ValPtr
     }
     return *this;
   }
-  bool isConst(){
+  bool isConst()
+  {
     return _Ptr->type() == Value::Const;
   }
   bool isMemory()
@@ -363,14 +367,10 @@ struct MemValue : public Value
   // 判断
   // true 跳转
   // false 跳转
-  MemValue(std::ostream &os, ValPtr *addr) : _Addr(addr)
-  {
-    flag = Memory;
-    if (_Addr->_Ptr->type() == Memory)
-      _Addr->load(os);
-  }
+  MemValue(std::ostream &os, ValPtr *addr);
   ~MemValue()
   {
+    unholdReg(_Addr);
     delete _Addr;
   }
 
@@ -378,6 +378,8 @@ struct MemValue : public Value
   {
     if (off)
       my_error("Memory Value str off is not 0");
+    // if (_Addr->_Ptr->type() == Memory)
+    //   _Addr->load(theOs);
     return '[' + _Addr->str() + ']';
   }
   // 暂存
@@ -416,20 +418,12 @@ inline void holdReg(Value *v)
   if (index != -1)
     holdReg(index);
 }
-inline void holdReg(ValPtr *vp)
-{
-  holdReg(vp->_Ptr);
-}
 
 inline void unholdReg(Value *v)
 {
   int index = getRegIndex(v);
   if (index != -1)
     unholdReg(index);
-}
-inline void unholdReg(ValPtr *vp)
-{
-  unholdReg(vp->_Ptr);
 }
 
 inline bool ismem2(ValPtr *ptr)
@@ -454,4 +448,11 @@ inline void addrAble(ValPtr *p, std::ostream &os)
 {
   if (p->isMemory() || p->isState())
     p->load(os);
+}
+
+inline ValPtr *newMemberValPtr(std::ostream &os, ValPtr *addr)
+{
+  if (addr->isMemory())
+    addr->load(os);
+  return new ValPtr(new MemValue(os, addr));
 }

@@ -18,84 +18,106 @@ print_int:
 main:
     push ebp
     mov ebp, esp
-    sub esp, 0x10
-    mov eax, 1
-    mov [ebp-0x8], eax
-    mov eax, 3
-    mov [ebp-0xc], eax
-    mov eax, 10
-    mov ebx, 2
-    cdq
-    idiv ebx
-    mov ebx, 3
-    mov ecx, eax
-    mov eax, 1
-pow_go_on_0:
-    cmp ebx, 0
-    jle pow_over_0
-    imul eax, ecx
-    sub ebx, 1
-    jmp pow_go_on_0
-pow_over_0:
-    mov ebx, [ebp-0x8]
-    add ebx, eax
-    mov [ebp-0x4], ebx
-    mov eax, [ebp-0x4]
-    cmp eax, 0
-    je goto1
-    mov eax, [ebp-0x4]
-    push eax
-    call print_int
-while_go_on_2:
-    mov eax, [ebp-0x4]
-    cmp eax, 10
-    jge goto3
-    mov eax, [ebp-0x8]
-    cmp eax, 10
-    jge goto3
-    mov eax, 1
-    jmp goto4
-goto3:
+    sub esp, 0x18
     mov eax, 0
-goto4:
-    cmp eax, 0
-    je goto2
-    mov eax, [ebp-0x4]
-    push eax
-    call print_int
-    mov eax, [ebp-0x4]
-    mov ebx, [ebp-0x8]
-    imul eax, ebx
-    mov ebx, [ebp-0xc]
-    imul eax, ebx
-    mov [ebp-0x4], eax
-    mov eax, [ebp-0x8]
-    mov ebx, 2
-    cdq
-    idiv ebx
-    mov [ebp-0x8], edx
-    jmp while_go_on_2
-goto2:
+    mov [ebp-0x18], eax
+for_go_on_0:
+    mov eax, [ebp-0x18]
+    cmp eax, 3
+    jge goto0
+    mov eax, [ebp-0x18]
+    add eax, 1 ; +
+    mov ebx, 0x4
+    imul ebx, [ebp-0x18]
+    mov ecx, ebp
+    sub ecx, 0xc
+    add ebx, ecx
+    mov [ebx], eax
+    mov eax, [ebp-0x18]
+    add eax, 1 ; +
+    mov [ebp-0x18], eax
+    jmp for_go_on_0
+goto0:
     mov eax, 0
-    mov [ebp-0x10], eax
-for_go_on_5:
-    mov eax, [ebp-0x10]
-    cmp eax, 1
-    jge goto5
-    mov eax, [ebp-0x8]
-    add eax, [ebp-0x4]
-    mov [ebp-0x10], eax
-    mov eax, 1
-    add eax, [ebp-0x10]
-    mov [ebp-0x10], eax
-    jmp for_go_on_5
-goto5:
+    mov [ebp-0x18], eax
+for_go_on_1:
+    mov eax, [ebp-0x18]
+    cmp eax, 3
+    jge goto1
+    mov eax, 0x4
+    imul eax, [ebp-0x18]
+    mov ebx, ebp
+    sub ebx, 0xc
+    add eax, ebx
+    sub esp, 0x4
+    mov [ebp-0x1c], eax
+    mov ebx, [ebp-0x1c]
+    mov ecx, [ebx]
+    push ecx
+    call print_int
+    mov eax, [ebp-0x18]
+    add eax, 1 ; +
+    mov [ebp-0x18], eax
+    jmp for_go_on_1
 goto1:
-    mov eax, [ebp-0x4]
+    mov eax, ebp
+    sub eax, 0xc
+    mov [ebp-0x10], eax
+    mov eax, ebp
+    sub eax, 0x10
+    mov [ebp-0x14], eax
+    mov ebx, [ebp-0x14]
+    mov eax, [ebx]
+    mov ebx, 2
+    sal ebx, 0x2
+    add eax, ebx ; +
+    mov ebx, 4
+    mov [eax], ebx
+    mov eax, 0
+    mov [ebp-0x18], eax
+for_go_on_2:
+    mov eax, [ebp-0x18]
+    cmp eax, 3
+    jge goto2
+    mov eax, 0x4
+    imul eax, [ebp-0x18]
+    mov ebx, ebp
+    sub ebx, 0xc
+    add eax, ebx
+    sub esp, 0x4
+    mov [ebp-0x24], eax
+    mov ebx, [ebp-0x24]
+    mov ecx, [ebx]
+    push ecx
+    call print_int
+    mov eax, [ebp-0x18]
+    add eax, 1 ; +
+    mov [ebp-0x18], eax
+    jmp for_go_on_2
+goto2:
+    mov ebx, [ebp-0x14]
+    mov ecx, [ebx]
+    mov ebx, [ecx]
+    push ebx
+    call print_int
+    mov eax, ebp
+    sub eax, 0xc
+    mov ebx, 2
+    sal ebx, 0x2
+    add eax, ebx ; +
+    mov [ebp-0x10], eax
+    mov ebx, [ebp-0x14]
+    mov ecx, [ebx]
+    mov ebx, [ecx]
+    push ebx
+    call print_int
+    mov eax, [ebp-0x10]
+    mov ebx, ebp
+    sub ebx, 0xc
+    sub eax, ebx ; -
+    sar eax, 0x2
     push eax
     call print_int
-    mov eax, [ebp-0x4]
-    jmp return_1
 return_1:
     mov esp, ebp
     pop ebp

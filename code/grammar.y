@@ -485,8 +485,9 @@ Exp:
         $$ = new OP1ExprNode(op_e::Not, $2);
 		$$->setTokenCount($1);
     }
-    | SINGALAND ID {
-        $$ = new OP1ExprNode(op_e::SignalAnd, new VarExprNode($2));
+    | SINGALAND Exp {
+        $$ = new OP1ExprNode(op_e::SignalAnd, $2);
+        //$$ = new OP1ExprNode(op_e::SignalAnd, new VarExprNode($2));
 		$$->setTokenCount($1);
     }
     | ID LP Args RP {
@@ -518,8 +519,9 @@ Exp:
     | INT {
         $$ = $1;
     }
-    | STAR ID {
-        $$ = new OP1ExprNode(op_e::GetValue, new VarExprNode($2));
+    | STAR Exp {
+        $$ = new OP1ExprNode(op_e::GetValue, $2);
+        //$$ = new OP1ExprNode(op_e::GetValue, new VarExprNode($2));
 		$$->setTokenCount($1);
     }
     | error RP {

@@ -21,28 +21,36 @@ ValPtr *VarExprNode ::calValue(std::ostream &os, bool getAddr)
         return addr;
     }
     else
-    {
-        return new ValPtr(new MemValue(os, addr));
-    }
-
-    return nullptr;
+        return newMemberValPtr(os, addr);
 }
 
 ValPtr *FunCallExprNode::calValue(std::ostream &os, bool getAddr)
 {
     std::vector<ValPtr *> vs;
+    storeReg(0);
+
     for (auto *arg : args)
     {
         vs.push_back(arg->calValue(os));
     }
+    holdReg(0);
     for (auto it = vs.rbegin(); it != vs.rend(); ++it)
     {
+        if ((*it)->isMemory() || (*it)->isState() || (*it)->hasOff())
+            (*it)->load(os);
+    }
+    // os << "    ; hold 0 \n";
+
+    for (auto it = vs.rbegin(); it != vs.rend(); ++it)
+    {
+        stack_esp -= 4;
         if ((*it)->isMemory() || (*it)->isState())
             (*it)->load(os);
-        stack_esp -= 4;
         os << "    push " << (*it)->str() << "\n";
         delete *it;
     }
+    unholdReg(0);
+    // os << "    ; unhold 0 \n";
     os << "    call " << this->name->ID << "\n";
     if (getAddr)
         my_error("函数返回值不可能是左值");
@@ -99,6 +107,11 @@ ValPtr *OP1ExprNode::calValue(std::ostream &os, bool getAddr)
             // auto v = first->calValue(os);
             if (getAddr)
                 return v;
+            else if (isRef(getType()))
+            {
+                v->_IsRef = true;
+                return v;
+            }
             auto ans = new ValPtr(nullptr);
             ans->_Ptr = new MemValue(os, v);
             return ans;
@@ -134,18 +147,13 @@ ValPtr *MemberExprNode::calValue(std::ostream &os, bool getAddr)
     }
     if (getAddr)
         return v;
-    else
+    else if (isRef(getType()))
     {
-        if (isRef(getType()))
-        {
-            v->_IsRef = true;
-            return v;
-        }
-        else
-        {
-            return new ValPtr(new MemValue(os, v));
-        }
+        v->_IsRef = true;
+        return v;
     }
+    else
+        return newMemberValPtr(os, v);
 }
 
 int getZhiShu(size_t x)
@@ -279,9 +287,16 @@ ValPtr *OP2ExprNode::calValue(std::ostream &os, bool getAddr)
                 os << "    sal " << v2->str() << ", " << toHex(getZhiShu(eleSize1)) << "\n";
             }
         }
+        if (v2->hasOff())
+        {
+            holdReg(v1);
+            v2->load(os);
+            unholdReg(v1);
+        }
 
         os << (this->op == op_e::Plus ? "    add " : "    sub ");
-        os << v1->str() << ", " << v2->str() << "\n";
+        os << v1->str() << ", " << v2->str() << " ; ";
+        os << (this->op == op_e::Plus ? "+\n" : "-\n");
         delete v2;
         if (hasSameBasic(first->getType(), second->getType()))
         {
@@ -426,11 +441,13 @@ ValPtr *OP2ExprNode::calValue(std::ostream &os, bool getAddr)
         delete v1;
         if (getAddr)
             return tmp;
-        else
+        else if (isRef(getType()))
         {
-            auto ans = new ValPtr(new MemValue(os, tmp));
-            return ans;
+            tmp->_IsRef = true;
+            return tmp;
         }
+        else
+            return newMemberValPtr(os, tmp);
     }
 
     break;

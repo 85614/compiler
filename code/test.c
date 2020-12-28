@@ -1,18 +1,19 @@
-int main() {
-    int a, b = 1;
-    int c = 3;
-    a = b + (10 / 2) ^ 3; // pay attention to operation priority
-    if (a != 0) {
-        print_int(a);
-        while (a < 10 && b < 10) {
-            print_int(a);
-            a = a * b * c;
-            b = b % 2;
-        }
-        for (int i = 0; i < 1; i=1+i) { // it's OK if you cannot handle the operator "++"
-            i = b + a;
-        }
-    }
-    print_int(a); // you can change this to your output function
-    return a;
+// 多维指针
+// 指针加减
+int main()
+{
+    int a[3];
+    for (int i = 0; i < 3; i = i + 1)
+        a[i] = i + 1;
+    for (int i = 0; i < 3; i = i + 1)
+        print_int(a[i]);
+    int *ptr = a;
+    int **pptr = &ptr;
+    *(*pptr + 2) = 4;
+    for (int i = 0; i < 3; i = i + 1)
+        print_int(a[i]);
+    print_int(**pptr);
+    ptr = a + 2;
+    print_int(**pptr);
+    print_int(ptr - a);
 }

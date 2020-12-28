@@ -63,7 +63,7 @@ void VarDefStmt::addVars(ASTNode *_Vars)
             // if (temp->childList.size() != 1)
             //     my_error("预期外的多个节点");
             addVars(temp->childList[0]);
-            
+
             if (vars.back().init)
             {
                 cout << "变量声明类型声明好前已经有初始化值" << endl;
@@ -81,7 +81,7 @@ void VarDefStmt::addVars(ASTNode *_Vars)
                 // temp =  (ID + []) + [] .....
                 //
                 // 声明数组
-
+                
                 if (temp->childList.size() != 2)
                 {
                     cout << "[] temp 结点子节点不是两个 " << endl;
@@ -92,7 +92,8 @@ void VarDefStmt::addVars(ASTNode *_Vars)
                     cout << "数组[]中的不是表达式" << endl;
                     exit(1);
                 }
-                vars.back().type = new ArrayTypeNode(oldType, (ExprNode *)temp->childList[1]);
+                vars.back().type = ArrayTypeNode::newArrayTypeNode(oldType, (ExprNode *)temp->childList[1]);
+                // vars.back().type = new ArrayTypeNode(oldType, (ExprNode *)temp->childList[1]);
                 vars.back().ID->setType(IDType_e::VarDef, vars.back().type);
             }
             else if ((temp->msg)[0] == '*')
@@ -100,7 +101,7 @@ void VarDefStmt::addVars(ASTNode *_Vars)
 
                 // temp = ***... + ID
                 // 声明指针
-                if (temp->childList.size()!=1)
+                if (temp->childList.size() != 1)
                     my_error("*temp节点的子节点不是1个");
                 auto type = oldType;
                 for (int i = 0; i < temp->msg.size(); ++i)
@@ -337,9 +338,12 @@ void FuncDefStmt::output(std::ostream &os)
 void ReturnStmt::output(std::ostream &os)
 {
     auto v = expr->calValue(os);
+
     if (v->str() != "eax")
     {
-        os << "    mov eax, " << v->str() << "\n";
+        auto eax = newRegValPtr(0);
+        os << "    mov " << eax->str() << ", " << v->str() << "\n";
+        delete eax;
     }
 
     os << "    jmp return_" << curReturnLabel << "\n";

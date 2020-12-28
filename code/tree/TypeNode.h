@@ -296,6 +296,7 @@ struct ArrayTypeNode : public TypeNode
     virtual type_e get_type_e() override { return type_e::ArrayType; };
     size_t len;
     ArrayTypeNode(TypeNode *_Basic, ExprNode *_Size);
+    static ArrayTypeNode* newArrayTypeNode(TypeNode *_Basic, ExprNode *_Size); // 生成数组，但是大小要反过来，慎用
     ArrayTypeNode(TypeNode *_Basic, std::vector<ASTNode *> &leafs)
     {
         cout << "ArrayNode 构造函数已过时" << endl;
@@ -304,7 +305,7 @@ struct ArrayTypeNode : public TypeNode
     virtual bool decAble() const override { return true; }
     bool assignable(TypeNode *type) const override
     {
-        return false;
+        return isSame(type);
     }
     bool isSame(TypeNode *type) const override
     {

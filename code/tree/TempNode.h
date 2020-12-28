@@ -22,6 +22,14 @@ struct TempNode : ASTNode{
                 leafs.push_back(n);
         }   
     }
+    void getAllLeafPlus(std::vector<ASTNode *> &leafs){
+        for(ASTNode*n: childList) {
+            if (n->get_AST_e()==AST_e::Temp && ((TempNode*)n)->msg.empty())
+                ((TempNode*)n)->getAllLeaf(leafs);
+            else 
+                leafs.push_back(n);
+        }   
+    }
     void print(int depth)override{
         for (ASTNode *n: childList)
             n->print(depth);
