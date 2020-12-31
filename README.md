@@ -1,10 +1,14 @@
 
 # 脚本使用方法
+进入`code`文件夹
+```
+cd code
+```
 使用如下命令，赋予脚本文件执行权限
 ```
 sudo chmod -x ./make.sh
 sudo chmod -x ./lexer-grammar.sh
-sudo chmod -x ./compile.sh
+sudo chmod -x ./compile-run.sh
 ```
 
 使用时，按如下方法输入命令即可
@@ -15,7 +19,7 @@ sudo chmod -x ./compile.sh
 ./lexer-grammar.sh
 ```
 ```
-./compile.sh
+./compile-run.sh
 ```
 如果未能赋予执行权限，则需要按如下方法使用
 ```
@@ -25,7 +29,7 @@ sudo chmod -x ./compile.sh
 /bin/bash ./lexer-grammar.sh
 ```
 ```
-/bin/bash ./compile.sh
+/bin/bash ./compile-run.sh
 ```
 
 # 使用方法
@@ -92,12 +96,15 @@ sudo chmod -x ./compile.sh
 为了生成子符号表的时候知道哪些符号属于子符号表，记录了每一个节点的第一个词法单元的序号，所有在某个序号之后的标识符节点属于子作用域，其他标识符属于父作用域。
 
 ## 目标代码生成
-在`/register`文件夹下
+
 抽象语法树都有`output`方法，用于输出目标代码
 
 其中表达式节点`output`调用`calValue`方法，并得到`ValPtr`类型的结构，此数据结果记录了表达式的值或地址的运算数
 
+
+
 ### `ValPtr`
+在`/register`文件夹下
 `ValPtr`是`Value`类型指针的包装类，有一个`Value`类型指针的属性
 
 ### `Value`
@@ -107,9 +114,9 @@ sudo chmod -x ./compile.sh
 `Value`有不同的类型，包括寄存器`RegValue`，内存`MemValue`，常量`ConstValue`，状态`StateValue`
 
 寄存器`RegValue`记录了一个寄存器名，如`eax`,`ebx`等
-状态`StateValue`是在进行了比较之后，可以进行条件跳转的状态，记录了比较结构为真/假时的跳转指令如`jg`，`je`等
+状态`StateValue`是在进行了比较之后，可以进行条件跳转的状态，记录了比较结果为真/假时的跳转指令如`jg`，`je`等
 内存`MemValue`记录了内存的地址，是一个`ValPtr`类型的属性
-常量`ConstValue`记录了一个字符串和一个偏移，如`ebp-0x8`
+常量`ConstValue`记录了一个字符串和一个偏移，如`ebp-0x8`，`1`
 
 `Value` 有一些基本方法，
 `str` 方法
