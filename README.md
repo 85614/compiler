@@ -4,6 +4,10 @@
 ```
 cd code
 ```
+如果下面的操作不能报错找不到文件
+确保这四个文件`./make.sh`、`./build/make.sh`、`./lexer-grammar.sh`、`./compile-run.sh`的换行符是`LF`而不是`CRLF`，可以在vscode中打开，查看右下角
+
+
 使用如下命令，赋予脚本文件执行权限
 ```
 sudo chmod -x ./make.sh
@@ -43,7 +47,7 @@ sudo chmod -x ./compile-run.sh
 ```
 ./build/compiler
 ```
-将编译`./test.c`，并得到词法分析，语法分析和汇编代码，分别输出到`./output/lexer.output` `./output/grammar.output`，`./output/asm.output`中。
+将编译`./test.c`，并得到词法分析，语法分析和汇编代码，分别输出到`./output/lexer.output` `./output/grammar.output`，`./output/asm.output`中，可以使用下面的命令直接查看结果。
 
 可以使用如下命令，直接编译`./test.c`并查看`./output/lexer.output`的词法分析输出和`./output/grammar.output`的语法分析树输出
 ```
@@ -54,8 +58,8 @@ sudo chmod -x ./compile-run.sh
 ```
 ./compile-run.sh
 ```
-
-
+可以使用链接中测试用例，复制到`.test.c`中进行测试
+https://www.yuque.com/docs/share/99d1a9cf-138b-49e5-8852-62a19628c4c0?# 《测试用例》
 
 
 # 设计思路
