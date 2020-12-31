@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
-#include "include.h"
+#include "../include.h"
 class AbstractASTNode;
 extern char *yytext;
 extern int yylex();
@@ -566,14 +566,14 @@ std::string replaceExtName(char* fileName) {
 
 void print_word_list();
 
-void print12(){
+void output_lexer(){
     print_word_list();
-    thisFile.print(0);
 }
 void addGlobalChildren();
-void test_lexer()
+extern const char *input_file;
+void run_yyparse()
 {
-    FILE* file = fopen("test.c", "r");
+    FILE* file = fopen(input_file, "r");
     yyin = file;
     do {
 		yyparse();

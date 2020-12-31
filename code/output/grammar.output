@@ -1,0 +1,144 @@
+|--Func Def Stmt.
+  |--Func Dec Stmt. 
+    |--Return Type.
+      |--Type Specifier: INTEGER
+    |--Func Name.
+      |--ID Declaration: main
+    |--Para Dec Stmt.
+  |--Comp Stmt. 
+    |--Var Dec Stmt.
+      |--Var Dec.
+        |--Type Specifier: Array
+          |--Size: 3
+          |--Type Specifier: INTEGER
+        |--ID Declaration: a
+    |--For Stmt.
+      |--Init Stmt.
+        |--Var Def Stmt.
+          |--Var def.
+            |--Type Specifier: INTEGER
+            |--ID Declaration: i
+            |--Var Init.
+              |--Const Expr. Value:0
+      |--Judge Conditions.
+        |--Expr op:Relop
+          |--Var:i
+          |--Const Expr. Value:3
+      |--Increment
+        |--Expr op:Assignop "=" 
+          |--Var:i
+          |--Expr op:Plus "+" 
+            |--Var:i
+            |--Const Expr. Value:1
+      |--Action.
+        |--Expr Stmt. 
+          |--Expr op:Assignop "=" 
+            |--Expr op: GetArrayValue "[]" 
+              |--Var:a
+              |--Var:i
+            |--Expr op:Plus "+" 
+              |--Var:i
+              |--Const Expr. Value:1
+    |--For Stmt.
+      |--Init Stmt.
+        |--Var Def Stmt.
+          |--Var def.
+            |--Type Specifier: INTEGER
+            |--ID Declaration: i
+            |--Var Init.
+              |--Const Expr. Value:0
+      |--Judge Conditions.
+        |--Expr op:Relop
+          |--Var:i
+          |--Const Expr. Value:3
+      |--Increment
+        |--Expr op:Assignop "=" 
+          |--Var:i
+          |--Expr op:Plus "+" 
+            |--Var:i
+            |--Const Expr. Value:1
+      |--Action.
+        |--Expr Stmt. 
+          |--Function Call.
+            |--ID Declaration: print_int
+            |--Para List
+              |--Expr op: GetArrayValue "[]" 
+                |--Var:a
+                |--Var:i
+    |--Var Def Stmt.
+      |--Var def.
+        |--Type Specifier: POINTER
+          |--Type Specifier: INTEGER
+        |--ID Declaration: ptr
+        |--Var Init.
+          |--Var:a
+    |--Var Def Stmt.
+      |--Var def.
+        |--Type Specifier: POINTER
+          |--Type Specifier: POINTER
+            |--Type Specifier: INTEGER
+        |--ID Declaration: pptr
+        |--Var Init.
+          |--Expr op:SingalAnd "&" 
+            |--Var:ptr
+    |--Expr Stmt. 
+      |--Expr op:Assignop "=" 
+        |--Expr op:GetValue
+          |--Expr op:Plus "+" 
+            |--Expr op:GetValue
+              |--Var:pptr
+            |--Const Expr. Value:2
+        |--Const Expr. Value:4
+    |--For Stmt.
+      |--Init Stmt.
+        |--Var Def Stmt.
+          |--Var def.
+            |--Type Specifier: INTEGER
+            |--ID Declaration: i
+            |--Var Init.
+              |--Const Expr. Value:0
+      |--Judge Conditions.
+        |--Expr op:Relop
+          |--Var:i
+          |--Const Expr. Value:3
+      |--Increment
+        |--Expr op:Assignop "=" 
+          |--Var:i
+          |--Expr op:Plus "+" 
+            |--Var:i
+            |--Const Expr. Value:1
+      |--Action.
+        |--Expr Stmt. 
+          |--Function Call.
+            |--ID Declaration: print_int
+            |--Para List
+              |--Expr op: GetArrayValue "[]" 
+                |--Var:a
+                |--Var:i
+    |--Expr Stmt. 
+      |--Function Call.
+        |--ID Declaration: print_int
+        |--Para List
+          |--Expr op:GetValue
+            |--Expr op:GetValue
+              |--Var:pptr
+    |--Expr Stmt. 
+      |--Expr op:Assignop "=" 
+        |--Var:ptr
+        |--Expr op:Plus "+" 
+          |--Var:a
+          |--Const Expr. Value:2
+    |--Expr Stmt. 
+      |--Function Call.
+        |--ID Declaration: print_int
+        |--Para List
+          |--Expr op:GetValue
+            |--Expr op:GetValue
+              |--Var:pptr
+    |--Expr Stmt. 
+      |--Function Call.
+        |--ID Declaration: print_int
+        |--Para List
+          |--Expr op:Minus "-" 
+            |--Var:ptr
+            |--Var:a

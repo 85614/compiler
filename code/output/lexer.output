@@ -1,0 +1,140 @@
+单词            词素                属性      
+TYPE1           int                 
+ID              main                0x556491a36680
+LP              (                   
+RP              )                   
+LC              {                   
+TYPE1           int                 
+ID              a                   0x556491a36d20
+LB              [                   
+INT             3                   3
+RB              ]                   
+SEMI            ;                   
+FOR             for                 
+LP              (                   
+TYPE1           int                 
+ID              i                   0x556491a37420
+ASSIGNOP        =                   
+INT             0                   0
+SEMI            ;                   
+ID              i                   0x556491a37420
+RELOP           <                   
+INT             3                   3
+SEMI            ;                   
+ID              i                   0x556491a37420
+ASSIGNOP        =                   
+ID              i                   0x556491a37420
+PLUS            +                   
+INT             1                   1
+RP              )                   
+ID              a                   0x556491a36d20
+LB              [                   
+ID              i                   0x556491a37420
+RB              ]                   
+ASSIGNOP        =                   
+ID              i                   0x556491a37420
+PLUS            +                   
+INT             1                   1
+SEMI            ;                   
+FOR             for                 
+LP              (                   
+TYPE1           int                 
+ID              i                   0x556491a39140
+ASSIGNOP        =                   
+INT             0                   0
+SEMI            ;                   
+ID              i                   0x556491a39140
+RELOP           <                   
+INT             3                   3
+SEMI            ;                   
+ID              i                   0x556491a39140
+ASSIGNOP        =                   
+ID              i                   0x556491a39140
+PLUS            +                   
+INT             1                   1
+RP              )                   
+ID              print_int           0x556491a30020
+LP              (                   
+ID              a                   0x556491a36d20
+LB              [                   
+ID              i                   0x556491a39140
+RB              ]                   
+RP              )                   
+SEMI            ;                   
+TYPE1           int                 
+STAR            *                   
+ID              ptr                 0x556491a3afa0
+ASSIGNOP        =                   
+ID              a                   0x556491a36d20
+SEMI            ;                   
+TYPE1           int                 
+STAR            *                   
+STAR            *                   
+ID              pptr                0x556491a3b7b0
+ASSIGNOP        =                   
+SINGALAND       &                   
+ID              ptr                 0x556491a3afa0
+SEMI            ;                   
+STAR            *                   
+LP              (                   
+STAR            *                   
+ID              pptr                0x556491a3b7b0
+PLUS            +                   
+INT             2                   2
+RP              )                   
+ASSIGNOP        =                   
+INT             4                   4
+SEMI            ;                   
+FOR             for                 
+LP              (                   
+TYPE1           int                 
+ID              i                   0x556491a3c850
+ASSIGNOP        =                   
+INT             0                   0
+SEMI            ;                   
+ID              i                   0x556491a3c850
+RELOP           <                   
+INT             3                   3
+SEMI            ;                   
+ID              i                   0x556491a3c850
+ASSIGNOP        =                   
+ID              i                   0x556491a3c850
+PLUS            +                   
+INT             1                   1
+RP              )                   
+ID              print_int           0x556491a30020
+LP              (                   
+ID              a                   0x556491a36d20
+LB              [                   
+ID              i                   0x556491a3c850
+RB              ]                   
+RP              )                   
+SEMI            ;                   
+ID              print_int           0x556491a30020
+LP              (                   
+STAR            *                   
+STAR            *                   
+ID              pptr                0x556491a3b7b0
+RP              )                   
+SEMI            ;                   
+ID              ptr                 0x556491a3afa0
+ASSIGNOP        =                   
+ID              a                   0x556491a36d20
+PLUS            +                   
+INT             2                   2
+SEMI            ;                   
+ID              print_int           0x556491a30020
+LP              (                   
+STAR            *                   
+STAR            *                   
+ID              pptr                0x556491a3b7b0
+RP              )                   
+SEMI            ;                   
+ID              print_int           0x556491a30020
+LP              (                   
+ID              ptr                 0x556491a3afa0
+MINUS           -                   
+ID              a                   0x556491a36d20
+RP              )                   
+SEMI            ;                   
+RC              }                   

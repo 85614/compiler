@@ -34,8 +34,8 @@ void init()
     // global->parent = nullptr;
 }
 
-std::ofstream os("code.asm");
-std::ostream &theOs = os;
+
+std::ostream &theOs = cout;
 
 void addGlobalChildren()
 {
@@ -53,10 +53,27 @@ void initGlobalVar(std::ostream &os)
     }
 }
 
-void output()
-{
+extern const char *grammar_output; // 语法分析输出文件
+extern const char *asm_output;     // asm输出文件
 
-    os << R"(
+void output_grammar()
+{
+    auto grammar_os = std::ofstream(grammar_output);
+    if (!grammar_os)
+        cout << "语法分析输出文件：" << grammar_output << " 打开失败" << endl;
+    auto cout_rdbuf = cout.rdbuf(grammar_os.rdbuf());
+    thisFile.print(0);
+    cout.rdbuf(cout_rdbuf);
+    grammar_os.close();
+}
+
+void output_asm()
+{
+    auto asm_os = std::ofstream(asm_output);
+    if (!asm_os)
+        cout << "asm输出文件：" << asm_output << " 打开失败" << endl;
+    auto cout_rdbuf = cout.rdbuf(asm_os.rdbuf());
+    cout << R"(
 extern printf
 global main
 
@@ -79,25 +96,27 @@ print_int:
 
         if (stmt->get_AST_e() == AST_e::Stmt && ((StmtNode *)stmt)->get_stmt_e() == stmt_e::VarDef)
             continue;
-        stmt->output(os);
+        stmt->output(cout);
     }
 
-    os << "section .data\n";
+    cout << "section .data\n";
     for (auto id : global->IDList)
     {
         if (id->IdType == IDType_e::VarDef)
         {
 
-            os << "    " << id->name << " dd ";
+            cout << "    " << id->name << " dd ";
 
             for (int i = 0; i < id->extra->size; i += 4)
             {
                 if (i != 0)
-                    os << ", ";
-                os << "0";
+                    cout << ", ";
+                cout << "0";
             }
-            os << "\n";
+            cout << "\n";
         }
     }
-    os << "\n";
+    cout << "\n";
+    cout.rdbuf(cout_rdbuf);
+    asm_os.close();
 }

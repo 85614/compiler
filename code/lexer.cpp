@@ -2,7 +2,7 @@
 #include <string.h>
 #include <string>
 #include "include.h"
-#include "grammar.tab.h"
+#include "./build/grammar.tab.h"
 using std::string;
 using std::vector;
 struct word{
@@ -10,13 +10,14 @@ struct word{
     string word_type;
     string addr_value;
     IDNode *idptr = nullptr;
-    void printAttr(){
+    void printAttr(FILE *f){
         if (word_type == "INT"){
-            cout <<addr_value;
+            fprintf(f, "%s", addr_value.c_str());
+            // cout <<addr_value;
         }
         else if (word_type == "ID"){
-            
-            cout << idptr->realID;
+            fprintf(f, "%p", idptr->realID);
+            // cout << idptr->realID;
         }
     }
 };
@@ -44,16 +45,18 @@ void add_word(const char *token,const char *word_type ,const char *addr_value) {
     word_list.push_back(new_word);
 }
 
+extern const char *lexer_output;
+
 void print_word_list() {
-    FILE *f;    
-    // if((f = fopen("word.txt", "w")) == NULL)
-    //     printf("word.txt open failed. \n");
-    f = stdout;
+    FILE *f = stdout;
+    if(lexer_output && (f = fopen(lexer_output, "w")) == NULL)
+        printf("%s open failed. \n", lexer_output);
+    
     fprintf(f, "%-18s%-22s%-12s\n", "单词", "词素", "属性");
     for (int i = 0; i < word_list.size(); ++i) {
         word *ptr = word_list[i];
         fprintf(f, "%-16s%-20s", ptr->word_type.c_str(), ptr->token.c_str());
-        ptr->printAttr();
+        ptr->printAttr(f);
         fprintf(f, "\n");
     }
 }

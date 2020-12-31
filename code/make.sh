@@ -1,25 +1,12 @@
 #!/bin/bash
-echo bison
-bison -d  ./grammar.y
-echo flex
-flex lexer.l
-echo gcc
-g++ \
-  init.cpp \
-  symbol/SymbolTable.cpp \
-  symbol/Identifier.cpp \
-  tree/TypeNode.cpp \
-  grammar.cpp \
-  tree/StmtNode.cpp \
-  grammar.tab.c \
-  lex.yy.c \
-  lexer.cpp \
-  tree/ExprNode.cpp\
-  register/register.cpp\
-  register/TempValue.cpp\
-  base.cpp
+echo cd ./build
+cd ./build
+echo
 
-echo ./a.out
-./a.out
-echo cat ./code.asm
-cat ./code.asm
+echo /bin/bash ./make.sh
+/bin/bash ./make.sh
+echo
+
+echo cd ..
+cd ..
+echo

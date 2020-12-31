@@ -1,7 +1,7 @@
 %x COMMENT
 %{
-#include "include.h"
-#include "grammar.tab.h"
+#include "../include.h"
+#include "./grammar.tab.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
