@@ -58,7 +58,7 @@ sudo chmod -x ./compile-run.sh
 ```
 ./compile-run.sh
 ```
-可以使用链接中测试用例，复制到`.test.c`中进行测试
+可以使用链接中测试用例，复制到`./test.c`中进行测试
 https://www.yuque.com/docs/share/99d1a9cf-138b-49e5-8852-62a19628c4c0?# 《测试用例》
 
 
